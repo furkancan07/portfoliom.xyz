@@ -21,7 +21,7 @@ public class Project {
     private String name;
     private String description;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "project_images",
             joinColumns = @JoinColumn(name = "project_id")
@@ -33,7 +33,7 @@ public class Project {
     @Enumerated(EnumType.STRING)
     private ProjectArea projectArea;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "project-skills",  // Teknolojilerin saklanacağı tablo adı
             joinColumns = @JoinColumn(name = "project_id")
@@ -47,9 +47,5 @@ public class Project {
     private String projectLink;
 
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL)
-    private List<Comments> comments;
-
-
-
-
+    private List<Comment> comments;
 }

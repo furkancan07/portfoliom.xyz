@@ -23,5 +23,4 @@ public class CreateUserRequest {
     @Email
     @UniqueEmail
     private String email;
-    private String profilePhotoUrl;
 }

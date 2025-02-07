@@ -3,12 +3,16 @@ package com.rf.portfolioM.service;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.rf.portfolioM.exception.CloudinaryException;
+import com.rf.portfolioM.exception.MaxFilesException;
+import com.rf.portfolioM.exception.OnlyImageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +21,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class CloudinaryService {
     private final Cloudinary cloudinary;
+    private static final int MAX_FILES=5;
 
     public String uploadFile(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
@@ -31,12 +36,12 @@ public class CloudinaryService {
         Map<String, Object> options = new HashMap<>();
 
         if (contentType.startsWith("image/")) {
-            options.put("quality", "auto:low"); // Kaliteyi düşürerek sıkıştır
-            options.put("width", 800); // Genişliği ayarla
-            options.put("crop", "scale"); // Oranı koruyarak yeniden boyutlandır
-            options.put("fetch_format", "auto"); // Cloudinary uygun formatı belirlesin
+            options.put("quality", "auto:low");
+            options.put("width", 800);
+            options.put("crop", "scale");
+            options.put("fetch_format", "auto");
         } else if (contentType.equals("application/pdf")) {
-            options.put("resource_type", "raw"); // PDF gibi belgeleri ham veri olarak işle
+            options.put("resource_type", "image");
         } else {
             throw new CloudinaryException(contentType);
         }
@@ -65,10 +70,27 @@ public class CloudinaryService {
         }
     }
 
-    // 🔥 URL'den Public ID'yi Çıkaran Yardımcı Metod
+    public List<String> uploadFiles(List<MultipartFile> files) throws IOException {
+        if (files.size() > MAX_FILES) {
+            throw new MaxFilesException("En fazla " + MAX_FILES + " dosya yükleyebilirsiniz.");
+        }
+
+        List<String> uploadedUrls = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            if (!isImage(file)) {
+                throw new OnlyImageException();
+            }
+            String fileUrl = uploadFile(file);
+            uploadedUrls.add(fileUrl);
+        }
+
+        return uploadedUrls;
+    }
+
+
     private String extractPublicId(String fileUrl) {
         try {
-            // Cloudinary URL yapısı: https://res.cloudinary.com/{cloud_name}/image/upload/v1234567890/{public_id}.jpg
             String regex = ".*/upload/(v[0-9]+/)?([^/.]+).*";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(fileUrl);
@@ -80,6 +102,15 @@ public class CloudinaryService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private boolean isImage(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return false;
+        }
+
+        String contentType = file.getContentType();
+        return contentType != null && contentType.startsWith("image/");
     }
 
 

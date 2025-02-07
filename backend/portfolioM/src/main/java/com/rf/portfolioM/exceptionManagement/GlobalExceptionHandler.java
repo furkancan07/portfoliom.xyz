@@ -1,8 +1,6 @@
 package com.rf.portfolioM.exceptionManagement;
 
-import com.rf.portfolioM.exception.CloudinaryException;
-import com.rf.portfolioM.exception.FailedToFieldException;
-import com.rf.portfolioM.exception.NotFoundException;
+import com.rf.portfolioM.exception.*;
 import com.rf.portfolioM.utils.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -13,7 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -38,7 +37,7 @@ public class GlobalExceptionHandler {
     }
 
     // 400 hataları
-    @ExceptionHandler({FailedToFieldException.class, CloudinaryException.class,RuntimeException.class})
+    @ExceptionHandler({FailedToFieldException.class, CloudinaryException.class,RuntimeException.class,  MaxFilesException.class, OnlyImageException.class})
     public ResponseEntity<ApiResponse<Void>> badRequestException(RuntimeException ex,HttpServletRequest http){
         ApiResponse<Void> response=ApiResponse.<Void>builder().
                 message(ex.getMessage()).status(400).path(http.getRequestURI()).localDateTime(LocalDateTime.now()).

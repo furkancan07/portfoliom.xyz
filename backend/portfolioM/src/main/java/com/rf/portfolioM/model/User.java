@@ -35,7 +35,7 @@ public class User  {
 
     private String aboutMe;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "skills",  // Yetenekler tablosunun adı
             joinColumns = @JoinColumn(name = "user_id")
@@ -45,14 +45,14 @@ public class User  {
     @Column(name = "skill_level")
     private Map<String, SkillLevel> skills;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "contactAdresses",  // Yetenekler tablosunun adı
             joinColumns = @JoinColumn(name = "user_id")
     )
-    @Enumerated(EnumType.STRING)
-    @MapKeyColumn(name = "platform")
 
+    @MapKeyColumn(name = "platform")
+    @Enumerated(EnumType.STRING)
     @Column(name = "url")
 
     private Map<ContactAddresses, String> contactAddresses;
@@ -61,7 +61,7 @@ public class User  {
     private List<Project> projects;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<Comments> comments;
+    private List<Comment> comments;
 
 
 

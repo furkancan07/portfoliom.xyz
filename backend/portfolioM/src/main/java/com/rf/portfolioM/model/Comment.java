@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Comments {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
