@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,11 +39,13 @@ public class UserController {
     }
     // kullanıcı sil
     @DeleteMapping(ApiPaths.DELETE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String id){
         return ResponseEntity.ok(service.deleteUser(id));
     }
     // kullanıcı güncelle
     @PutMapping(ApiPaths.UPDATE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(description = "Contact adresinde key değeri :  GITHUB,\n" +
             "    LINKEDIN,\n" +
             "    GMAIL,\n" +
@@ -64,24 +67,27 @@ public class UserController {
 
     // profil fotosu güncelle
     @PatchMapping(value = ApiPaths.UPDATE_PROFILE_PHOTO,consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ApiResponse<Void>> updateProfilePhoto(@PathVariable String id,@RequestParam(value = "file",required = false) MultipartFile file){
         return ResponseEntity.ok(service.updateProfilePhoto(id,file));
     }
     // profil fotosunu sil
     @DeleteMapping(ApiPaths.DELETE_PROFILE_PHOTO)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteProfilePhoto(@RequestParam("url") String url){
         return ResponseEntity.ok(service.deleteProfilePhoto(url));
     }
     // cv ekle
     @PatchMapping(value = ApiPaths.UPLOAD_CV,consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ApiResponse<Void>> uploadCv(@PathVariable String userId,@RequestParam(value = "file",required = false) MultipartFile file){
         return ResponseEntity.ok(service.uploadCv(userId,file));
     }
     // skill ekle
     @PatchMapping(ApiPaths.ADD_SKILL)
-
-    public ResponseEntity<ApiResponse<Void>> addSkillForUser(@RequestBody AddSkillRequest request, @PathVariable String id){
-        return ResponseEntity.ok(service.addSkill(request,id));
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> addSkillForUser(@RequestBody AddSkillRequest request){
+        return ResponseEntity.ok(service.addSkill(request));
     }
     // iletişim adresi ekle
     @PatchMapping(ApiPaths.ADD_CONTACT)
@@ -100,6 +106,7 @@ public class UserController {
             "    LEETCODE,\n" +
             "    HACKERRANK,\n" +
             "    OTHER \n" +" mapte key değerleri bu değerler dışında değer almamalı"  )
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ApiResponse<Void>> addContactAddresses(@RequestBody AddContactAddressesRequest request, @PathVariable String id){
         return ResponseEntity.ok(service.addContactAddresses(request,id));
     }

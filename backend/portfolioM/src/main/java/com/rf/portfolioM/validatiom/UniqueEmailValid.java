@@ -1,6 +1,5 @@
 package com.rf.portfolioM.validatiom;
 
-import com.rf.portfolioM.repository.UserRepository;
 import com.rf.portfolioM.service.UserService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

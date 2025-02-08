@@ -7,6 +7,7 @@ import com.rf.portfolioM.utils.ApiPaths;
 import com.rf.portfolioM.utils.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,16 +27,19 @@ public class CommentController {
     * security işlemlerini yaptıktan sonra securitycontext ile
     */
     @PostMapping(ApiPaths.ADD_COMMENT)
-    ResponseEntity<ApiResponse<Void>> addComment(@PathVariable String userId,@PathVariable String projectId, @RequestBody @Valid AddCommentRequest request){
-        return ResponseEntity.ok(service.addComment(userId,projectId,request));
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    ResponseEntity<ApiResponse<Void>> addComment(@PathVariable String projectId, @RequestBody @Valid AddCommentRequest request){
+        return ResponseEntity.ok(service.addComment(projectId,request));
     }
     // yorum sil
     @DeleteMapping(ApiPaths.DELETE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable String id){
         return ResponseEntity.ok(service.delete(id));
     }
     // yorum güncelle
     @PutMapping(ApiPaths.UPDATE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<ApiResponse<CommentDto>> updateComment(@PathVariable String id,@RequestBody @Valid AddCommentRequest request){
         return ResponseEntity.ok(service.updateComment(id,request));
     }

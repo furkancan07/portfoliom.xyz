@@ -8,6 +8,7 @@ import com.rf.portfolioM.utils.ApiPaths;
 import com.rf.portfolioM.utils.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +24,7 @@ public class ProjectController {
     }
     // kullanıcıya ait tüm projeleri getir
     @GetMapping(ApiPaths.PROJECT_BY_USER)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     ResponseEntity<ApiResponse<List<ProjectDto>>> getProjectsByUser(@PathVariable String userId){
         return ResponseEntity.ok(service.getProjectsByUser(userId));
     }
@@ -37,13 +39,15 @@ ResponseEntity<ApiResponse<List<ProjectDto>>> getProjectsByUserAndTag(@PathVaria
         return ResponseEntity.ok(service.getProject(id));
     }
     // proje ekle
-    @PostMapping(ApiPaths.CREATE+"/{userId}")
-    ResponseEntity<ApiResponse<ProjectDto>> createProject(@PathVariable String userId, @RequestPart("request") @Valid AddProjectRequest request, @RequestPart(value = "file",required = false) List<MultipartFile> file){
-        return ResponseEntity.ok(service.createProject(userId,request,file));
+    @PostMapping(ApiPaths.CREATE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    ResponseEntity<ApiResponse<ProjectDto>> createProject(@RequestPart("request") @Valid AddProjectRequest request, @RequestPart(value = "file",required = false) List<MultipartFile> file){
+        return ResponseEntity.ok(service.createProject(request,file));
     }
 
     // proje sil
     @DeleteMapping(ApiPaths.DELETE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable String id){
         return ResponseEntity.ok(service.delete(id));
     }

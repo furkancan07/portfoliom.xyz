@@ -5,15 +5,18 @@ import com.rf.portfolioM.dto.converter.DtoConverter;
 import com.rf.portfolioM.exception.FailedToFieldException;
 import com.rf.portfolioM.exception.NotFoundException;
 import com.rf.portfolioM.model.User;
+import com.rf.portfolioM.model.enums.ROLE;
 import com.rf.portfolioM.repository.UserRepository;
+import com.rf.portfolioM.security.UserIdentityManager;
 import com.rf.portfolioM.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,11 +24,13 @@ public class UserService {
     private final UserRepository repository;
     private final CloudinaryService cloudinaryService;
     private final DtoConverter converter;
+    private final PasswordEncoder encoder;
+    private final UserIdentityManager manager;
     public ApiResponse<Void> createUser(CreateUserRequest request, MultipartFile file){
         String profilePhotoUrl=getUrl(file);
         User user=User.builder().name(request.getName()).surname(request.getSurname()).email(request.getEmail())
-                .password(request.getPassword()).username(request.getUsername()).profilePhotoUrl(profilePhotoUrl).build();
-
+                .password(encoder.encode(request.getPassword())).username(request.getUsername()).profilePhotoUrl(profilePhotoUrl).build();
+        user.setRole(ROLE.ROLE_USER);
         repository.save(user);
 
 
@@ -114,8 +119,8 @@ public class UserService {
         return repository.findByUsername(username).orElseThrow(()->new NotFoundException("Kullanıcı"));
     }
 
-    public ApiResponse<Void> addSkill(AddSkillRequest request, String id) {
-        User user=findById(id);
+    public ApiResponse<Void> addSkill(AddSkillRequest request) {
+        User user=manager.getAuthenticatedUser();
         user.setSkills(request.getSkills());
         repository.save(user);
         return ApiResponse.ok("Yetenekler eklendi");
@@ -142,4 +147,6 @@ public class UserService {
         List<UserDto> data=users.stream().map(converter::convertUser).toList();
         return ApiResponse.ok("Kullanici Listesi",data);
     }
+
+
 }

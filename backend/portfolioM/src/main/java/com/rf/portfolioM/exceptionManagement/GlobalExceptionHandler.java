@@ -44,4 +44,12 @@ public class GlobalExceptionHandler {
                 build();
         return ResponseEntity.badRequest().body(response);
     }
+    // 401 hataları
+    @ExceptionHandler({UserNotAuthenticatedException.class})
+    public ResponseEntity<ApiResponse<Void>> unauthorizedException(RuntimeException ex,HttpServletRequest http){
+        ApiResponse<Void> response=ApiResponse.<Void>builder().
+                message(ex.getMessage()).status(401).path(http.getRequestURI()).localDateTime(LocalDateTime.now()).
+                build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
 }

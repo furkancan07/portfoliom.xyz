@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DtoConverter {
-    private UserInformation convertUserInformation(User user){
+    public UserInformation convertUserInformation(User user){
         return UserInformation.builder().id(user.getId())
                 .username(user.getUsername())
                 .name(user.getName())
                 .surname(user.getSurname())
+                .role(user.getRole())
                 .profilePhotoUrl(user.getProfilePhotoUrl()).build();
     }
 
@@ -33,6 +34,7 @@ public class DtoConverter {
                .cvUrl(user.getCvUrl())
                .aboutMe(user.getAboutMe())
                .skills(user.getSkills())
+               .role(user.getRole())
                .contactAddresses(user.getContactAddresses())
                .build();
     }

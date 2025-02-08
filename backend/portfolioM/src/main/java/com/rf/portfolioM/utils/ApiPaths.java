@@ -12,14 +12,15 @@ public class ApiPaths {
     public static final String UPDATE_PROFILE_PHOTO = "profile-photo/" + UPDATE;
     public static final String DELETE_PROFILE_PHOTO = "profile-photo/" + "delete";
     public static final String UPLOAD_CV = "upload-cv/{userId}";
-    public static final String ADD_SKILL = "add-skill/{id}";
+    public static final String ADD_SKILL = "add-skill";
     public static final String ADD_CONTACT = "add_contact_addresses/{id}";
     public static final String USER_BY_USERNAME = "username/{username}";
     public static final String ID = "{id}";
     public static final String PROJECT_BY_USER = "list/project/{userId}";
     public static final String LIST = "list";
     public static final String GET_PROJECT_BY_USER_AND_TAG=PROJECT_BY_USER+"/{tag}";
-    public static final String ADD_COMMENT=CREATE+"/{userId}/{projectId}";
+    public static final String ADD_COMMENT=CREATE+"/{projectId}";
 
     public static final String GET_COMMENTS_BY_PROJECT = "project/{id}";
+    public static final String LOGIN = "login";
 }

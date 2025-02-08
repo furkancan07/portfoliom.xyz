@@ -9,6 +9,7 @@ import com.rf.portfolioM.model.Project;
 import com.rf.portfolioM.model.User;
 import com.rf.portfolioM.model.enums.ProjectArea;
 import com.rf.portfolioM.repository.ProjectRepository;
+import com.rf.portfolioM.security.UserIdentityManager;
 import com.rf.portfolioM.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,9 @@ public class ProjectService {
     private final UserService userService;
     private final CloudinaryService cloudinaryService;
     private final DtoConverter converter;
-
-    public ApiResponse<ProjectDto> createProject(String userId, AddProjectRequest request, List<MultipartFile> files) {
-        User user = userService.findById(userId);
+private final UserIdentityManager manager;
+    public ApiResponse<ProjectDto> createProject(AddProjectRequest request, List<MultipartFile> files) {
+        User user = manager.getAuthenticatedUser();
         Project project = Project.builder().user(user).projectLink(request.getProjectLink()).projectArea(request.getProjectArea())
                 .description(request.getDescription())
                 .skills(request.getSkills())

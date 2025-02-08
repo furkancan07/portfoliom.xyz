@@ -4,10 +4,12 @@ import com.rf.portfolioM.dto.AddCommentRequest;
 import com.rf.portfolioM.dto.CommentDto;
 import com.rf.portfolioM.dto.converter.DtoConverter;
 import com.rf.portfolioM.exception.NotFoundException;
+import com.rf.portfolioM.exception.UserNotAuthenticatedException;
 import com.rf.portfolioM.model.Comment;
 import com.rf.portfolioM.model.Project;
 import com.rf.portfolioM.model.User;
 import com.rf.portfolioM.repository.CommentRepository;
+import com.rf.portfolioM.security.UserIdentityManager;
 import com.rf.portfolioM.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,9 @@ public class CommentService {
     private final UserService userService;
     private final ProjectService projectService;
     private final DtoConverter converter;
-    public ApiResponse<Void> addComment(String userId, String projectId, AddCommentRequest request) {
-        User user=userService.findById(userId);
+    private final UserIdentityManager manager;
+    public ApiResponse<Void> addComment(String projectId, AddCommentRequest request) {
+        User user=manager.getAuthenticatedUser();
         Project project=projectService.findById(projectId);
         Comment comment=Comment.builder().comment(request.getComment()).project(project).user(user)
                 .build();
@@ -40,7 +43,9 @@ public class CommentService {
     }
 
     public ApiResponse<CommentDto> updateComment(String id, AddCommentRequest request) {
+        User user=manager.getAuthenticatedUser();
         Comment comment=findById(id);
+        if(!user.equals(comment.getUser())) throw new UserNotAuthenticatedException();
         comment.setComment(request.getComment());
         repository.save(comment);
         return ApiResponse.ok("Yorum Güncellendi",converter.convertComment(comment));

@@ -1,5 +1,6 @@
 package com.rf.portfolioM.dto;
 import com.rf.portfolioM.model.enums.ContactAddresses;
+import com.rf.portfolioM.model.enums.ROLE;
 import com.rf.portfolioM.model.enums.SkillLevel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +21,8 @@ public class UserDto {
     private String area;
     private String email;
     private String profilePhotoUrl;
+    @Enumerated(EnumType.STRING)
+    private ROLE role;
     private String cvUrl;
     private String aboutMe;
     private Map<String, SkillLevel> skills;
