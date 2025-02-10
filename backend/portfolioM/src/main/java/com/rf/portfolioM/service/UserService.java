@@ -1,26 +1,29 @@
 package com.rf.portfolioM.service;
-
 import com.rf.portfolioM.dto.*;
 import com.rf.portfolioM.dto.converter.DtoConverter;
 import com.rf.portfolioM.exception.FailedToFieldException;
 import com.rf.portfolioM.exception.NotFoundException;
 import com.rf.portfolioM.model.User;
 import com.rf.portfolioM.model.enums.ROLE;
+import com.rf.portfolioM.model.enums.SkillLevel;
 import com.rf.portfolioM.repository.UserRepository;
 import com.rf.portfolioM.security.UserIdentityManager;
 import com.rf.portfolioM.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository repository;
     private final CloudinaryService cloudinaryService;
     private final DtoConverter converter;
@@ -86,8 +89,8 @@ public class UserService {
 
     }
 
-    public ApiResponse<UserDto> updateUser(String id, UpdateUserRequest request) {
-        User user=findById(id);
+    public ApiResponse<UserDto> updateUser( UpdateUserRequest request) {
+        User user=manager.getAuthenticatedUser();
         user.setUniversity(request.getUniversity());
         user.setJob(request.getJob());
         user.setArea(request.getArea());
@@ -99,8 +102,8 @@ public class UserService {
         return ApiResponse.ok("Kullanici Bilgileri Güncellendi",userDto);
     }
 
-    public ApiResponse<Void> uploadCv(String id, MultipartFile file) {
-        User user=findById(id);
+    public ApiResponse<Void> uploadCv(MultipartFile file) {
+        User user=manager.getAuthenticatedUser();
         String oldCvdUrl=user.getCvUrl();
         String cvUrl=getUrl(file);
         user.setCvUrl(cvUrl);
@@ -149,4 +152,8 @@ public class UserService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return findByUserName(username);
+    }
 }

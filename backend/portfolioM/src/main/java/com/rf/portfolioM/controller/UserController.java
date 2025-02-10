@@ -11,10 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(ApiPaths.USER)
@@ -44,7 +47,7 @@ public class UserController {
         return ResponseEntity.ok(service.deleteUser(id));
     }
     // kullanıcı güncelle
-    @PutMapping(ApiPaths.UPDATE)
+    @PutMapping(ApiPaths.USER_UPDATE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(description = "Contact adresinde key değeri :  GITHUB,\n" +
             "    LINKEDIN,\n" +
@@ -61,8 +64,8 @@ public class UserController {
             "    LEETCODE,\n" +
             "    HACKERRANK,\n" +
             "    OTHER  bunlardan biri olmalı")
-    public ResponseEntity<ApiResponse<UserDto>> updateUser(@PathVariable String id, @Valid @RequestBody UpdateUserRequest request){
-        return ResponseEntity.ok(service.updateUser(id,request));
+    public ResponseEntity<ApiResponse<UserDto>> updateUser( @Valid @RequestBody UpdateUserRequest request){
+        return ResponseEntity.ok(service.updateUser(request));
     }
 
     // profil fotosu güncelle
@@ -80,8 +83,8 @@ public class UserController {
     // cv ekle
     @PatchMapping(value = ApiPaths.UPLOAD_CV,consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> uploadCv(@PathVariable String userId,@RequestParam(value = "file",required = false) MultipartFile file){
-        return ResponseEntity.ok(service.uploadCv(userId,file));
+    public ResponseEntity<ApiResponse<Void>> uploadCv(@RequestParam(value = "file",required = false) MultipartFile file){
+        return ResponseEntity.ok(service.uploadCv(file));
     }
     // skill ekle
     @PatchMapping(ApiPaths.ADD_SKILL)
@@ -126,6 +129,12 @@ public class UserController {
     @GetMapping(ApiPaths.LIST)
     public ResponseEntity<ApiResponse<List<UserDto>>> getUsers(){
         return ResponseEntity.ok(service.getUsers());
+    }
+
+    @GetMapping()
+    public Map<String, Object> getUser(Authentication authentication) {
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        return oAuth2User.getAttributes();
     }
 
 

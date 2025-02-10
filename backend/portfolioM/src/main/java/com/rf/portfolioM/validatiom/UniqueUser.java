@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 public @interface UniqueUser {
     String message() default "Bu kullanıcı adi sisteme kayıtlı";
 
+
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};

@@ -5,6 +5,7 @@ import com.rf.portfolioM.dto.LoginRequest;
 import com.rf.portfolioM.dto.converter.DtoConverter;
 import com.rf.portfolioM.exception.LoginException;
 import com.rf.portfolioM.model.User;
+import com.rf.portfolioM.repository.UserRepository;
 import com.rf.portfolioM.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final DtoConverter converter;
     private final PasswordEncoder encoder;
+    private final UserRepository repository;
     public ApiResponse<AuthResponse> login(LoginRequest request){
         User user=userService.findByUserName(request.getUsername());
         if(!encoder.matches(request.getPassword(),user.getPassword())){
@@ -28,4 +30,5 @@ public class AuthService {
         AuthResponse response=AuthResponse.builder().token(token).user(converter.convertUserInformation(user)).build();
         return ApiResponse.ok("Giriş Başarılı",response);
     }
+
 }
