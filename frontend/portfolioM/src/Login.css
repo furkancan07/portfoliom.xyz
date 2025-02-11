@@ -1,0 +1,212 @@
+body {
+  background: var(--background-color);
+  margin: 0;
+  min-height: 100vh;
+  display: flex; /* Flexbox kullanarak ortalamak için */
+  justify-content: center; /* Yatayda ortala */
+  align-items: center; /* Dikeyde ortala */
+}
+
+.login-container {
+  max-width: 400px;
+  width: 90%;
+  padding: 2rem;
+  text-align: center;
+  background-color: transparent; /* Arka planı şeffaf yap */
+  color: var(--text-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  width: 100%;
+  background-color: var(--input-background);
+  color: var(--text-color);
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #ff4d4d;
+  outline: none;
+}
+
+.forgot-password {
+  text-align: right;
+  display: block;
+  margin-bottom: 1rem;
+  color: #0072ff;
+  text-decoration: none;
+}
+
+.login-button,
+.register-button,
+.github-button {
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  margin-top: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  border: none;
+  background: var(--button-primary);
+  color: var(--button-text);
+  transition: background-color 0.25s;
+}
+
+.login-button:hover,
+.register-button:hover,
+.github-button:hover {
+  background: #ff4d4d;
+}
+
+.social-login {
+  margin-top: 2rem;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.social-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  color: #fff;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.facebook {
+  background-color: #3b5998;
+}
+
+.twitter {
+  background-color: #1da1f2;
+}
+
+.google {
+  background-color: #db4437;
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  color: #ff4d4d;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.toggle-password:hover {
+  color: #ff0000;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.logo {
+  max-width: 80%;
+  height: auto;
+  opacity: 0.8;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Responsive tasarım için medya sorguları */
+@media (max-width: 768px) {
+  .login-container {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  .login-form {
+    gap: 15px;
+  }
+
+  .github-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  input {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .login-button,
+  .github-button,
+  .register-button {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}
+
+.home-container {
+  text-align: center;
+  margin-top: 50px; /* Üstten boşluk bırak */
+}
+
+nav {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+nav button {
+  background-color: #ff4d4d; /* Buton arka plan rengi */
+  color: #fff; /* Buton metin rengi */
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+nav button:hover {
+  background-color: #e63946; /* Hover rengi */
+}

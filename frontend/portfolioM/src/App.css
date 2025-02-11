@@ -1,42 +1,828 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Açık tema (varsayılan) */
+:root {
+    --background-color: #f0f0f0;
+    /* Açık gri arka plan */
+    --text-color: #333333;
+    /* Koyu gri metin */
+    --card-background: #ffffff;
+    /* Beyaz kart arka planı */
+    --border-color: #dddddd;
+    /* Açık gri kenar rengi */
+    --input-background: #ffffff;
+    /* Beyaz input arka planı */
+    --input-border: #cccccc;
+    /* Açık gri input kenar rengi */
+    --button-primary: linear-gradient(90deg, #ff4d4d, #ff9999);
+    /* Kırmızı ve açık kırmızı buton */
+    --button-text: #ffffff;
+    /* Beyaz buton metni */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Koyu tema */
+body.dark-mode {
+    --background-color: #1e1e1e;
+    /* Koyu gri arka plan */
+    --text-color: #ffffff;
+    /* Beyaz metin */
+    --card-background: #121212;
+    /* Çok koyu gri kart arka planı */
+    --border-color: #333333;
+    /* Koyu gri kenar rengi */
+    --input-background: #2a2a2a;
+    /* Koyu gri input arka planı */
+    --input-border: #444444;
+    /* Koyu gri input kenar rengi */
+    --button-primary: linear-gradient(90deg, #ff0000, #ff4d4d);
+    /* Kırmızı ve açık kırmızı buton */
+    --button-text: #ffffff;
+    /* Beyaz buton metni */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+body {
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column; /* Dikey hizalama */
+    height: 100vh; /* Tam yükseklik */
+    background-color: var(--background-color); /* Arka plan rengi */
+    color: var(--text-color); /* Metin rengi */
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 1rem;
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.header button {
+    background: var(--card-background);
+    color: var(--text-color);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Koyu tema için header buton stilleri */
+body.dark-mode .header button {
+    background: var(--card-background);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.content-container {
+    flex: 1; /* İçeriği doldur */
+    padding: 1rem; /* İçerik alanına boşluk ekle */
+    overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu ekle */
+}
+
+.content-container.drawer-open {
+    display: none; /* Menü açıldığında içeriği gizle */
+}
+
+.theme-toggle-container {
+    display: flex;
+    justify-content: flex-end; /* Sağ tarafa yerleştir */
+    margin: 1rem; /* Üstten boşluk */
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px; /* Arama alanı ile başlık arasında boşluk */
+}
+
+.search-container input {
+    flex: 1; /* Genişliği doldur */
+    padding: 0.5rem;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--input-background);
+    color: var(--text-color);
+}
+
+.search-button {
+    margin-left: 0.5rem;
+    padding: 0.5rem 0.25rem; /* Daha kısa buton */
+    background-color: var(--button-primary);
+    color: var(--button-text);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.theme-toggle {
+    margin: 1rem;
+}
+
+nav {
+    margin: 1rem;
+}
+
+.home-container {
+    display: flex;
+    flex-direction: column; /* Dikey hizalama */
+    align-items: center; /* Ortala */
+    margin-top: 50px; /* Üstten boşluk bırak */
+}
+
+input {
+    background-color: var(--input-background);
+    /* Arka plan rengi */
+    color: var(--text-color);
+    /* Metin rengi */
+    border: 1px solid var(--input-border);
+    /* Kenar rengi */
+    border-radius: 4px;
+    /* Kenar yuvarlama */
+    padding: 0.5rem;
+    /* İç boşluk */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    /* Geçiş efekti */
+}
+
+/* Koyu temada input metin rengi beyaz */
+body.dark-mode input {
+    color: #ffffff;
+    /* Beyaz metin rengi */
+}
+
+/* Arama butonunun rengi */
+input:focus {
+    border-color: #ff4d4d;
+    /* Kırmızı kenar rengi */
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Yarı saydam siyah arka plan */
+    z-index: 100; /* Menüden üstte görünmesi için */
+}
+
+.donkey-image {
+    position: fixed;
+    right: 0; /* Sağ köşeye yerleştir */
+    bottom: 0; /* Alt köşeye yerleştir */
+    width: 100px; /* Genişlik ayarı */
+    height: auto; /* Orantılı yükseklik */
+    z-index: 10; /* Diğer içeriklerin üstünde görünmesi için */
+}
+
+.ListItem {
+    transition: background-color 0.3s ease, color 0.3s ease; /* Geçiş efekti */
+    color: var(--text-color); /* Metin rengi */
+}
+
+.ListItem:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* Hover rengi */
+    color: #ff4d4d; /* Hover metin rengi */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Elemanlar arasında boşluk */
+}
+
+input, textarea {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+
+input:focus, textarea:focus {
+    border-color: #ff4d4d; /* Odaklandığında kenar rengi */
+}
+
+/* Modal için stil ayarları */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 0 1rem;
+}
+
+.modal-content {
+    background-color: var(--card-background);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    position: relative;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--input-background);
+    color: var(--text-color);
+}
+
+.modal-content button {
+    margin: 5px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background: var(--button-primary);
+    color: var(--button-text);
+}
+
+.modal-content button:hover {
+    opacity: 0.9;
+}
+
+/* Yetenek listesi için stil */
+.skills-list {
+    list-style: none;
+    padding: 0;
+}
+
+.skills-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 5px;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.skills-list button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: 5px;
+}
+
+/* Başarı mesajı için stil */
+.success-message {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    text-align: center;
+    animation: fadeIn 0.5s;
+    margin: 1rem;
+    font-size: 0.9rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Özel buton stilleri */
+.add-button {
+    background: var(--button-primary);
+    color: var(--button-text);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.add-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.add-button:active {
+    transform: translateY(0);
+}
+
+/* Bölüm başlığı stilleri */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-color);
+}
+
+/* Form container stilleri */
+.login-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--card-background);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Form grup stilleri */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+/* Input ve Textarea ortak stilleri */
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--input-background);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+/* Textarea özel stilleri */
+.form-group textarea {
+    min-height: 150px;
+    resize: vertical;
+    line-height: 1.5;
+    font-family: inherit;
+}
+
+/* Input ve Textarea hover durumu */
+.form-group input:hover,
+.form-group textarea:hover {
+    border-color: var(--input-border);
+    background-color: var(--input-background);
+}
+
+/* Input ve Textarea focus durumu */
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff4d4d;
+    box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.2);
+}
+
+/* Güncelle butonu stilleri */
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background: var(--button-primary);
+    color: var(--button-text);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.login-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* Yetenek ve İletişim bölümleri için özel stiller */
+.section-header {
+    margin-top: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.section-header h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Liste öğeleri için stiller */
+.skills-list li {
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.skills-list li:hover {
+    transform: translateX(5px);
+    border-color: #ff4d4d;
+}
+
+/* Düzenleme ve silme butonları */
+.skills-list button {
+    padding: 6px;
+    margin-left: 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.skills-list button:hover {
+    background-color: rgba(255, 77, 77, 0.1);
+}
+
+/* Koyu tema için özel ayarlar */
+body.dark-mode .login-container {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .form-group input,
+body.dark-mode .form-group textarea {
+    background-color: var(--input-background);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .form-group input:focus,
+body.dark-mode .form-group textarea:focus {
+    border-color: #ff4d4d;
+    box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1);
+}
+
+/* Modal içeriği için koyu tema */
+body.dark-mode .modal-content {
+    background-color: var(--card-background);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Başlık stilleri */
+h2 {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* Placeholder rengi */
+::placeholder {
+    color: var(--text-color);
+    opacity: 0.6;
+}
+
+/* Scrollbar stilleri */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ff4d4d;
+}
+
+/* App container için margin ayarı */
+.app-container {
+    margin-top: 60px; /* Header'ın altında kalan içerik için boşluk */
+    padding: 0 1rem;
+}
+
+/* Profil aksiyonları için stiller */
+.profile-actions {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.upload-button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.upload-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--button-primary);
+    color: var(--button-text);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.upload-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.upload-button:active {
+    transform: translateY(0);
+}
+
+/* Form aksiyonları için stiller */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
+.form-actions .login-button {
+    flex: 1;
+    margin: 0;
+}
+
+.form-actions .profile-actions {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+}
+
+.upload-button {
+    white-space: nowrap;
+}
+
+/* Seçilen resim için stil */
+.selected-image {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.selected-image img {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    object-fit: cover;
+}
+
+/* Güncelle butonu için stil */
+.login-button {
+    margin-top: 2rem;
+    width: 100%;
+}
+
+/* Seçilen resim container'ı için stil */
+.selected-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Onay butonu için stil */
+.confirm-button {
+    background: var(--button-primary);
+    color: var(--button-text);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.confirm-button:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
+}
+
+/* Upload button container'ı için stil */
+.upload-button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Responsive tasarım için medya sorguları */
+@media (max-width: 1200px) {
+  .login-container {
+    max-width: 90%;
+    margin: 1rem auto;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    padding: 1rem;
+  }
+
+  .header {
+    padding: 0.5rem;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .add-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .skills-list li {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .skills-list li div {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .modal-content {
+    width: 90%;
+    margin: 0 10px;
+  }
+
+  .form-group textarea {
+    min-height: 120px;
+  }
+
+  .MuiDrawer-paper {
+    width: 100% !important;
+  }
+
+  .ListItem {
+    padding: 15px !important;
+  }
+
+  .home-container {
+    margin-top: 30px;
+    padding: 0 1rem;
+  }
+
+  .search-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-container input {
+    width: 100%;
+  }
+
+  .search-button {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .modal-overlay {
+    padding: 0 1rem;
+  }
+
+  .success-message,
+  .error-message {
+    margin: 1rem;
+    font-size: 0.9rem;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (min-width: 769px) {
+  .MuiDrawer-paper {
+    width: 250px !important;
   }
 }
 
-.card {
-  padding: 2em;
+@media (max-width: 480px) {
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .upload-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .selected-image img {
+    max-width: 120px;
+    max-height: 120px;
+  }
+
+  .login-button {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+/* Genel responsive düzenlemeler */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.app-container {
+  padding: 0 1rem;
+}
+
+/* Touch cihazlar için hover efektlerini düzenleme */
+@media (hover: none) {
+  .upload-button:hover,
+  .add-button:hover,
+  .login-button:hover {
+    transform: none;
+  }
+
+  .skills-list li:hover {
+    transform: none;
+  }
 }
