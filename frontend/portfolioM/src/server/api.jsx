@@ -1,13 +1,17 @@
 import axios from 'axios';
 
-//const url = "https://portfoliom-is7q.onrender.com";
-//const url = "http://localhost:8080"
-
-const API_URL = '/api/v1';
+// Development ve production URL'lerini ayır
+const isDevelopment = import.meta.env.DEV;
+const baseURL = isDevelopment 
+  ? '/api/v1'  // Development'da proxy kullan
+  : 'https://portfoliom-is7q.onrender.com/api/v1'; // Production URL
 
 // Axios instance oluştur
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: baseURL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
 // Otomatik çıkış fonksiyonu
@@ -157,20 +161,17 @@ export const uploadCV = async (file) => {
 export const createProject = async (projectData, images) => {
   const formData = new FormData();
   
-  // JSON verisini FormData'ya ekle
   formData.append('request', new Blob([JSON.stringify(projectData)], {
     type: 'application/json'
   }));
 
-  // Resimleri ekle
-  images.forEach((image, index) => {
+  images.forEach((image) => {
     formData.append(`file`, image);
   });
 
   try {
-    const response = await axios.post(API_URL+'/project/create', formData, {
+    const response = await api.post('/project/create', formData, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'multipart/form-data'
       }
     });
@@ -200,8 +201,6 @@ export const getUserProjectsByTag = async (userId, tag) => {
     throw error.response?.data || error.message;
   }
 };
-
-
 
 // Proje güncelleme fonksiyonu
 export const updateProject = async (projectId, projectData) => {
@@ -233,7 +232,7 @@ export const getProjectById = async (projectId) => {
 
 export const searchUsers = async (username) => {
   try {
-    const response = await axios.get(`${API_URL}/user/search/${username}`);
+    const response = await api.get(`/user/search/${username}`);
     console.log('Search API Response:', response); 
     return response;
   } catch (error) {
