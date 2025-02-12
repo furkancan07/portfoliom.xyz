@@ -51,8 +51,8 @@ function App() {
           }
         } catch (error) {
           console.error('Kullanıcı bilgileri alınamadı:', error);
-          if (error.response?.status === 401) {
-            handleLogout();
+          if (error.message === 'Kullanıcı bilgileri alınamadı') {
+            handleLogout(); // Token geçersizse çıkış yap
           }
         }
       } else {
@@ -86,7 +86,7 @@ function App() {
     localStorage.removeItem('user');
     localStorage.removeItem('username');
     setIsLoggedIn(false);
-    navigate('/login');
+    window.location.reload(); // Sayfayı yenile
   };
 
   return (

@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-const url = "https://portfoliom-is7q.onrender.com";
-//const url="http://localhost:8080"
-const API_URL = url+'/api/v1';
+//const url = "https://portfoliom-is7q.onrender.com";
+//const url = "http://localhost:8080"
+
+const API_URL = '/api/v1';
 
 // Axios instance oluştur
 const api = axios.create({
@@ -200,15 +201,7 @@ export const getUserProjectsByTag = async (userId, tag) => {
   }
 };
 
-// Proje silme fonksiyonu
-export const deleteProject = async (projectId) => {
-  try {
-    const response = await api.delete(`/project/delete/${projectId}`);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || error.message;
-  }
-};
+
 
 // Proje güncelleme fonksiyonu
 export const updateProject = async (projectId, projectData) => {
@@ -246,5 +239,19 @@ export const searchUsers = async (username) => {
   } catch (error) {
     console.error('Search API Error:', error);
     throw error;
+  }
+};
+
+// Proje silme fonksiyonu
+export const deleteProject = async (projectId) => {
+  try {
+    const response = await api.delete(`/project/delete/${projectId}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
   }
 };

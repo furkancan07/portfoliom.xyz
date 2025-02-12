@@ -174,4 +174,18 @@
   .project-card {
     height: auto;
   }
+}
+
+.project-link.delete {
+  background-color: #ff4444;
+  color: white;
+}
+
+.project-link.delete:hover {
+  background-color: #cc0000;
+}
+
+.project-link.delete:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 } 

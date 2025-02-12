@@ -32,16 +32,14 @@ const Projects = () => {
   };
 
   const handleDelete = async (projectId) => {
-    if (window.confirm('Bu projeyi silmek istediğinizden emin misiniz?')) {
+    const confirmDelete = window.confirm("Bu projeyi silmek istediğinize emin misiniz?");
+    if (confirmDelete) {
       try {
         await deleteProject(projectId);
-        // Projeyi listeden kaldır
         setProjects(projects.filter(project => project.id !== projectId));
-        // Başarı mesajı göster
-        alert('Proje başarıyla silindi');
       } catch (error) {
+        setError('Projeyi silerken bir hata oluştu');
         console.error('Proje silme hatası:', error);
-        alert('Proje silinirken bir hata oluştu');
       }
     }
   };

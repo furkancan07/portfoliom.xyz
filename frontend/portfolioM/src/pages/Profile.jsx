@@ -94,6 +94,13 @@ function Profile() {
     }
   };
 
+  const handleProjectDelete = (deletedProjectId) => {
+    // Projeler listesinden silinen projeyi çıkar
+    setProjects(prevProjects => 
+      prevProjects.filter(project => project.id !== deletedProjectId)
+    );
+  };
+
   if (!userData) return <div className="loading">Yükleniyor...</div>;
 
   return (
@@ -278,7 +285,11 @@ function Profile() {
           </div>
           <div className="projects-grid">
             {projects.map(project => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard 
+                key={project.id} 
+                project={project}
+                onDelete={handleProjectDelete}
+              />
             ))}
             {projects.length === 0 && (
               <div className="no-projects">

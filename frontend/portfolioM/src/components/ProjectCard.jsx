@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import ProjectModal from './ProjectModal';
 import './ProjectCard.css';
 import { useNavigate } from 'react-router-dom';
+import { deleteProject } from '../server/api';
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, onDelete }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
 
   const nextImage = () => {
@@ -18,6 +21,30 @@ const ProjectCard = ({ project }) => {
     setCurrentImageIndex((prev) => 
       prev === 0 ? project.imagesUrl.length - 1 : prev - 1
     );
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm('Bu projeyi silmek istediğinizden emin misiniz?')) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      await deleteProject(project.id);
+      
+      // Parent komponenti bilgilendir
+      if (onDelete) {
+        onDelete(project.id);
+      }
+
+      // Başarı mesajı göster
+      alert('Proje başarıyla silindi');
+    } catch (error) {
+      console.error('Proje silme hatası:', error);
+      alert(error.message || 'Proje silinirken bir hata oluştu');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -75,6 +102,13 @@ const ProjectCard = ({ project }) => {
             >
               Git
             </a>
+            <button
+              className="project-link delete"
+              onClick={handleDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Siliniyor...' : 'Sil'}
+            </button>
           </div>
         </div>
       </div>
