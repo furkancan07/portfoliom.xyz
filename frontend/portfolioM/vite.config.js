@@ -9,7 +9,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': process.env.VITE_API_URL || 'https://portfoliom-is7q.onrender.com'
+      '/api': process || 'https://portfoliom-is7q.onrender.com'
     }
   },
 })
