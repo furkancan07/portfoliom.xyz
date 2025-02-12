@@ -3,6 +3,8 @@ import { Drawer, List, ListItem, ListItemText, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { fetchUserData } from '../server/api';
 import './DrawerMenu.css';
+import defaultAvatar from '../assets/user.png'
+
 
 const DrawerMenu = ({ open, onClose, isLoggedIn, handleLogout }) => {
   const navigate = useNavigate();
@@ -34,6 +36,11 @@ const DrawerMenu = ({ open, onClose, isLoggedIn, handleLogout }) => {
     getUserData();
   }, [isLoggedIn, username]);
 
+  const handleNavigation = (path) => {
+    navigate(path);
+    onClose(); // Navigasyondan sonra drawer'ı kapat
+  };
+
   return (
     <Drawer
       anchor="left"
@@ -63,7 +70,7 @@ const DrawerMenu = ({ open, onClose, isLoggedIn, handleLogout }) => {
           <div className="drawer-profile">
             <div className="drawer-image-container">
               <img 
-                src={userData?.profilePhotoUrl || '/default-avatar.png'} 
+                src={userData?.profilePhotoUrl || defaultAvatar} 
                 alt="Profil" 
                 className="drawer-profile-image"
               />
@@ -74,28 +81,28 @@ const DrawerMenu = ({ open, onClose, isLoggedIn, handleLogout }) => {
         )}
 
         <List className="drawer-list">
-          <ListItem button className="drawer-item" onClick={() => navigate('/')}>
+          <ListItem button className="drawer-item" onClick={() => handleNavigation('/')}>
             <ListItemText primary="Ana Sayfa" />
           </ListItem>
 
           {isLoggedIn ? (
             <>
-              <ListItem button className="drawer-item" onClick={() => navigate(`/${username}`)}>
+              <ListItem button className="drawer-item" onClick={() => handleNavigation(`/${username}`)}>
                 <ListItemText primary="Profilim" />
               </ListItem>
-              <ListItem button className="drawer-item" onClick={() => navigate('/profile-update')}>
+              <ListItem button className="drawer-item" onClick={() => handleNavigation('/profile-update')}>
                 <ListItemText primary="Profil Düzenle" />
               </ListItem>
-              <ListItem button className="drawer-item" onClick={() => navigate('/projects')}>
+              <ListItem button className="drawer-item" onClick={() => handleNavigation('/projects')}>
                 <ListItemText primary="Projeler" />
               </ListItem>
             </>
           ) : (
             <>
-              <ListItem button className="drawer-item" onClick={() => navigate('/login')}>
+              <ListItem button className="drawer-item" onClick={() => handleNavigation('/login')}>
                 <ListItemText primary="Giriş Yap" />
               </ListItem>
-              <ListItem button className="drawer-item" onClick={() => navigate('/register')}>
+              <ListItem button className="drawer-item" onClick={() => handleNavigation('/register')}>
                 <ListItemText primary="Kayıt Ol" />
               </ListItem>
             </>
@@ -106,14 +113,16 @@ const DrawerMenu = ({ open, onClose, isLoggedIn, handleLogout }) => {
           <>
             <Divider className="drawer-divider" />
             <List className="drawer-list project-actions">
-              <ListItem button className="drawer-item" onClick={() => navigate('/add-project')}>
+              <ListItem button className="drawer-item" onClick={() => handleNavigation('/add-project')}>
                 <ListItemText primary="Proje Ekle" />
               </ListItem>
-             
             </List>
             <Divider className="drawer-divider" />
             <List className="drawer-list">
-              <ListItem button className="drawer-item logout" onClick={handleLogout}>
+              <ListItem button className="drawer-item logout" onClick={() => {
+                handleLogout();
+                onClose(); // Çıkış yaptıktan sonra drawer'ı kapat
+              }}>
                 <ListItemText primary="Çıkış Yap" />
               </ListItem>
             </List>

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import ProjectModal from './ProjectModal';
 import './ProjectCard.css';
+import { useNavigate } from 'react-router-dom';
 
 const ProjectCard = ({ project }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => 
@@ -31,9 +33,6 @@ const ProjectCard = ({ project }) => {
                 <img
                   key={index}
                   src={imageUrl}
-                  style={{
-                    objectFit: 'cover',
-                  }}
                   alt={`${project.name} - ${index + 1}`}
                   className="project-image"
                 />
@@ -62,11 +61,11 @@ const ProjectCard = ({ project }) => {
             ))}
           </div>
           <div className="project-actions">
-            <button 
-              className="details-btn"
-              onClick={() => setIsModalOpen(true)}
+            <button
+              className="project-link"
+              onClick={() => navigate(`/project/${project.id}`)}
             >
-              Detayları Gör
+              Detaylar
             </button>
             <a 
               href={project.projectLink} 
@@ -74,7 +73,7 @@ const ProjectCard = ({ project }) => {
               rel="noopener noreferrer"
               className="project-link"
             >
-              Projeyi Görüntüle
+              Git
             </a>
           </div>
         </div>

@@ -17,7 +17,8 @@
 }
 
 .add-project-btn {
-  padding: 0.8rem 1.5rem;
+  padding: 0.78rem 1rem;
+  margin-left: 2rem;
   background: var(--button-primary);
   color: white;
   border: none;

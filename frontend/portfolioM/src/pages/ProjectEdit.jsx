@@ -5,7 +5,7 @@ import './AddProject.css'; // Aynı stili kullanacağız
 
 const PROJECT_AREAS = ['WEB', 'MOBILE', 'DESKTOP', 'GAME', 'AI', 'OTHER'];
 
-function ProjectEdit() {
+const ProjectEdit = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -166,12 +166,21 @@ function ProjectEdit() {
           />
         </div>
 
-        <button type="submit" className="submit-btn" disabled={loading}>
-          {loading ? 'Güncelleniyor...' : 'Projeyi Güncelle'}
-        </button>
+        <div className="form-buttons">
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? 'Güncelleniyor...' : 'Güncelle'}
+          </button>
+          <button 
+            type="button" 
+            className="cancel-btn"
+            onClick={() => navigate(-1)}
+          >
+            İptal
+          </button>
+        </div>
       </form>
     </div>
   );
-}
+};
 
 export default ProjectEdit; 

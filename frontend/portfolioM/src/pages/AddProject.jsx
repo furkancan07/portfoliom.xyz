@@ -65,6 +65,12 @@ function AddProject() {
     setSuccess(false);
 
     try {
+      if (images.length > 5) {
+        setError('En fazla 5 resim yükleyebilirsiniz');
+        setLoading(false);
+        return;
+      }
+
       await createProject(formData, images);
       setSuccess(true);
       setTimeout(() => {

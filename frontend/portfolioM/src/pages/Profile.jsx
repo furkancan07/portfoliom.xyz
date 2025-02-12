@@ -5,6 +5,7 @@ import '../Profile.css';
 import ProjectCard from '../components/ProjectCard';
 const pdfMake = (await import('pdfmake/build/pdfmake')).default;
 const pdfFonts = (await import('pdfmake/build/vfs_fonts')).default;
+import userLogo from '../assets/user.png'
 pdfMake.vfs = pdfFonts.vfs;
 
 
@@ -62,10 +63,7 @@ function Profile() {
     }
   };
 
-  const getDefaultAvatar = (name) => {
-    // UI Avatars servisi ile rastgele avatar oluştur
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=000&color=fff&size=150`;
-  };
+  
 
   const generateCV = async () => {
     try {
@@ -119,7 +117,7 @@ function Profile() {
         <div className="profile-card">
           <div className="profile-image-wrapper">
             <img 
-              src={userData.profilePhotoUrl || defaultAvatar} 
+              src={userData.profilePhotoUrl || userLogo} 
               alt={`${userData.name}'s profile`}
               className="profile-image"
               onError={(e) => {
@@ -128,21 +126,11 @@ function Profile() {
               }}
             />
           </div>
+          <span className="username">@{userData.username}</span>
           <h1>{userData.name} {userData.surname}</h1>
-          <span className="job-title">{userData.job || 'Yazılım Geliştirci(örnektir düzenleyebilirsiniz)'}</span>
-          <div className="profile-badges">
-            <div className="role-badge">{userData.area || 'Alanınızı yazın'}</div>
-            {userData.cvUrl && (
-              <a 
-                href={userData.cvUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="cv-badge"
-              >
-                📄 CV
-              </a>
-            )}
-          </div>
+          
+          <span className="job-title">{userData.job || 'Yazılım Geliştirici'}</span>
+          <div className="role-badge">{userData.area || 'Alanınızı yazın'}</div>
         </div>
 
         <div className="personal-info">

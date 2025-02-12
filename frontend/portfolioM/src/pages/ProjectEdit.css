@@ -1,0 +1,43 @@
+.edit-project-container {
+  position: relative;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.close-button:hover {
+  transform: rotate(90deg);
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Responsive tasarım için */
+@media (max-width: 768px) {
+  .edit-project-container {
+    padding: 1rem;
+  }
+
+  .close-button {
+    width: 30px;
+    height: 30px;
+    font-size: 1.5rem;
+  }
+} 

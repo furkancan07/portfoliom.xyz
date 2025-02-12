@@ -48,7 +48,7 @@ function Register({ onLogin }) {
   return (
     <div className="login-container">
       <h2>Kayıt Ol</h2>
-      {error && <div className="error-message">{error.message}</div>} {/* Hata mesajını göster */}
+      {error && <div className="error-message">{error.message}</div>}
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Kullanıcı Adı</label>
@@ -130,7 +130,6 @@ function Register({ onLogin }) {
           />
         </div>
         <button type="submit" className="login-button">Kayıt Ol</button>
-       
       </form>
       <button type="button" className="register-button" onClick={() => navigate('/login')}>
         Giriş Yap

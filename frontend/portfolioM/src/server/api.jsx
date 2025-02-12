@@ -7,7 +7,15 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
+// Otomatik çıkış fonksiyonu
+const handleLogout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  localStorage.removeItem('username');
+  window.location.href = '/login'; // Sayfayı login'e yönlendir
+};
 
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -17,6 +25,21 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // JWT ile ilgili hatalar için kontrol
+    if (error.response?.status === 401 || 
+        error.response?.status === 403 || 
+        error.response?.data?.message?.toLowerCase().includes('token') ||
+        error.response?.data?.error?.toLowerCase().includes('token')) {
+      handleLogout();
+    }
     return Promise.reject(error);
   }
 );
@@ -210,5 +233,16 @@ export const getProjectById = async (projectId) => {
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
+  }
+};
+
+export const searchUsers = async (username) => {
+  try {
+    const response = await axios.get(`${API_URL}/user/search/${username}`);
+    console.log('Search API Response:', response); 
+    return response;
+  } catch (error) {
+    console.error('Search API Error:', error);
+    throw error;
   }
 };

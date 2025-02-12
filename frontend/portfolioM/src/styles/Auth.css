@@ -1,0 +1,48 @@
+.auth-logo {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.auth-logo .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--text-color);
+  transition: transform 0.3s ease;
+}
+
+.auth-logo .logo:hover {
+  transform: scale(1.05);
+}
+
+.auth-logo .logo-icon {
+  font-size: 3rem !important;
+  color: var(--button-primary);
+}
+
+/* Responsive tasarım için */
+@media (max-width: 768px) {
+  .auth-logo .logo {
+    font-size: 2rem;
+  }
+
+  .auth-logo .logo-icon {
+    font-size: 2.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-logo {
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-logo .logo {
+    font-size: 1.8rem;
+  }
+
+  .auth-logo .logo-icon {
+    font-size: 2.2rem !important;
+  }
+} 

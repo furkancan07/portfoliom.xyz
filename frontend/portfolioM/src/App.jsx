@@ -13,6 +13,7 @@ import ProfileEdit from './pages/ProfileEdit';
 import Profile from './pages/Profile';
 import AddProject from './pages/AddProject';
 import ProjectEdit from './pages/ProjectEdit';
+import ProjectDetail from './pages/ProjectDetail';
 
 import './App.css';
 import Projects from './pages/Projects';
@@ -22,22 +23,45 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(() => {
-    // localStorage'dan tema tercihini al
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme ? savedTheme === 'dark' : false;
+    return localStorage.getItem('theme') === 'dark';
   });
-  const [drawerOpen, setDrawerOpen] = useState(false); // Menü durumu
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user')); // Kullanıcı bilgilerini al
 
   useEffect(() => {
-    // Local storage'dan token'ı kontrol et
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
+    const checkUserProfile = async () => {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+
+      if (token && username) {
+        setIsLoggedIn(true);
+        try {
+          const response = await fetchUserData(username);
+          const userData = response.data;
+          
+          // Profil bilgilerinin boş olup olmadığını kontrol et
+          const isProfileEmpty = !userData.university && 
+                               !userData.job && 
+                               !userData.area && 
+                               !userData.aboutMe && 
+                               (!userData.skills || Object.keys(userData.skills).length === 0);
+
+          if (isProfileEmpty) {
+            navigate('/profile-update');
+          }
+        } catch (error) {
+          console.error('Kullanıcı bilgileri alınamadı:', error);
+          if (error.response?.status === 401) {
+            handleLogout();
+          }
+        }
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkUserProfile();
+  }, [navigate]);
 
   useEffect(() => {
     // Tema değiştiğinde localStorage'a kaydet ve body class'ını güncelle
@@ -87,6 +111,7 @@ function App() {
           <Route path="/add-project" element={<AddProject />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/edit-project/:projectId" element={<ProjectEdit />} />
+          <Route path="/project/:projectId" element={<ProjectDetail />} />
         </Routes>
       </div>
     </div>

@@ -2,9 +2,9 @@ body {
   background: var(--background-color);
   margin: 0;
   min-height: 100vh;
-  display: flex; /* Flexbox kullanarak ortalamak için */
-  justify-content: center; /* Yatayda ortala */
-  align-items: center; /* Dikeyde ortala */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .login-container {
@@ -12,7 +12,7 @@ body {
   width: 90%;
   padding: 2rem;
   text-align: center;
-  background-color: transparent; /* Arka planı şeffaf yap */
+  background-color: transparent;
   color: var(--text-color);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -147,7 +147,6 @@ input:focus {
   text-align: center;
 }
 
-/* Responsive tasarım için medya sorguları */
 @media (max-width: 768px) {
   .login-container {
     width: 90%;

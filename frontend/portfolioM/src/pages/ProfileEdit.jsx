@@ -146,7 +146,7 @@ function ProfileEdit() {
       setSuccessMessage('Profil başarıyla güncellendi!'); // Başarı mesajını ayarla
       setTimeout(() => {
         setSuccessMessage(null); // 3 saniye sonra mesajı kaldır
-        navigate('/'); // Ana sayfaya yönlendir
+        navigate('/'+localStorage.getItem('username')); // Ana sayfaya yönlendir
       }, 3000);
     } catch (error) {
       setError(error);
