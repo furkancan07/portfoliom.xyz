@@ -3,10 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { fetchUserData, getUserProjects, getUserProjectsByTag } from '../server/api.jsx';
 import '../Profile.css';
 import ProjectCard from '../components/ProjectCard';
-const pdfMake = (await import('pdfmake/build/pdfmake')).default;
-const pdfFonts = (await import('pdfmake/build/vfs_fonts')).default;
-import userLogo from '../assets/user.png'
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.vfs;
+import userLogo from '../assets/user.png'
 
 
 function Profile() {
