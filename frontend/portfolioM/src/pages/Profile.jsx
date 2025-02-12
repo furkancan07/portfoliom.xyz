@@ -7,6 +7,7 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.vfs;
 import userLogo from '../assets/user.png'
+import { TypeAnimation } from 'react-type-animation';
 
 
 function Profile() {
@@ -17,17 +18,28 @@ function Profile() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [selectedTag, setSelectedTag] = useState('ALL');
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const getUserData = async () => {
       try {
+        if (!username) {
+          setErrorMessage("Kullanıcı adı bulunamadı!");
+          setTimeout(() => navigate('/'), 2000);
+          return;
+        }
+
         const response = await fetchUserData(username);
         setUserData(response.data);
       } catch (error) {
-        setError(error);
         if (error.response?.status === 404) {
-          navigate('/');
+          setErrorMessage("Kullanıcı bulunamadı!");
+          setTimeout(() => navigate('/'), 2000);
+        } else {
+          setErrorMessage("Bir hata oluştu. Lütfen tekrar deneyin.");
+          setTimeout(() => navigate('/'), 2000);
         }
+        setError(error);
       }
     };
     
@@ -100,6 +112,17 @@ function Profile() {
       prevProjects.filter(project => project.id !== deletedProjectId)
     );
   };
+
+  // Loading ve error durumlarını göster
+  if (errorMessage) {
+    return (
+      <div className="error-container">
+        <div className="error-message">
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
 
   if (!userData) return <div className="loading">Yükleniyor...</div>;
 
@@ -220,8 +243,16 @@ function Profile() {
       <div className="profile-right">
         <div className="about-section">
           <div className="about-content">
-            <h2>HAKKIMDA</h2>
-            <p className="about-text">{userData.aboutMe}</p>
+            <h2 className="about-title">HAKKIMDA</h2>
+            <div className="about-text-container">
+              <TypeAnimation
+                sequence={[userData.aboutMe || '']}
+                wrapper="p"
+                speed={50}
+                repeat={1}
+                className="about-text"
+              />
+            </div>
           </div>
           <div className="stats-banner">
             <div className="stat-item">
@@ -238,50 +269,52 @@ function Profile() {
         <div className="projects-section">
           <h2>PROJELER</h2>
           <div className="project-filters">
-            <button 
-              className={`filter-btn ${selectedTag === 'WEB' ? 'active' : ''}`}
-              onClick={() => handleTagChange('WEB')}
-            >
-              Web
-            </button>
-            <button 
-              className={`filter-btn ${selectedTag === 'MOBILE' ? 'active' : ''}`}
-              onClick={() => handleTagChange('MOBILE')}
-            >
-              Mobil
-            </button>
-            <button 
-              className={`filter-btn ${selectedTag === 'GAME' ? 'active' : ''}`}
-              onClick={() => handleTagChange('GAME')}
-            >
-              Oyun
-            </button>
-            <button 
-              className={`filter-btn ${selectedTag === 'AI' ? 'active' : ''}`}
-              onClick={() => handleTagChange('AI')}
-            >
-              AI
-            </button>
-            <button 
-              className={`filter-btn ${selectedTag === 'OTHER' ? 'active' : ''}`}
-              onClick={() => handleTagChange('OTHER')}
-            >
-              Diğer
-            </button>
-            <button 
-              className={`filter-btn all-btn ${selectedTag === 'ALL' ? 'active' : ''}`}
-              onClick={() => handleTagChange('ALL')}
-            >
-              Hepsi
-            </button>
-            {userData.cvUrl ? (
+            <div className="filter-buttons">
               <button 
-                className="filter-btn cv-download"
-                onClick={generateCV}
+                className={`filter-btn ${selectedTag === 'ALL' ? 'active' : ''}`}
+                onClick={() => handleTagChange('ALL')}
               >
-                📄 CV İndir
+                Hepsi
               </button>
-            ) : null}
+              <button 
+                className={`filter-btn ${selectedTag === 'WEB' ? 'active' : ''}`}
+                onClick={() => handleTagChange('WEB')}
+              >
+                Web
+              </button>
+              <button 
+                className={`filter-btn ${selectedTag === 'MOBILE' ? 'active' : ''}`}
+                onClick={() => handleTagChange('MOBILE')}
+              >
+                Mobil
+              </button>
+              <button 
+                className={`filter-btn ${selectedTag === 'GAME' ? 'active' : ''}`}
+                onClick={() => handleTagChange('GAME')}
+              >
+                Oyun
+              </button>
+              <button 
+                className={`filter-btn ${selectedTag === 'AI' ? 'active' : ''}`}
+                onClick={() => handleTagChange('AI')}
+              >
+                AI
+              </button>
+              <button 
+                className={`filter-btn ${selectedTag === 'OTHER' ? 'active' : ''}`}
+                onClick={() => handleTagChange('OTHER')}
+              >
+                Diğer
+              </button>
+              {userData.cvUrl && (
+                <button 
+                  className="filter-btn cv-download"
+                  onClick={generateCV}
+                >
+                  📄 CV İndir
+                </button>
+              )}
+            </div>
           </div>
           <div className="projects-grid">
             {projects.map(project => (

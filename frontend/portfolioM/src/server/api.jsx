@@ -40,12 +40,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // JWT ile ilgili hatalar için kontrol
-    if (error.response?.status === 401 || 
-        error.response?.status === 403 || 
-        error.response?.data?.message?.toLowerCase().includes('token') ||
-        error.response?.data?.error?.toLowerCase().includes('token')) {
-      handleLogout();
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      // Token geçersiz, çıkış yap
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      localStorage.removeItem('user');
+      
+      // Login sayfasına yönlendir
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -253,4 +255,9 @@ export const deleteProject = async (projectId) => {
   } catch (error) {
     throw error.response?.data || error.message;
   }
+};
+
+export {
+  api as default,
+  // ... diğer export'lar
 };

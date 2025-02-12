@@ -43,6 +43,13 @@ function ProfileEdit() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const username = localStorage.getItem('username');
     const user = JSON.parse(localStorage.getItem('user')); // Mevcut kullanıcı bilgilerini al
 

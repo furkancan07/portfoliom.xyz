@@ -7,9 +7,18 @@ import GroupIcon from '@mui/icons-material/Group';
 import WorkIcon from '@mui/icons-material/Work';
 import { useNavigate } from 'react-router-dom';
 
-function Home() {
+const Home = () => {
   const navigate = useNavigate();
   
+  const handlePortfolioClick = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    navigate('/'+localStorage.getItem('username'));
+  };
+
   return (
     <div className="home-container">
       <motion.div 
@@ -81,7 +90,7 @@ function Home() {
           <p>Hemen projeni ekle ve yeteneklerini sergile</p>
         </div>
         
-        <div className="action-card" onClick={() => navigate('/'+localStorage.getItem('username'))}>
+        <div className="action-card" onClick={handlePortfolioClick}>
           <h3>Portfolyonu Keşfet</h3>
           <p>Profilini görüntüle ve etkini artır</p>
         </div>

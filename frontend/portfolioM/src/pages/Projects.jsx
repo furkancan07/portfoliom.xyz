@@ -11,6 +11,13 @@ const Projects = () => {
   const userId = JSON.parse(localStorage.getItem('user'))?.id;
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     fetchProjects();
   }, []);
 
