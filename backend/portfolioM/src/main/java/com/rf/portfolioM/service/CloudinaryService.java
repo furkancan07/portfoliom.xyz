@@ -41,7 +41,7 @@ public class CloudinaryService {
             options.put("crop", "scale");
             options.put("fetch_format", "auto");
         } else if (contentType.equals("application/pdf")) {
-            options.put("resource_type", "image");
+            options.put("resource_type", "raw");
         } else {
             throw new CloudinaryException(contentType);
         }

@@ -2,6 +2,7 @@ package com.rf.portfolioM.controller;
 
 import com.rf.portfolioM.dto.AddProjectRequest;
 import com.rf.portfolioM.dto.ProjectDto;
+import com.rf.portfolioM.dto.UpdateProjectRequest;
 import com.rf.portfolioM.model.enums.ProjectArea;
 import com.rf.portfolioM.service.ProjectService;
 import com.rf.portfolioM.utils.ApiPaths;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(ApiPaths.PROJECT)
+@CrossOrigin
 public class ProjectController {
     private final ProjectService service;
 
@@ -50,6 +52,12 @@ ResponseEntity<ApiResponse<List<ProjectDto>>> getProjectsByUserAndTag(@PathVaria
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable String id){
         return ResponseEntity.ok(service.delete(id));
+    }
+    // proje güncell
+    @PutMapping(ApiPaths.UPDATE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    ResponseEntity<ApiResponse<ProjectDto>> updateProject(@PathVariable String id,@RequestBody UpdateProjectRequest request){
+        return ResponseEntity.ok(service.updateProject(id,request));
     }
 
 

@@ -1,4 +1,4 @@
-package com.rf.portfolioM.validatiom;
+package com.rf.portfolioM.validation;
 
 import com.rf.portfolioM.service.UserService;
 import jakarta.validation.ConstraintValidator;

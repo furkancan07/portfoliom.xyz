@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.rf</groupId>
-	<artifactId>coin-analysis</artifactId>
+	<artifactId>portfolioM</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>coin-analysis</name>
+	<name>portfoliom</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>

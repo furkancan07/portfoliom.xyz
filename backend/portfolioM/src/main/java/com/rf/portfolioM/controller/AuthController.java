@@ -8,13 +8,11 @@ import com.rf.portfolioM.utils.ApiPaths;
 import com.rf.portfolioM.utils.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(ApiPaths.AUTH)
+@CrossOrigin
 public class AuthController {
     private final AuthService service;
     private final JwtService jwtService;

@@ -1,5 +1,6 @@
 package com.rf.portfolioM.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +42,7 @@ public class WebSecurity {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/v1/user/{id}", "/api/v1/user/username/*", "/api/v1/user/list",
                                 "/api/v1/user/create",
-                                "/api/v1/comment/project/**", "/api/v1/project/{id}", "/api/v1/user/5",
+                                "/api/v1/comment/project/**", "/api/v1/project/{id}", "/api/v1/user/5","api/v1/user/search/**",
                                 "/api/v1/project/list/**", "/api/v1/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**")
                         .permitAll()
@@ -50,7 +51,11 @@ public class WebSecurity {
                 .oauth2Login(a -> a.userInfoEndpoint(y -> y.userService(customOAuth2UserService))
                         .successHandler(successHandler)
 
-                )
+                ).exceptionHandling(ex->ex.authenticationEntryPoint(((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\": \"Unauthorized\"}");
+                })))
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(AbstractHttpConfigurer::disable)
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

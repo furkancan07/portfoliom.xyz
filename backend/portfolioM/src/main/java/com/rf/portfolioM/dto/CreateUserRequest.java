@@ -1,6 +1,6 @@
 package com.rf.portfolioM.dto;
-import com.rf.portfolioM.validatiom.UniqueEmail;
-import com.rf.portfolioM.validatiom.UniqueUser;
+import com.rf.portfolioM.validation.UniqueEmail;
+import com.rf.portfolioM.validation.UniqueUser;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

@@ -11,24 +11,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(ApiPaths.USER)
 @RequiredArgsConstructor
+@CrossOrigin
 public class UserController {
     private final UserService service;
     private final CloudinaryService cloudinaryService;
     // kullanıcı oluştur
 
     @PostMapping(value = ApiPaths.CREATE)
-     @Operation(
+    @Operation(
 
             summary = "Kullanıcı oluştur",
             description = "Bu endpoint, yeni bir kullanıcıyı profil fotoğrafı ile birlikte oluşturmanızı sağlar. \" +\n" +
@@ -40,12 +38,14 @@ public class UserController {
             @RequestPart(value = "file", required = false) MultipartFile file) {  // Fotoğraf parametresi
         return ResponseEntity.ok(service.createUser(request, file));
     }
+
     // kullanıcı sil
     @DeleteMapping(ApiPaths.DELETE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String id){
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String id) {
         return ResponseEntity.ok(service.deleteUser(id));
     }
+
     // kullanıcı güncelle
     @PutMapping(ApiPaths.USER_UPDATE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
@@ -64,37 +64,41 @@ public class UserController {
             "    LEETCODE,\n" +
             "    HACKERRANK,\n" +
             "    OTHER  bunlardan biri olmalı")
-    public ResponseEntity<ApiResponse<UserDto>> updateUser( @Valid @RequestBody UpdateUserRequest request){
+    public ResponseEntity<ApiResponse<UserDto>> updateUser(@Valid @RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(service.updateUser(request));
     }
 
     // profil fotosu güncelle
-    @PatchMapping(value = ApiPaths.UPDATE_PROFILE_PHOTO,consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = ApiPaths.UPDATE_PROFILE_PHOTO, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> updateProfilePhoto(@PathVariable String id,@RequestParam(value = "file",required = false) MultipartFile file){
-        return ResponseEntity.ok(service.updateProfilePhoto(id,file));
+    public ResponseEntity<ApiResponse<Void>> updateProfilePhoto(@RequestParam(value = "file", required = false) MultipartFile file) {
+        return ResponseEntity.ok(service.updateProfilePhoto(file));
     }
+
     // profil fotosunu sil
     @DeleteMapping(ApiPaths.DELETE_PROFILE_PHOTO)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> deleteProfilePhoto(@RequestParam("url") String url){
+    public ResponseEntity<ApiResponse<Void>> deleteProfilePhoto(@RequestParam("url") String url) {
         return ResponseEntity.ok(service.deleteProfilePhoto(url));
     }
+
     // cv ekle
-    @PatchMapping(value = ApiPaths.UPLOAD_CV,consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = ApiPaths.UPLOAD_CV, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> uploadCv(@RequestParam(value = "file",required = false) MultipartFile file){
+    public ResponseEntity<ApiResponse<Void>> uploadCv(@RequestParam(value = "file", required = false) MultipartFile file) {
         return ResponseEntity.ok(service.uploadCv(file));
     }
+
     // skill ekle
     @PatchMapping(ApiPaths.ADD_SKILL)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> addSkillForUser(@RequestBody AddSkillRequest request){
+    public ResponseEntity<ApiResponse<Void>> addSkillForUser(@RequestBody AddSkillRequest request) {
         return ResponseEntity.ok(service.addSkill(request));
     }
+
     // iletişim adresi ekle
     @PatchMapping(ApiPaths.ADD_CONTACT)
-    @Operation(summary = "iletişim adresi ekleme",description = "  GITHUB,\n" +
+    @Operation(summary = "iletişim adresi ekleme", description = "  GITHUB,\n" +
             "    LINKEDIN,\n" +
             "    GMAIL,\n" +
             "    WEBSITE,\n" +
@@ -108,36 +112,35 @@ public class UserController {
             "    MEDIUM,\n" +
             "    LEETCODE,\n" +
             "    HACKERRANK,\n" +
-            "    OTHER \n" +" mapte key değerleri bu değerler dışında değer almamalı"  )
+            "    OTHER \n" + " mapte key değerleri bu değerler dışında değer almamalı")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> addContactAddresses(@RequestBody AddContactAddressesRequest request, @PathVariable String id){
-        return ResponseEntity.ok(service.addContactAddresses(request,id));
+    public ResponseEntity<ApiResponse<Void>> addContactAddresses(@RequestBody AddContactAddressesRequest request) {
+        return ResponseEntity.ok(service.addContactAddresses(request));
     }
 
     // useri getir username
     @GetMapping(ApiPaths.USER_BY_USERNAME)
-    ResponseEntity<ApiResponse<UserDto>> findByUserName(@PathVariable String username){
+    ResponseEntity<ApiResponse<UserDto>> findByUserName(@PathVariable String username) {
         return ResponseEntity.ok(service.getUserByUsername(username));
     }
 
     // useri getir id
     @GetMapping(ApiPaths.ID)
-    ResponseEntity<ApiResponse<UserDto>> findByUserId(@PathVariable String id){
+    ResponseEntity<ApiResponse<UserDto>> findByUserId(@PathVariable String id) {
         return ResponseEntity.ok(service.getUserById(id));
     }
+
     // user listesi
     @GetMapping(ApiPaths.LIST)
-    public ResponseEntity<ApiResponse<List<UserDto>>> getUsers(){
+    public ResponseEntity<ApiResponse<List<UserDto>>> getUsers() {
         return ResponseEntity.ok(service.getUsers());
     }
 
-    @GetMapping()
-    public Map<String, Object> getUser(Authentication authentication) {
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        return oAuth2User.getAttributes();
+
+    // isme göre user arama
+    @GetMapping(ApiPaths.SEARCH_USER)
+    ResponseEntity<ApiResponse<List<UserInformation>>> searchUser(@PathVariable String username){
+        return ResponseEntity.ok(service.searchUser(username));
     }
-
-
-
 
 }

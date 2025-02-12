@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -57,8 +58,8 @@ public class UserService implements UserDetailsService {
         return ApiResponse.ok("Kullanici silindi");
     }
 
-    public ApiResponse<Void> updateProfilePhoto(String id, MultipartFile file) {
-        User user=findById(id);
+    public ApiResponse<Void> updateProfilePhoto(MultipartFile file) {
+        User user=manager.getAuthenticatedUser();
         String photoUrl=getUrl(file);
         cloudinaryService.deleteFile(user.getProfilePhotoUrl());
         user.setProfilePhotoUrl(photoUrl);
@@ -91,6 +92,8 @@ public class UserService implements UserDetailsService {
 
     public ApiResponse<UserDto> updateUser( UpdateUserRequest request) {
         User user=manager.getAuthenticatedUser();
+        user.setName(request.getName());
+        user.setSurname(request.getSurname());
         user.setUniversity(request.getUniversity());
         user.setJob(request.getJob());
         user.setArea(request.getArea());
@@ -129,8 +132,8 @@ public class UserService implements UserDetailsService {
         return ApiResponse.ok("Yetenekler eklendi");
     }
 
-    public ApiResponse<Void> addContactAddresses(AddContactAddressesRequest request, String id) {
-        User user=findById(id);
+    public ApiResponse<Void> addContactAddresses(AddContactAddressesRequest request) {
+        User user=manager.getAuthenticatedUser();
         user.setContactAddresses(request.getContactAddresses());
         repository.save(user);
         return ApiResponse.ok("İletişim adresleri eklendi");
@@ -155,5 +158,10 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return findByUserName(username);
+    }
+
+    public ApiResponse<List<UserInformation>> searchUser(String username) {
+      List<User> users=repository.findUsersByUsername(username);
+      return ApiResponse.ok("Kullanıcılar",users.stream().map(converter::convertUserInformation).collect(Collectors.toList()));
     }
 }

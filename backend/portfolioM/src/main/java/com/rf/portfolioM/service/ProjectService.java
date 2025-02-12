@@ -2,6 +2,7 @@ package com.rf.portfolioM.service;
 
 import com.rf.portfolioM.dto.AddProjectRequest;
 import com.rf.portfolioM.dto.ProjectDto;
+import com.rf.portfolioM.dto.UpdateProjectRequest;
 import com.rf.portfolioM.dto.converter.DtoConverter;
 import com.rf.portfolioM.exception.FailedToFieldException;
 import com.rf.portfolioM.exception.NotFoundException;
@@ -76,5 +77,16 @@ private final UserIdentityManager manager;
 
     protected Project findById(String projectId) {
        return repository.findById(projectId).orElseThrow(()->new NotFoundException("Proje"));
+    }
+
+    public ApiResponse<ProjectDto> updateProject(String id, UpdateProjectRequest request) {
+        Project project=findById(id);
+        project.setProjectArea(request.getProjectArea());
+        project.setName(request.getName());
+        project.setProjectLink(request.getProjectLink());
+        project.setSkills(request.getSkills());
+        project.setDescription(request.getDescription());
+        repository.save(project);
+        return ApiResponse.ok("Proje güncellendi",converter.convertProject(project));
     }
 }

@@ -10,11 +10,11 @@ public class ApiPaths {
     public static final String DELETE = "delete/{id}";
     public static final String UPDATE = "update/{id}";
     public static final String USER_UPDATE = "update";
-    public static final String UPDATE_PROFILE_PHOTO = "profile-photo/" + UPDATE;
+    public static final String UPDATE_PROFILE_PHOTO = "profile-photo/" + USER_UPDATE;
     public static final String DELETE_PROFILE_PHOTO = "profile-photo/" + "delete";
     public static final String UPLOAD_CV = "upload-cv";
     public static final String ADD_SKILL = "add-skill";
-    public static final String ADD_CONTACT = "add_contact_addresses/{id}";
+    public static final String ADD_CONTACT = "add_contact_addresses";
     public static final String USER_BY_USERNAME = "username/{username}";
     public static final String ID = "{id}";
     public static final String PROJECT_BY_USER = "list/project/{userId}";
@@ -24,4 +24,5 @@ public class ApiPaths {
 
     public static final String GET_COMMENTS_BY_PROJECT = "project/{id}";
     public static final String LOGIN = "login";
+    public static final String SEARCH_USER = "search/{username}";
 }

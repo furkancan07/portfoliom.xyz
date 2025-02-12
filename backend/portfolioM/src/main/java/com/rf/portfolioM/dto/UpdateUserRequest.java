@@ -11,6 +11,8 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserRequest {
+    private String name;
+    private String surname;
     private String university;
     private String job;
     private String area;
