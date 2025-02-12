@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+const url = "https://portfoliom-is7q.onrender.com";
 //const url="http://localhost:8080"
 const API_URL = url+'/api/v1';
 
