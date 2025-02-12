@@ -11,12 +11,10 @@ export default defineConfig({
     proxy: {
       '/api': 'https://portfoliom-is7q.onrender.com', // Bu proxy ayarı yerel geliştirme için geçerli
     },
-    // Vercel'de, `server` kısmı genellikle yerel geliştirme için olduğu için
-    // burada proxy ayarlarını koruyabilirsiniz.
   },
 
   build: {
-    target: 'es2020',  // Vercel ile uyumlu olması için target'ı güncel tutmak gerekebilir
+    target: 'es2022',  // ES2022 olarak güncelledik
     outDir: 'dist',  // Vercel, dist klasörünü bekler
   },
 
