@@ -41,7 +41,7 @@ function Login({ onLogin }) {
   };
 
   const handleGitHubLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/github'; // GitHub OAuth2 yönlendirmesi
+    window.location.href = 'https://portfoliom-is7q.onrender.com/oauth2/authorization/github'; // GitHub OAuth2 yönlendirmesi
   };
 
   return (
