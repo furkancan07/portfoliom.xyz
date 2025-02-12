@@ -4,7 +4,7 @@ import axios from 'axios';
 const isDevelopment = import.meta.env.DEV;
 const baseURL = isDevelopment 
   ? '/api/v1'  // Development'da proxy kullan
-  : 'https://portfoliom-is7q.onrender.com/api/v1'; // Production URL
+  : '/api/v1'; // Production'da da proxy kullan
 
 // Axios instance oluştur
 const api = axios.create({
