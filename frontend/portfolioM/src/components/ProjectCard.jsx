@@ -23,29 +23,7 @@ const ProjectCard = ({ project, onDelete }) => {
     );
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm('Bu projeyi silmek istediğinizden emin misiniz?')) {
-      return;
-    }
-
-    try {
-      setIsDeleting(true);
-      await deleteProject(project.id);
-      
-      // Parent komponenti bilgilendir
-      if (onDelete) {
-        onDelete(project.id);
-      }
-
-      // Başarı mesajı göster
-      alert('Proje başarıyla silindi');
-    } catch (error) {
-      console.error('Proje silme hatası:', error);
-      alert(error.message || 'Proje silinirken bir hata oluştu');
-    } finally {
-      setIsDeleting(false);
-    }
-  };
+ 
 
   return (
     <>
@@ -102,13 +80,7 @@ const ProjectCard = ({ project, onDelete }) => {
             >
               Git
             </a>
-            <button
-              className="project-link delete"
-              onClick={handleDelete}
-              disabled={isDeleting}
-            >
-              {isDeleting ? 'Siliniyor...' : 'Sil'}
-            </button>
+           
           </div>
         </div>
       </div>

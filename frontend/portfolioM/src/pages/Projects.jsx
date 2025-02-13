@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserProjects, deleteProject } from '../server/api';
+import { ReactSortable } from "react-sortablejs";
+import { toast, ToastContainer } from 'react-toastify';
+import { getUserProjects, deleteProject, reorderProjects } from '../server/api';
+import 'react-toastify/dist/ReactToastify.css';
 import './Projects.css';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasChanges, setHasChanges] = useState(false);
   const navigate = useNavigate();
   const userId = JSON.parse(localStorage.getItem('user'))?.id;
 
@@ -51,11 +55,46 @@ const Projects = () => {
     }
   };
 
+  const handleSortEnd = () => {
+    setHasChanges(true);
+  };
+
+  const saveNewOrder = async () => {
+    try {
+      await reorderProjects(projects.map(project => project.id));
+      setHasChanges(false);
+      toast.success('Proje sıralaması başarıyla güncellendi!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      console.error('Proje sıralama hatası:', error);
+      toast.error('Sıralama güncellenirken bir hata oluştu', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      fetchProjects();
+    }
+  };
+
   if (loading) return <div className="loading">Yükleniyor...</div>;
   if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="projects-page">
+      <ToastContainer />
       <div className="projects-header">
         <h1>Projelerim</h1>
         <button 
@@ -66,7 +105,20 @@ const Projects = () => {
         </button>
       </div>
 
-      <div className="projects-list">
+      <div className="projects-info">
+        <p>
+          <i className="info-icon">ℹ️</i>
+          Projeleri sürükleyip bırakarak sıralayabilirsiniz. Sıralamayı kaydetmek için aşağıdaki butonu kullanın.
+        </p>
+      </div>
+
+      <ReactSortable 
+        list={projects}
+        setList={setProjects}
+        onEnd={handleSortEnd}
+        animation={200}
+        className="projects-list"
+      >
         {projects.map(project => (
           <div key={project.id} className="project-item">
             <div className="project-item-image">
@@ -103,19 +155,30 @@ const Projects = () => {
             </div>
           </div>
         ))}
+      </ReactSortable>
 
-        {projects.length === 0 && (
-          <div className="no-projects">
-            <p>Henüz proje eklenmemiş</p>
-            <button 
-              className="add-project-btn"
-              onClick={() => navigate('/add-project')}
-            >
-              İlk Projeni Ekle
-            </button>
-          </div>
-        )}
-      </div>
+      {hasChanges && (
+        <div className="order-actions">
+          <button 
+            className="save-order-btn"
+            onClick={saveNewOrder}
+          >
+            Sıralamayı Güncelle
+          </button>
+        </div>
+      )}
+
+      {projects.length === 0 && (
+        <div className="no-projects">
+          <p>Henüz proje eklenmemiş</p>
+          <button 
+            className="add-project-btn"
+            onClick={() => navigate('/add-project')}
+          >
+            İlk Projeni Ekle
+          </button>
+        </div>
+      )}
     </div>
   );
 };

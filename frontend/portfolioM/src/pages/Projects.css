@@ -47,6 +47,8 @@
   border-radius: 12px;
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
+  cursor: move;
+  user-select: none;
 }
 
 .project-item:hover {
@@ -145,6 +147,15 @@
   opacity: 0.7;
 }
 
+.sortable-ghost {
+  opacity: 0.5;
+  background-color: #f0f0f0;
+}
+
+.sortable-drag {
+  cursor: grabbing;
+}
+
 /* Responsive tasarım */
 @media (max-width: 768px) {
   .project-item {
@@ -162,4 +173,46 @@
     padding-top: 1rem;
     border-top: 1px solid var(--border-color);
   }
+}
+
+.projects-info {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.projects-info p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+}
+
+.info-icon {
+  font-style: normal;
+}
+
+.order-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.save-order-btn {
+  background: var(--button-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.save-order-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
 } 

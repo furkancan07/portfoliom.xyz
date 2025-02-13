@@ -257,6 +257,16 @@ export const deleteProject = async (projectId) => {
   }
 };
 
+export const reorderProjects = (projectIds) => {
+  return axios.put(`${baseURL}/project/reorder`, {
+    projectIds: projectIds
+  }, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  });
+};
+
 export {
   api as default,
   // ... diğer export'lar
