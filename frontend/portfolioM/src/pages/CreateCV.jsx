@@ -92,29 +92,32 @@ const CreateCV = () => {
 
     const docDefinition = {
       pageSize: 'A4',
-      pageMargins: [40, 40, 40, 40],
+      pageMargins: [72, 40, 72, 40],
       content: [
+        profileImageBase64 ? {
+          image: profileImageBase64,
+          width: 100,
+          height: 100,
+          alignment: 'center',
+          margin: [0, 20, 0, 20],
+          borderRadius: 50
+        } : {},
         {
-          stack: [
-            {
-              text: `${userData.name} ${userData.surname}`,
-              style: 'header',
-              alignment: 'center'
-            },
-            {
-              text: userData.job || '',
-              style: 'subheader',
-              alignment: 'center',
-              margin: [0, 5]
-            },
-            {
-              text: userData.area || '',
-              style: 'subheader',
-              alignment: 'center',
-              color: '#666',
-              margin: [0, 0, 0, 20]
-            }
-          ]
+          text: `${userData.name} ${userData.surname}`,
+          style: 'header',
+          alignment: 'center'
+        },
+        {
+          text: userData.job,
+          style: 'jobTitle',
+          alignment: 'center',
+          margin: [0, 5, 0, 0]
+        },
+        {
+          text: userData.area,
+          style: 'jobTitle',
+          alignment: 'center',
+          margin: [0, 5, 0, 20]
         },
         {
           canvas: [
@@ -122,131 +125,105 @@ const CreateCV = () => {
               type: 'line',
               x1: 0,
               y1: 0,
-              x2: 515,
+              x2: 450,
               y2: 0,
-              lineWidth: 2,
+              lineWidth: 1,
               lineColor: '#ff4d4d'
             }
           ],
-          margin: [0, 10]
+          margin: [0, 0, 0, 20]
+        },
+        {
+          text: t.about,
+          style: 'sectionHeader',
+          margin: [0, 0, 0, 10]
+        },
+        {
+          text: userData.aboutMe || '',
+          style: 'normalText',
+          margin: [0, 0, 0, 20]
+        },
+        {
+          text: t.education,
+          style: 'sectionHeader',
+          margin: [0, 0, 0, 10]
+        },
+        {
+          text: userData.university || '',
+          style: 'normalText',
+          margin: [0, 0, 0, 20]
+        },
+        {
+          text: t.skills,
+          style: 'sectionHeader',
+          margin: [0, 0, 0, 10]
         },
         {
           columns: [
-            // Sol kolon - Profil fotoğrafı ve iletişim
             {
-              width: '30%',
-              stack: [
-                profileImageBase64 ? {
-                  image: profileImageBase64,
-                  width: 100,
-                  height: 100,
-                  alignment: 'center',
-                  margin: [0, 0, 0, 20]
-                } : {},
-                {
-                  text: t.contact,
-                  style: 'sectionHeader',
-                  margin: [0, 10, 0, 10]
-                },
-                ...Object.entries(userData.contactAddresses || {})
-                  .filter(([_, url]) => url)
-                  .map(([platform, url]) => ({
-                    text: platform,
-                    link: url,
-                    style: 'link',
-                    margin: [0, 5]
-                  }))
-              ]
+              ul: Object.entries(userData.skills || {}).map(([skill, level]) => ({
+                text: `${skill} (${level})`,
+                style: 'skillItem'
+              }))
+            }
+          ],
+          margin: [0, 0, 0, 20]
+        },
+        {
+          text: t.projects,
+          style: 'sectionHeader',
+          margin: [0, 0, 0, 10]
+        },
+        ...projects.map(project => ({
+          stack: [
+            {
+              text: project.name,
+              style: 'projectTitle',
+              margin: [0, 5, 0, 5]
             },
-            // Sağ kolon - Ana içerik
             {
-              width: '70%',
-              stack: [
-                {
-                  text: t.about,
-                  style: 'sectionHeader'
-                },
-                {
-                  text: userData.aboutMe || '',
-                  style: 'normalText',
-                  margin: [0, 0, 0, 20]
-                },
-                {
-                  text: t.education,
-                  style: 'sectionHeader'
-                },
-                {
-                  text: userData.university || '',
-                  style: 'normalText',
-                  margin: [0, 0, 0, 20]
-                },
-                {
-                  text: t.skills,
-                  style: 'sectionHeader'
-                },
-                {
-                  ul: Object.entries(userData.skills || {}).map(([skill, level]) => ({
-                    text: `${skill} (${level})`,
-                    style: 'skillItem'
-                  })),
-                  margin: [0, 0, 0, 20]
-                },
-                {
-                  text: t.projects,
-                  style: 'sectionHeader'
-                },
-                ...projects.map(project => ({
-                  stack: [
-                    {
-                      text: project.name,
-                      style: 'projectTitle',
-                      margin: [0, 5, 0, 5]
-                    },
-                    {
-                      text: `${t.technologies}: ${project.skills?.join(', ')}`,
-                      style: 'normalText',
-                      margin: [0, 5]
-                    },
-                    {
-                      text: t.viewProject,
-                      link: project.projectLink,
-                      style: 'link',
-                      margin: [0, 0, 0, 10]
-                    }
-                  ],
-                  margin: [0, 0, 0, 15]
-                }))
-              ]
+              text: `${t.technologies}: ${project.skills?.join(', ')}`,
+              style: 'normalText',
+              margin: [0, 0, 0, 5]
+            },
+            {
+              text: t.viewProject,
+              link: project.projectLink,
+              style: 'link',
+              margin: [0, 0, 0, 15]
             }
           ]
-        }
+        }))
       ],
       styles: {
         header: {
           fontSize: 24,
           bold: true,
-          color: '#1a1a1a',
+          color: '#000000',
           margin: [0, 0, 0, 5]
         },
-        subheader: {
+        jobTitle: {
           fontSize: 14,
-          color: '#666'
+          color: '#666666',
+          italics: true
         },
         sectionHeader: {
-          fontSize: 16,
+          fontSize: 14,
           bold: true,
-          color: '#ff4d4d',
-          margin: [0, 10, 0, 10]
+          color: '#000000',
+          decoration: 'underline',
+          decorationStyle: 'solid',
+          decorationColor: '#ff4d4d'
         },
         normalText: {
           fontSize: 12,
-          color: '#444',
+          color: '#444444',
           lineHeight: 1.4
         },
         projectTitle: {
-          fontSize: 13,
+          fontSize: 12,
           bold: true,
-          color: '#1a1a1a'
+          color: '#000000'
         },
         link: {
           fontSize: 12,
@@ -255,7 +232,7 @@ const CreateCV = () => {
         },
         skillItem: {
           fontSize: 12,
-          color: '#444',
+          color: '#444444',
           margin: [0, 2]
         }
       },
