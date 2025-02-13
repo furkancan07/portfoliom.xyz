@@ -87,26 +87,26 @@ const ProjectDetail = () => {
             )}
           </div>
 
-          <div className="description-section">
-            
-            <h3>{project.description}</h3>
-          </div>
-
-          <div className="technologies-section">
-            
-            <div className="tech-stack">
-              {project.skills.map((skill, index) => (
-                <span key={index} className="tech-tag">
-                  {skill}
-                </span>
-              ))}
+          <div className="content-section">
+            <div className="description-section">
+              <h3>{project.description}</h3>
             </div>
-          </div>
 
-          <Link to={project.projectLink} target="_blank" className="project-link">
-            <span>Projeyi Görüntüle</span>
-            <span className="arrow">→</span>
-          </Link>
+            <div className="technologies-section">
+              <div className="tech-stack">
+                {project.skills.map((skill, index) => (
+                  <span key={index} className="tech-tag">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <Link to={project.projectLink} target="_blank" className="project-link">
+              <span>Projeyi Görüntüle</span>
+              <span className="arrow">→</span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
