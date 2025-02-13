@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Drawer, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Drawer, List, ListItem, ListItemText, Divider, ListItemIcon } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { fetchUserData } from '../server/api';
 import './DrawerMenu.css';
 import defaultAvatar from '../assets/user.png'
+import HomeIcon from '@mui/icons-material/Home';
+import PersonIcon from '@mui/icons-material/Person';
+import EditIcon from '@mui/icons-material/Edit';
+import FolderIcon from '@mui/icons-material/Folder';
+import DescriptionIcon from '@mui/icons-material/Description';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 
 const DrawerMenu = ({ open, onClose, isLoggedIn, handleLogout }) => {
@@ -82,19 +88,27 @@ const DrawerMenu = ({ open, onClose, isLoggedIn, handleLogout }) => {
 
         <List className="drawer-list">
           <ListItem button className="drawer-item" onClick={() => handleNavigation('/')}>
+            <ListItemIcon><HomeIcon /></ListItemIcon>
             <ListItemText primary="Ana Sayfa" />
           </ListItem>
 
           {isLoggedIn ? (
             <>
               <ListItem button className="drawer-item" onClick={() => handleNavigation(`/${username}`)}>
+                <ListItemIcon><PersonIcon /></ListItemIcon>
                 <ListItemText primary="Profilim" />
               </ListItem>
               <ListItem button className="drawer-item" onClick={() => handleNavigation('/profile-update')}>
+                <ListItemIcon><EditIcon /></ListItemIcon>
                 <ListItemText primary="Profil Düzenle" />
               </ListItem>
               <ListItem button className="drawer-item" onClick={() => handleNavigation('/projects')}>
-                <ListItemText primary="Projeler" />
+                <ListItemIcon><FolderIcon /></ListItemIcon>
+                <ListItemText primary="Projelerim" />
+              </ListItem>
+              <ListItem button className="drawer-item" onClick={() => handleNavigation('/create-cv')}>
+                <ListItemIcon><DescriptionIcon /></ListItemIcon>
+                <ListItemText primary="CV Oluştur" />
               </ListItem>
             </>
           ) : (
@@ -123,6 +137,7 @@ const DrawerMenu = ({ open, onClose, isLoggedIn, handleLogout }) => {
                 handleLogout();
                 onClose(); // Çıkış yaptıktan sonra drawer'ı kapat
               }}>
+                <ListItemIcon><ExitToAppIcon /></ListItemIcon>
                 <ListItemText primary="Çıkış Yap" />
               </ListItem>
             </List>

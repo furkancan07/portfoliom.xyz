@@ -17,6 +17,7 @@ import ProjectDetail from './pages/ProjectDetail';
 
 import './App.css';
 import Projects from './pages/Projects';
+import CreateCV from './pages/CreateCV';
 
 
 function App() {
@@ -112,6 +113,7 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/edit-project/:projectId" element={<ProjectEdit />} />
           <Route path="/project/:projectId" element={<ProjectDetail />} />
+          <Route path="/create-cv" element={<CreateCV />} />
         </Routes>
       </div>
     </div>

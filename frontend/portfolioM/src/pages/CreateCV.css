@@ -1,0 +1,323 @@
+.create-cv-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--card-background);
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cv-preview {
+  background: white;
+  padding: 4rem;
+  border-radius: 12px;
+  margin: 2rem auto;
+  color: #333;
+  max-width: 800px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dekoratif kenar şeridi */
+.cv-preview::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--button-primary), #ff8080);
+}
+
+.cv-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.cv-title {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.cv-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: var(--button-primary);
+  margin: 1rem auto;
+}
+
+.cv-title h2 {
+  font-size: 2.8rem;
+  color: #1a1a1a;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.cv-title p {
+  color: #555;
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+.cv-photo {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 1.5rem;
+  border: 3px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.cv-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cv-section {
+  margin: 2rem 0;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.cv-section:last-child {
+  border-bottom: none;
+}
+
+.cv-section h3 {
+  font-size: 1.4rem;
+  color: #1a1a1a;
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.5px;
+}
+
+.cv-section h3::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 2px;
+  background: var(--button-primary);
+  margin-right: 10px;
+}
+
+.cv-section p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #444;
+  margin: 0;
+}
+
+.cv-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.cv-skill-item {
+  background: #f8f9fa;
+  padding: 0.6rem 1.2rem;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  color: #444;
+  border: 1px solid #eee;
+  transition: all 0.3s ease;
+}
+
+.cv-skill-item:hover {
+  background: var(--button-primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.cv-projects {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.cv-project-item {
+  background: #f8f9fa;
+  padding: 1.8rem;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  transition: all 0.3s ease;
+}
+
+.cv-project-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.cv-project-item h4 {
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  margin: 0 0 0.8rem 0;
+  font-weight: 600;
+}
+
+.cv-project-item p {
+  margin-bottom: 1rem;
+}
+
+.cv-project-item a {
+  color: var(--button-primary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.cv-project-item a:hover {
+  color: #ff4d4d;
+  transform: translateX(5px);
+}
+
+.cv-contacts {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.cv-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.cv-contact-item:hover {
+  background: #f0f0f0;
+  transform: translateX(5px);
+}
+
+.cv-actions {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.generate-cv-btn,
+.back-btn {
+  padding: 1rem 2.5rem;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.generate-cv-btn {
+  background: var(--button-primary);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3);
+}
+
+.back-btn {
+  background: transparent;
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+}
+
+.generate-cv-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 77, 77, 0.4);
+}
+
+.back-btn:hover {
+  background: rgba(255, 77, 77, 0.1);
+  border-color: var(--button-primary);
+}
+
+@media (max-width: 768px) {
+  .create-cv-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .cv-preview {
+    padding: 2rem;
+  }
+
+  .cv-title h2 {
+    font-size: 2.2rem;
+  }
+
+  .cv-photo {
+    width: 120px;
+    height: 120px;
+  }
+
+  .cv-section h3 {
+    font-size: 1.2rem;
+  }
+
+  .cv-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .generate-cv-btn,
+  .back-btn {
+    width: 100%;
+    padding: 0.8rem;
+  }
+}
+
+.cv-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.language-selector {
+  display: flex;
+  gap: 1rem;
+}
+
+.lang-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lang-btn.active {
+  background: var(--button-primary);
+  color: white;
+  border-color: var(--button-primary);
+}
+
+.lang-btn:hover {
+  background: rgba(255, 77, 77, 0.1);
+}
+
+.lang-btn.active:hover {
+  background: var(--button-primary);
+  opacity: 0.9;
+} 

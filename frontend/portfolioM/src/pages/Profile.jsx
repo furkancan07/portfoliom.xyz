@@ -32,12 +32,11 @@ function Profile() {
         const response = await fetchUserData(username);
         setUserData(response.data);
       } catch (error) {
+        // API hatası durumunda sadece hata mesajını göster, çıkış yapma
         if (error.response?.status === 404) {
           setErrorMessage("Kullanıcı bulunamadı!");
-          setTimeout(() => navigate('/'), 2000);
         } else {
-          setErrorMessage("Bir hata oluştu. Lütfen tekrar deneyin.");
-          setTimeout(() => navigate('/'), 2000);
+          setErrorMessage(error.response?.data?.message || "Bir hata oluştu. Lütfen tekrar deneyin.");
         }
         setError(error);
       }
@@ -80,7 +79,8 @@ function Profile() {
   const generateCV = async () => {
     try {
       if (!userData.cvUrl) {
-        alert("CV URL bulunamadı!");
+        // CV yüklenmemişse kullanıcıyı bilgilendir
+        alert("Henüz CV yüklenmemiş!");
         return;
       }
 
@@ -95,7 +95,7 @@ function Profile() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${userData.name}_${userData.surname}_CV.pdf`; // PDF uzantısı ile kaydet
+      a.download = `${userData.name}_${userData.surname}_CV.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
