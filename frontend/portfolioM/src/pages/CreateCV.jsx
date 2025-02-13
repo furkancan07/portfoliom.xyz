@@ -7,6 +7,16 @@ pdfMake.vfs = pdfFonts.vfs;
 import './CreateCV.css';
 import userLogo from '../assets/user.png';
 
+// Helvetica yerine Roboto fontunu kullanalım çünkü pdfmake varsayılan olarak bunu destekliyor
+pdfMake.fonts = {
+  Roboto: {
+    normal: 'Roboto-Regular.ttf',
+    bold: 'Roboto-Medium.ttf',
+    italics: 'Roboto-Italic.ttf',
+    bolditalics: 'Roboto-MediumItalic.ttf'
+  }
+};
+
 const CreateCV = () => {
   const [userData, setUserData] = useState(null);
   const [projects, setProjects] = useState([]);
@@ -92,115 +102,146 @@ const CreateCV = () => {
 
     const docDefinition = {
       pageSize: 'A4',
-      pageMargins: [72, 40, 72, 40],
+      pageMargins: [40, 40, 40, 40],
       content: [
-        profileImageBase64 ? {
-          image: profileImageBase64,
-          width: 100,
-          height: 100,
-          alignment: 'center',
-          margin: [0, 20, 0, 20],
-          borderRadius: 50
-        } : {},
-        {
-          text: `${userData.name} ${userData.surname}`,
-          style: 'header',
-          alignment: 'center'
-        },
-        {
-          text: userData.job,
-          style: 'jobTitle',
-          alignment: 'center',
-          margin: [0, 5, 0, 0]
-        },
-        {
-          text: userData.area,
-          style: 'jobTitle',
-          alignment: 'center',
-          margin: [0, 5, 0, 20]
-        },
+        // Dekoratif sol kenar çizgisi
         {
           canvas: [
             {
-              type: 'line',
-              x1: 0,
-              y1: 0,
-              x2: 450,
-              y2: 0,
-              lineWidth: 1,
-              lineColor: '#ff4d4d'
+              type: 'rect',
+              x: 0,
+              y: 0,
+              w: 8,
+              h: 750,
+              color: '#2c3e50',
+              linearGradient: ['#2c3e50', '#3498db']
             }
           ],
-          margin: [0, 0, 0, 20]
+          absolutePosition: { x: 40, y: 40 }
         },
+        // Ana içerik
         {
-          text: t.about,
-          style: 'sectionHeader',
-          margin: [0, 0, 0, 10]
-        },
-        {
-          text: userData.aboutMe || '',
-          style: 'normalText',
-          margin: [0, 0, 0, 20]
-        },
-        {
-          text: t.education,
-          style: 'sectionHeader',
-          margin: [0, 0, 0, 10]
-        },
-        {
-          text: userData.university || '',
-          style: 'normalText',
-          margin: [0, 0, 0, 20]
-        },
-        {
-          text: t.skills,
-          style: 'sectionHeader',
-          margin: [0, 0, 0, 10]
-        },
-        {
+          margin: [40, 0, 0, 0],
           columns: [
+            // Sol kolon - Profil ve İletişim
             {
-              ul: Object.entries(userData.skills || {}).map(([skill, level]) => ({
-                text: `${skill} (${level})`,
-                style: 'skillItem'
-              }))
-            }
-          ],
-          margin: [0, 0, 0, 20]
-        },
-        {
-          text: t.projects,
-          style: 'sectionHeader',
-          margin: [0, 0, 0, 10]
-        },
-        ...projects.map(project => ({
-          stack: [
-            {
-              text: project.name,
-              style: 'projectTitle',
-              margin: [0, 5, 0, 5]
+              width: '30%',
+              stack: [
+                // Profil Fotoğrafı
+                profileImageBase64 ? {
+                  image: profileImageBase64,
+                  width: 120,
+                  height: 120,
+                  alignment: 'center',
+                  borderRadius: 60,
+                  margin: [0, 0, 0, 20]
+                } : {},
+                // İletişim Bilgileri
+                {
+                  text: t.contact,
+                  style: 'sectionHeader',
+                  margin: [0, 20, 0, 10]
+                },
+                ...Object.entries(userData.contactAddresses || {})
+                  .filter(([_, url]) => url)
+                  .map(([platform, url]) => ({
+                    text: platform,
+                    link: url,
+                    style: 'link',
+                    margin: [0, 5]
+                  }))
+              ]
             },
+            // Sağ kolon - Ana Bilgiler
             {
-              text: `${t.technologies}: ${project.skills?.join(', ')}`,
-              style: 'normalText',
-              margin: [0, 0, 0, 5]
-            },
-            {
-              text: t.viewProject,
-              link: project.projectLink,
-              style: 'link',
-              margin: [0, 0, 0, 15]
+              width: '70%',
+              stack: [
+                {
+                  text: `${userData.name} ${userData.surname}`,
+                  style: 'header',
+                  margin: [0, 0, 0, 5]
+                },
+                {
+                  text: userData.job || '',
+                  style: 'jobTitle',
+                  margin: [0, 0, 0, 5]
+                },
+                {
+                  text: userData.area || '',
+                  style: 'jobTitle',
+                  margin: [0, 0, 0, 20]
+                },
+                {
+                  text: t.about,
+                  style: 'sectionHeader',
+                  margin: [0, 0, 0, 10]
+                },
+                {
+                  text: userData.aboutMe || '',
+                  style: 'normalText',
+                  margin: [0, 0, 0, 20]
+                },
+                {
+                  text: t.education,
+                  style: 'sectionHeader',
+                  margin: [0, 0, 0, 10]
+                },
+                {
+                  text: userData.university || '',
+                  style: 'normalText',
+                  margin: [0, 0, 0, 20]
+                },
+                {
+                  text: t.skills,
+                  style: 'sectionHeader',
+                  margin: [0, 0, 0, 10]
+                },
+                {
+                  columns: [
+                    {
+                      ul: Object.entries(userData.skills || {}).map(([skill, level]) => ({
+                        text: `${skill} (${level})`,
+                        style: 'skillItem'
+                      }))
+                    }
+                  ],
+                  margin: [0, 0, 0, 20]
+                },
+                {
+                  text: t.projects,
+                  style: 'sectionHeader',
+                  margin: [0, 0, 0, 10]
+                },
+                ...projects.map(project => ({
+                  stack: [
+                    {
+                      text: project.name,
+                      style: 'projectTitle',
+                      margin: [0, 5, 0, 5]
+                    },
+                    {
+                      text: `${t.technologies}: ${project.skills?.join(', ')}`,
+                      style: 'normalText',
+                      margin: [0, 0, 0, 5]
+                    },
+                    {
+                      text: t.viewProject,
+                      link: project.projectLink,
+                      style: 'link',
+                      margin: [0, 0, 0, 15]
+                    }
+                  ]
+                }))
+              ]
             }
           ]
-        }))
+        }
       ],
       styles: {
         header: {
-          fontSize: 24,
+          fontSize: 28,
           bold: true,
-          color: '#000000',
-          margin: [0, 0, 0, 5]
+          color: '#1a1a1a'
         },
         jobTitle: {
           fontSize: 14,
@@ -208,12 +249,10 @@ const CreateCV = () => {
           italics: true
         },
         sectionHeader: {
-          fontSize: 14,
+          fontSize: 16,
           bold: true,
-          color: '#000000',
-          decoration: 'underline',
-          decorationStyle: 'solid',
-          decorationColor: '#ff4d4d'
+          color: '#2c3e50',
+          margin: [0, 10, 0, 5]
         },
         normalText: {
           fontSize: 12,
@@ -221,9 +260,9 @@ const CreateCV = () => {
           lineHeight: 1.4
         },
         projectTitle: {
-          fontSize: 12,
+          fontSize: 14,
           bold: true,
-          color: '#000000'
+          color: '#1a1a1a'
         },
         link: {
           fontSize: 12,
