@@ -57,6 +57,7 @@ public class WebSecurity {
                     response.getWriter().write("{\"error\": \"Unauthorized\"}");
                 })))
                 .csrf(AbstractHttpConfigurer::disable)
+
                 .headers(AbstractHttpConfigurer::disable)
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

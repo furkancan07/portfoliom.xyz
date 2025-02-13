@@ -19,6 +19,8 @@ public class Project {
     private String id;
 
     private String name;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -48,4 +50,6 @@ public class Project {
 
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL)
     private List<Comment> comments;
+    @Column(nullable = false)
+    private Integer orderIndex;
 }

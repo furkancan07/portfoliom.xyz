@@ -2,6 +2,7 @@ package com.rf.portfolioM.controller;
 
 import com.rf.portfolioM.dto.AddProjectRequest;
 import com.rf.portfolioM.dto.ProjectDto;
+import com.rf.portfolioM.dto.ProjectReOrderRequest;
 import com.rf.portfolioM.dto.UpdateProjectRequest;
 import com.rf.portfolioM.model.enums.ProjectArea;
 import com.rf.portfolioM.service.ProjectService;
@@ -49,7 +50,8 @@ ResponseEntity<ApiResponse<List<ProjectDto>>> getProjectsByUserAndTag(@PathVaria
 
     // proje sil
     @DeleteMapping(ApiPaths.DELETE)
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+
+    @CrossOrigin
     ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable String id){
         return ResponseEntity.ok(service.delete(id));
     }
@@ -58,6 +60,12 @@ ResponseEntity<ApiResponse<List<ProjectDto>>> getProjectsByUserAndTag(@PathVaria
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     ResponseEntity<ApiResponse<ProjectDto>> updateProject(@PathVariable String id,@RequestBody UpdateProjectRequest request){
         return ResponseEntity.ok(service.updateProject(id,request));
+    }
+    // sürükle bırak ile proje listesi değiştirme
+    @PutMapping(ApiPaths.REORDER)
+    ResponseEntity<ApiResponse<List<ProjectDto>>> updateProjectOrder(@RequestBody ProjectReOrderRequest request){
+        return ResponseEntity.ok(service.updateProjectOrder(request));
+
     }
 
 

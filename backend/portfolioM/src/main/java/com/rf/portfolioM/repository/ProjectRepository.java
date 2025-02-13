@@ -9,4 +9,7 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project,String> {
     List<Project> findByUserId(String userId);
     List<Project> findByUserIdAndProjectArea(String userId, ProjectArea projectArea);
+    int countByUserId(String userId);
+    List<Project> findByUserIdOrderByOrderIndexAsc(String userId);
+    List<Project> findByUserIdAndProjectAreaOrderByOrderIndex(String userId, ProjectArea projectArea);
 }

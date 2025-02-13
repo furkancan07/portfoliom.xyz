@@ -40,6 +40,7 @@ public class User implements UserDetails {
 
     private String cvUrl;
 
+    @Column(columnDefinition = "TEXT")
     private String aboutMe;
 
     @ElementCollection(fetch = FetchType.EAGER)
