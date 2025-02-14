@@ -71,6 +71,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Experience> experiences;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

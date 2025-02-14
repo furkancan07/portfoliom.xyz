@@ -37,7 +37,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String userId=oAuth2User.getUser().getId();
 
         // Kullanıcıyı frontend'e yönlendir (Token'ı URL'ye ekleyerek)
-        String redirectUrl = "https://portfolio-m-steel.vercel.app/callback?token=" + token + "&username=" + username+"&userId="+ userId;
+        String redirectUrl = "https://www.portfoliom.xyz/callback?token=" + token + "&username=" + username+"&userId="+ userId;
         response.sendRedirect(redirectUrl);
     }
 }

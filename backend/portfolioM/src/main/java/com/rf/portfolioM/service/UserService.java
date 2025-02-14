@@ -1,11 +1,11 @@
 package com.rf.portfolioM.service;
+
 import com.rf.portfolioM.dto.*;
 import com.rf.portfolioM.dto.converter.DtoConverter;
 import com.rf.portfolioM.exception.FailedToFieldException;
 import com.rf.portfolioM.exception.NotFoundException;
 import com.rf.portfolioM.model.User;
 import com.rf.portfolioM.model.enums.ROLE;
-import com.rf.portfolioM.model.enums.SkillLevel;
 import com.rf.portfolioM.repository.UserRepository;
 import com.rf.portfolioM.security.UserIdentityManager;
 import com.rf.portfolioM.utils.ApiResponse;
@@ -16,9 +16,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -30,6 +30,7 @@ public class UserService implements UserDetailsService {
     private final DtoConverter converter;
     private final PasswordEncoder encoder;
     private final UserIdentityManager manager;
+    private final ExperienceService experienceService;
     public ApiResponse<Void> createUser(CreateUserRequest request, MultipartFile file){
         String profilePhotoUrl=getUrl(file);
         User user=User.builder().name(request.getName()).surname(request.getSurname()).email(request.getEmail())
@@ -100,6 +101,7 @@ public class UserService implements UserDetailsService {
         user.setSkills(request.getSkills());
         user.setContactAddresses(request.getContactAddresses());
         user.setAboutMe(request.getAboutMe());
+        user.setExperiences(experienceService.saveExperiences(request.getExperiences()));
         repository.save(user);
         UserDto userDto=converter.convertUser(user);
         return ApiResponse.ok("Kullanici Bilgileri Güncellendi",userDto);

@@ -26,4 +26,5 @@ public class ApiPaths {
     public static final String LOGIN = "login";
     public static final String SEARCH_USER = "search/{username}";
     public static final String REORDER = "reorder";
+    public static final String EXPERIENCE = VERSION+"experience";
 }

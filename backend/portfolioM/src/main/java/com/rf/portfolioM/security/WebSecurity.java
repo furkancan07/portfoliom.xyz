@@ -43,7 +43,7 @@ public class WebSecurity {
                         .requestMatchers("/api/v1/user/{id}", "/api/v1/user/username/*", "/api/v1/user/list",
                                 "/api/v1/user/create",
                                 "/api/v1/comment/project/**", "/api/v1/project/{id}", "/api/v1/user/5","api/v1/user/search/**",
-                                "/api/v1/project/list/**", "/api/v1/auth/**").permitAll()
+                                "/api/v1/project/list/**", "/api/v1/auth/**","/api/v1/experience/{userId}").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**")
                         .permitAll()
                         .anyRequest().authenticated()

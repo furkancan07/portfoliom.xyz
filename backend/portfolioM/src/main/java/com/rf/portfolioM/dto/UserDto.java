@@ -1,10 +1,12 @@
 package com.rf.portfolioM.dto;
+import com.rf.portfolioM.model.Experience;
 import com.rf.portfolioM.model.enums.ContactAddresses;
 import com.rf.portfolioM.model.enums.ROLE;
 import com.rf.portfolioM.model.enums.SkillLevel;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -27,4 +29,5 @@ public class UserDto {
     private String aboutMe;
     private Map<String, SkillLevel> skills;
     private Map<ContactAddresses, String> contactAddresses;
+
 }

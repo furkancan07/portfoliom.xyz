@@ -50,6 +50,6 @@ public class Project {
 
     @OneToMany(mappedBy = "project",cascade = CascadeType.ALL)
     private List<Comment> comments;
-    @Column(nullable = false)
+
     private Integer orderIndex;
 }

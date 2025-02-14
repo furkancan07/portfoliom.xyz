@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +40,7 @@ private final UserIdentityManager manager;
                 .description(request.getDescription())
                 .skills(request.getSkills())
                 .name(request.getName()).orderIndex(countMax).build();
-        System.out.println(request.getSkills().toString());
+
         List<String> urls = getUrls(files);
         project.setImagesUrl(urls);
         repository.save(project);
@@ -84,36 +86,69 @@ private final UserIdentityManager manager;
     }
 
     public ApiResponse<ProjectDto> updateProject(String id, UpdateProjectRequest request) {
-        Project project=findById(id);
-        project.setProjectArea(request.getProjectArea());
-        project.setName(request.getName());
-        project.setProjectLink(request.getProjectLink());
-        project.setSkills(request.getSkills());
-        project.setDescription(request.getDescription());
-        repository.save(project);
-        return ApiResponse.ok("Proje güncellendi",converter.convertProject(project));
+        Project project = getProjectById(id);
+
+        boolean updated = false;
+
+        if (!project.getProjectArea().equals(request.getProjectArea())) {
+            project.setProjectArea(request.getProjectArea());
+            updated = true;
+        }
+        if (!project.getName().equals(request.getName())) {
+            project.setName(request.getName());
+            updated = true;
+        }
+        if (!project.getProjectLink().equals(request.getProjectLink())) {
+            project.setProjectLink(request.getProjectLink());
+            updated = true;
+        }
+        if (!project.getSkills().equals(request.getSkills())) {
+            project.setSkills(request.getSkills());
+            updated = true;
+        }
+        if (!project.getDescription().equals(request.getDescription())) {
+            project.setDescription(request.getDescription());
+            updated = true;
+        }
+
+        if (updated) {
+            repository.save(project);
+        }
+
+        return ApiResponse.ok("Proje güncellendi", converter.convertProject(project));
     }
 
     @Transactional
     public ApiResponse<List<ProjectDto>> updateProjectOrder(ProjectReOrderRequest request) {
-        User user=manager.getAuthenticatedUser();
+        User user = manager.getAuthenticatedUser();
+
         List<Project> projects = repository.findByUserId(user.getId());
-        List<String> projectIds=request.getProjectIds();
+        List<String> projectIds = request.getProjectIds();
 
         if (projects.size() != projectIds.size()) {
             throw new BadRequestException("Tekrar Deneyin...");
         }
 
+        // O(n) HashMap kullanımı
+        Map<String, Project> projectMap = projects.stream()
+                .collect(Collectors.toMap(Project::getId, p -> p));
+
+        List<Project> updatedProjects = new ArrayList<>();
+
         for (int i = 0; i < projectIds.size(); i++) {
-            String projectId = projectIds.get(i);
-            int finalI = i;
-            projects.stream()
-                    .filter(p -> p.getId().equals(projectId))
-                    .findFirst()
-                    .ifPresent(p -> p.setOrderIndex(finalI));
+            Project project = projectMap.get(projectIds.get(i));
+            if (project != null && project.getOrderIndex() != i) {
+                project.setOrderIndex(i);
+                updatedProjects.add(project);
+            }
         }
 
-        repository.saveAll(projects);
-        return ApiResponse.ok("Sıralama güncellendi",projects.stream().map(converter::convertProject).collect(Collectors.toList()));
+        if (!updatedProjects.isEmpty()) {
+            repository.saveAll(updatedProjects);
+        }
+
+        return ApiResponse.ok("Sıralama güncellendi",
+                updatedProjects.stream().map(converter::convertProject).collect(Collectors.toList()));
     }
+
 }
