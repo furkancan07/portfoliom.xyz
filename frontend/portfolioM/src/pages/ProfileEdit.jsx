@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserData, updateUser, updateProfilePhoto, uploadCV, getUserExperiences } from '../server/api'; // API fonksiyonlarını içe aktar
+import { fetchUserData, updateUser, updateProfilePhoto, uploadCV, getUserExperiences, deleteExperience } from '../server/api'; // API fonksiyonlarını içe aktar
 import '../Login.css'; // Mevcut stil dosyasını kullan
 
 function ProfileEdit() {
@@ -80,7 +80,7 @@ function ProfileEdit() {
           aboutMe: userData.aboutMe || '',
           skills: userData.skills || {},
           contactAddresses: userData.contactAddresses || {},
-          experiences: experiencesResponse.data || [], // Deneyimleri set et
+          experiences: experiencesResponse.data || [], // Eğer data yoksa boş dizi olacak
         });
       } catch (error) {
         if (error.response?.status === 401 || error.response?.status === 403) {
@@ -91,6 +91,7 @@ function ProfileEdit() {
           ...prevData,
           name: user?.name || '',
           surname: user?.surname || '',
+          experiences: [], // Hata durumunda da boş dizi olsun
         }));
         setError(error);
       }
@@ -155,6 +156,7 @@ function ProfileEdit() {
     try {
       // Profil bilgilerini güncelle
       await updateUser(formData);
+      console.log(formData);
 
       // Profil fotoğrafı seçildiyse güncelle
       const photoInput = document.getElementById('profilePhoto');
@@ -279,7 +281,7 @@ function ProfileEdit() {
     if (currentExperience.companyName && currentExperience.startTime) {
       setFormData(prevData => ({
         ...prevData,
-        experiences: [...prevData.experiences, currentExperience]
+        experiences: prevData.experiences == null ? [currentExperience] : [...prevData.experiences, currentExperience]
       }));
       setIsAddingExperience(false);
       setCurrentExperience({
@@ -299,9 +301,37 @@ function ProfileEdit() {
     setIsEditingExperience(true);
   };
 
-  const handleExperienceDelete = (index) => {
-    const updatedExperiences = formData.experiences.filter((_, i) => i !== index);
-    setFormData({ ...formData, experiences: updatedExperiences });
+  const handleExperienceDelete = async (index) => {
+    try {
+      const experienceToDelete = formData.experiences[index];
+      
+      if (formData.experiences.length === 1) {
+        // Son deneyimi siliyoruz
+        const response = await deleteExperience(experienceToDelete.id);
+        if (response) {
+          setFormData(prevFormData => ({
+            ...prevFormData,
+            experiences: []
+          }));
+          setSuccessMessage('Deneyim başarıyla silindi!');
+          setTimeout(() => setSuccessMessage(null), 3000);
+        }
+      } else {
+        // Birden fazla deneyim var, normal silme işlemi
+        await deleteExperience(experienceToDelete.id);
+        const updatedExperiences = formData.experiences.filter((_, i) => i !== index);
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          experiences: updatedExperiences
+        }));
+        setSuccessMessage('Deneyim başarıyla silindi!');
+        setTimeout(() => setSuccessMessage(null), 3000);
+      }
+    } catch (error) {
+      console.error('Deneyim silinirken hata:', error);
+      setError('Deneyim silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+      setTimeout(() => setError(null), 3000);
+    }
   };
 
   const handleExperienceUpdate = () => {
@@ -309,7 +339,10 @@ function ProfileEdit() {
       const updatedExperiences = formData.experiences.map((exp, index) =>
         index === currentExperience.index ? currentExperience : exp
       );
-      setFormData({ ...formData, experiences: updatedExperiences });
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        experiences: updatedExperiences == null ? [] : [...updatedExperiences]
+      }));
       setIsEditingExperience(false);
       setCurrentExperience({
         companyName: '',

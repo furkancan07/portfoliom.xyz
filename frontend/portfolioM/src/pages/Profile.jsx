@@ -20,6 +20,7 @@ function Profile() {
   const [selectedTag, setSelectedTag] = useState('ALL');
   const [errorMessage, setErrorMessage] = useState(null);
   const [experiences, setExperiences] = useState([]);
+  const [isProjectsLoading, setIsProjectsLoading] = useState(true);
 
   const POSITION_TRANSLATIONS = {
     'INTERN': 'Stajyer',
@@ -57,11 +58,14 @@ function Profile() {
 
   useEffect(() => {
     const getProjects = async () => {
+      setIsProjectsLoading(true);
       try {
         const response = await getUserProjects(userData.id);
         setProjects(response.data);
       } catch (error) {
         console.error('Projeler yüklenirken hata:', error);
+      } finally {
+        setIsProjectsLoading(false);
       }
     };
 
@@ -90,6 +94,7 @@ function Profile() {
 
   const handleTagChange = async (tag) => {
     setSelectedTag(tag);
+    setIsProjectsLoading(true);
     try {
       const response = tag === 'ALL' 
         ? await getUserProjects(userData.id)
@@ -97,6 +102,8 @@ function Profile() {
       setProjects(response.data);
     } catch (error) {
       console.error('Projeler filtrelenirken hata:', error);
+    } finally {
+      setIsProjectsLoading(false);
     }
   };
 
@@ -380,14 +387,17 @@ function Profile() {
             </div>
           </div>
           <div className="projects-grid">
-            {projects.map(project => (
-              <ProjectCard 
-                key={project.id} 
-                project={project}
-                onDelete={handleProjectDelete}
-              />
-            ))}
-            {projects.length === 0 && (
+            {isProjectsLoading ? (
+              <div className="loading-projects">Projeler yükleniyor...</div>
+            ) : projects.length > 0 ? (
+              projects.map(project => (
+                <ProjectCard 
+                  key={project.id} 
+                  project={project}
+                  onDelete={handleProjectDelete}
+                />
+              ))
+            ) : (
               <div className="no-projects">
                 Bu kategoride henüz proje bulunmuyor.
               </div>

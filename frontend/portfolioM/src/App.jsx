@@ -18,6 +18,7 @@ import ProjectDetail from './pages/ProjectDetail';
 import './App.css';
 import Projects from './pages/Projects';
 import CreateCV from './pages/CreateCV';
+import ErrorBoundary from './components/ErrorBoundary';
 
 
 function App() {
@@ -107,7 +108,11 @@ function App() {
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/register" element={<Register onLogin={handleLogin} />} />
           <Route path="/callback" element={<GitHubCallback onLogin={handleLogin} />} />
-          <Route path="/profile-update" element={<ProfileEdit />} />
+          <Route path="/profile-update" element={
+            <ErrorBoundary>
+              <ProfileEdit />
+            </ErrorBoundary>
+          } />
           <Route path="/:username" element={<Profile />} />
           <Route path="/add-project" element={<AddProject />} />
           <Route path="/projects" element={<Projects />} />

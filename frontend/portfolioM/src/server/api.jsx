@@ -290,6 +290,16 @@ export const getUserExperiences = async (username) => {
   }
 };
 
+// Deneyim silme fonksiyonu
+export const deleteExperience = async (experienceId) => {
+  try {
+    const response = await api.delete(`/experience/delete/${experienceId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
 export {
   api as default,
   // ... diğer export'lar
