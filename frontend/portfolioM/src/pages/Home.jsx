@@ -3,7 +3,7 @@ import SearchBar from '../components/SearchBar';
 import './Home.css';
 import { motion } from 'framer-motion'; 
 import CodeIcon from '@mui/icons-material/Code';
-import GroupIcon from '@mui/icons-material/Group';
+import DescriptionIcon from '@mui/icons-material/Description';
 import WorkIcon from '@mui/icons-material/Work';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,11 +35,11 @@ const Home = () => {
         </div>
         
         <h1 className="main-title">
-          Yazılım Dünyasının <span className="highlight">Sosyal Ağı</span>
+          Yazılımcılar İçin <span className="highlight">Profesyonel Portföy Platformu</span>
         </h1>
         
         <p className="subtitle">
-          Projelerinizi sergileyin, diğer geliştiricilerle bağlantı kurun ve yazılım dünyasında yerinizi alın
+          Projelerinizi sergileyin, profesyonel CV'nizi oluşturun ve yazılım dünyasında fark yaratın
         </p>
 
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
@@ -62,9 +62,9 @@ const Home = () => {
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
-            <GroupIcon className="feature-icon" />
-            <h3>Bağlantı Kur</h3>
-            <p>Diğer geliştiricilerle iletişime geçin</p>
+            <DescriptionIcon className="feature-icon" />
+            <h3>CV Oluştur</h3>
+            <p>Yeteneklerinizi öne çıkaran profesyonel CV'nizi hazırlayın</p>
           </motion.div>
 
           <motion.div 
@@ -72,7 +72,7 @@ const Home = () => {
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
-            <WorkIcon  className="feature-icon" />
+            <WorkIcon className="feature-icon" />
             <h3>Portfolyo Oluştur</h3>
             <p>Projelerinizi sergileyip kendinizi tanıtın</p>
           </motion.div>
