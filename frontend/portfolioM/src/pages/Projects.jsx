@@ -17,7 +17,9 @@ const Projects = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
+      localStorage.clear();
       navigate('/login');
+      return;
     }
   }, [navigate]);
 
@@ -31,6 +33,10 @@ const Projects = () => {
       const response = await getUserProjects(userId);
       setProjects(response.data);
     } catch (error) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        localStorage.clear();
+        navigate('/login');
+      }
       setError('Projeler yüklenirken bir hata oluştu');
       console.error('Proje yükleme hatası:', error);
     } finally {

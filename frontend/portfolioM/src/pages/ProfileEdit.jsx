@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserData, updateUser, updateProfilePhoto, uploadCV } from '../server/api'; // API fonksiyonlarını içe aktar
+import { fetchUserData, updateUser, updateProfilePhoto, uploadCV, getUserExperiences } from '../server/api'; // API fonksiyonlarını içe aktar
 import '../Login.css'; // Mevcut stil dosyasını kullan
 
 function ProfileEdit() {
@@ -29,6 +29,7 @@ function ProfileEdit() {
       HACKERRANK: '',
       OTHER: '',
     },
+    experiences: [],
   });
   const [error, setError] = useState(null);
   const [isEditingSkill, setIsEditingSkill] = useState(false); // Düzenleme durumu
@@ -40,35 +41,52 @@ function ProfileEdit() {
   const [currentContact, setCurrentContact] = useState({ platform: '', url: '' });
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageFile, setSelectedImageFile] = useState(null); // Seçilen dosyayı saklamak için
+  const [isAddingExperience, setIsAddingExperience] = useState(false);
+  const [isEditingExperience, setIsEditingExperience] = useState(false);
+  const [currentExperience, setCurrentExperience] = useState({
+    companyName: '',
+    startTime: '',
+    endDate: '',
+    position: 'INTERN'
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
+      localStorage.clear();
       navigate('/login');
+      return;
     }
   }, [navigate]);
 
   useEffect(() => {
     const username = localStorage.getItem('username');
-    const user = JSON.parse(localStorage.getItem('user')); // Mevcut kullanıcı bilgilerini al
+    const user = JSON.parse(localStorage.getItem('user'));
 
     const getUserData = async () => {
       try {
         const response = await fetchUserData(username);
         const userData = response.data;
+        // Deneyimleri ayrıca getir
+        const experiencesResponse = await getUserExperiences(username);
+        
         setFormData({
-          name: userData.name || user?.name || '', // Önce API'den gelen veri, yoksa local storage'dan al
-          surname: userData.surname || user?.surname || '', // Önce API'den gelen veri, yoksa local storage'dan al
+          name: userData.name || user?.name || '',
+          surname: userData.surname || user?.surname || '',
           university: userData.university || '',
           job: userData.job || '',
           area: userData.area || '',
           aboutMe: userData.aboutMe || '',
           skills: userData.skills || {},
           contactAddresses: userData.contactAddresses || {},
+          experiences: experiencesResponse.data || [], // Deneyimleri set et
         });
       } catch (error) {
-        // Hata durumunda en azından local storage'daki bilgileri göster
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          localStorage.clear();
+          navigate('/login');
+        }
         setFormData(prevData => ({
           ...prevData,
           name: user?.name || '',
@@ -247,6 +265,79 @@ function ProfileEdit() {
     }
   };
 
+  const handleAddExperience = () => {
+    setCurrentExperience({
+      companyName: '',
+      startTime: '',
+      endDate: '',
+      position: 'INTERN'
+    });
+    setIsAddingExperience(true);
+  };
+
+  const handleExperienceAdd = () => {
+    if (currentExperience.companyName && currentExperience.startTime) {
+      setFormData(prevData => ({
+        ...prevData,
+        experiences: [...prevData.experiences, currentExperience]
+      }));
+      setIsAddingExperience(false);
+      setCurrentExperience({
+        companyName: '',
+        startTime: '',
+        endDate: '',
+        position: 'INTERN'
+      });
+    }
+  };
+
+  const handleExperienceEdit = (experience) => {
+    setCurrentExperience({
+      ...experience,
+      index: formData.experiences.findIndex(exp => exp.id === experience.id)
+    });
+    setIsEditingExperience(true);
+  };
+
+  const handleExperienceDelete = (index) => {
+    const updatedExperiences = formData.experiences.filter((_, i) => i !== index);
+    setFormData({ ...formData, experiences: updatedExperiences });
+  };
+
+  const handleExperienceUpdate = () => {
+    if (currentExperience.companyName && currentExperience.startTime) {
+      const updatedExperiences = formData.experiences.map((exp, index) =>
+        index === currentExperience.index ? currentExperience : exp
+      );
+      setFormData({ ...formData, experiences: updatedExperiences });
+      setIsEditingExperience(false);
+      setCurrentExperience({
+        companyName: '',
+        startTime: '',
+        endDate: '',
+        position: 'INTERN'
+      });
+    }
+  };
+
+  // Position enum değerlerini eşleştiren bir obje oluşturalım
+  const POSITION_TRANSLATIONS = {
+    'Stajyer': 'INTERN',
+    'Junior Geliştirici': 'JUNIOR',
+    'Orta Seviye Geliştirici': 'MID_LEVEL',
+    'Kıdemli Geliştirici': 'SENIOR'
+  };
+
+  // Türkçeden İngilizceye çeviri için yardımcı fonksiyon
+  const getPositionEnum = (turkishPosition) => {
+    return Object.entries(POSITION_TRANSLATIONS).find(([key]) => key === turkishPosition)?.[1] || 'INTERN';
+  };
+
+  // İngilizceden Türkçeye çeviri için yardımcı fonksiyon
+  const getPositionTranslation = (enumValue) => {
+    return Object.entries(POSITION_TRANSLATIONS).find(([_, value]) => value === enumValue)?.[0] || 'Stajyer';
+  };
+
   return (
     <div className="login-container">
       <h2>Profil Düzenle</h2>
@@ -414,6 +505,31 @@ function ProfileEdit() {
           </ul>
         </div>
 
+        {/* Deneyimler Bölümü */}
+        <div className="form-group">
+          <div className="section-header">
+            <h3>Deneyimler</h3>
+            <button type="button" className="add-button" onClick={handleAddExperience}>
+              ➕ Deneyim Ekle
+            </button>
+          </div>
+          <ul className="skills-list">
+            {formData.experiences.map((experience, index) => (
+              <li key={index}>
+                <span>
+                  {experience.companyName} - {getPositionTranslation(experience.position)}<br />
+                  {new Date(experience.startTime).toLocaleDateString()} - 
+                  {experience.endDate ? new Date(experience.endDate).toLocaleDateString() : 'Devam Ediyor'}
+                </span>
+                <div>
+                  <button type="button" onClick={() => handleExperienceEdit(experience)}>✏️</button>
+                  <button type="button" onClick={() => handleExperienceDelete(index)}>🗑️</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* Güncelle butonu en altta */}
         <button type="submit" className="login-button">Güncelle</button>
       </form>
@@ -539,6 +655,122 @@ function ProfileEdit() {
             />
             <button type="button" onClick={handleContactUpdate}>Düzenle</button>
             <button type="button" onClick={() => setIsEditingContact(false)}>Kapat</button>
+          </div>
+        </div>
+      )}
+
+      {/* Deneyim Ekleme Modalı */}
+      {isAddingExperience && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Yeni Deneyim Ekle</h3>
+            <label htmlFor="companyName">Şirket Adı</label>
+            <input
+              type="text"
+              id="companyName"
+              value={currentExperience.companyName}
+              onChange={(e) => setCurrentExperience({
+                ...currentExperience,
+                companyName: e.target.value
+              })}
+              required
+            />
+            <label htmlFor="position">Pozisyon</label>
+            <select
+              id="position"
+              value={getPositionTranslation(currentExperience.position)}
+              onChange={(e) => setCurrentExperience({
+                ...currentExperience,
+                position: getPositionEnum(e.target.value)
+              })}
+            >
+              {Object.keys(POSITION_TRANSLATIONS).map(position => (
+                <option key={position} value={position}>
+                  {position}
+                </option>
+              ))}
+            </select>
+            <label htmlFor="startTime">Başlangıç Tarihi</label>
+            <input
+              type="date"
+              id="startTime"
+              value={currentExperience.startTime}
+              onChange={(e) => setCurrentExperience({
+                ...currentExperience,
+                startTime: e.target.value
+              })}
+              required
+            />
+            <label htmlFor="endTime">Bitiş Tarihi</label>
+            <input
+              type="date"
+              id="endTime"
+              value={currentExperience.endDate}
+              onChange={(e) => setCurrentExperience({
+                ...currentExperience,
+                endDate: e.target.value
+              })}
+            />
+            <button type="button" onClick={handleExperienceAdd}>Ekle</button>
+            <button type="button" onClick={() => setIsAddingExperience(false)}>Kapat</button>
+          </div>
+        </div>
+      )}
+
+      {/* Deneyim Düzenleme Modalı */}
+      {isEditingExperience && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Deneyim Düzenle</h3>
+            <label htmlFor="editCompanyName">Şirket Adı</label>
+            <input
+              type="text"
+              id="editCompanyName"
+              value={currentExperience.companyName}
+              onChange={(e) => setCurrentExperience({
+                ...currentExperience,
+                companyName: e.target.value
+              })}
+              required
+            />
+            <label htmlFor="editPosition">Pozisyon</label>
+            <select
+              id="editPosition"
+              value={getPositionTranslation(currentExperience.position)}
+              onChange={(e) => setCurrentExperience({
+                ...currentExperience,
+                position: getPositionEnum(e.target.value)
+              })}
+            >
+              {Object.keys(POSITION_TRANSLATIONS).map(position => (
+                <option key={position} value={position}>
+                  {position}
+                </option>
+              ))}
+            </select>
+            <label htmlFor="editStartTime">Başlangıç Tarihi</label>
+            <input
+              type="date"
+              id="editStartTime"
+              value={currentExperience.startTime}
+              onChange={(e) => setCurrentExperience({
+                ...currentExperience,
+                startTime: e.target.value
+              })}
+              required
+            />
+            <label htmlFor="editEndTime">Bitiş Tarihi</label>
+            <input
+              type="date"
+              id="editEndTime"
+              value={currentExperience.endDate}
+              onChange={(e) => setCurrentExperience({
+                ...currentExperience,
+                endDate: e.target.value
+              })}
+            />
+            <button type="button" onClick={handleExperienceUpdate}>Düzenle</button>
+            <button type="button" onClick={() => setIsEditingExperience(false)}>Kapat</button>
           </div>
         </div>
       )}

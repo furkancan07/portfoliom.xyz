@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchUserData, getUserProjects, getUserProjectsByTag } from '../server/api.jsx';
+import { fetchUserData, getUserProjects, getUserProjectsByTag, getUserExperiences } from '../server/api.jsx';
 import '../Profile.css';
 import ProjectCard from '../components/ProjectCard';
 import pdfMake from 'pdfmake/build/pdfmake';
@@ -19,6 +19,14 @@ function Profile() {
   const [projects, setProjects] = useState([]);
   const [selectedTag, setSelectedTag] = useState('ALL');
   const [errorMessage, setErrorMessage] = useState(null);
+  const [experiences, setExperiences] = useState([]);
+
+  const POSITION_TRANSLATIONS = {
+    'INTERN': 'Stajyer',
+    'JUNIOR': 'Junior Geliştirici',
+    'MID_LEVEL': 'Orta Seviye Geliştirici',
+    'SENIOR': 'Kıdemli Geliştirici'
+  };
 
   useEffect(() => {
     const getUserData = async () => {
@@ -61,6 +69,24 @@ function Profile() {
       getProjects();
     }
   }, [userData]);
+
+  useEffect(() => {
+    const getExperiences = async () => {
+      try {
+        const response = await getUserExperiences(username);
+        // Doğrudan response.data.data array'ini kullan
+        setExperiences(response.data);
+        console.log(response.data)
+      } catch (error) {
+        console.error('Deneyimler yüklenirken hata:', error);
+        setExperiences([]);
+      }
+    };
+
+    if (username) {
+      getExperiences();
+    }
+  }, [username]);
 
   const handleTagChange = async (tag) => {
     setSelectedTag(tag);
@@ -185,6 +211,43 @@ function Profile() {
               <span className="info-label">İlgi Alanı</span>
               <span className="info-value">{userData.area}</span>
             </div>
+          </div>
+        </div>
+
+        <div className="experience-section">
+          <h2>Deneyim</h2>
+          <div className="experience-list">
+            {experiences?.map((experience) => (
+              <div key={experience.id} className="experience-item">
+                <div className="experience-icon">💼</div>
+                <div className="experience-content">
+                  <div className="company-name">{experience.companyName}</div>
+                  <div className="position-badge">
+                    {POSITION_TRANSLATIONS[experience.position]}
+                  </div>
+                  <div className="experience-date">
+                    {new Date(experience.startTime).toLocaleDateString('tr-TR', {
+                      year: 'numeric',
+                      month: 'long'
+                    })}
+                    {' - '}
+                    {experience.endDate ? (
+                      new Date(experience.endDate).toLocaleDateString('tr-TR', {
+                        year: 'numeric',
+                        month: 'long'
+                      })
+                    ) : (
+                      <span className="current-badge">Devam Ediyor</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+            {(!experiences || experiences.length === 0) && (
+              <div className="no-experience">
+                Henüz deneyim bilgisi eklenmemiş.
+              </div>
+            )}
           </div>
         </div>
 

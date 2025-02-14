@@ -96,28 +96,38 @@ export const loginUser = async (body) => {
 // Kullanıcı verilerini güncellemek için API isteği
 export const updateUser = async (userData) => {
   try {
-    const requestData = {
-      name: userData.name,
-      surname: userData.surname,
-      university: userData.university,
-      job: userData.job,
-      area: userData.area,
-      aboutMe: userData.aboutMe,
-      skills: userData.skills,
-      contactAddresses: userData.contactAddresses
-    };
-
-    const response = await api.put('/user/update', requestData);
-    return response.data;
+    const token = localStorage.getItem('token');
+    const response = await axios.put(
+      `${baseURL}/user/update`,
+      {
+        name: userData.name,
+        surname: userData.surname,
+        university: userData.university,
+        job: userData.job,
+        area: userData.area,
+        aboutMe: userData.aboutMe,
+        skills: userData.skills,
+        contactAddresses: userData.contactAddresses,
+        experiences: userData.experiences // Yeni eklenen deneyimler alanı
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    return response;
   } catch (error) {
-    throw error.response?.data || error.message;
+    throw error.response?.data || error;
   }
 };
 
-// Kullanıcı verilerini almak için API isteği
+// Kullanıcı verilerini almak için API isteği - token gerektirmez
 export const fetchUserData = async (username) => {
   try {
-    const response = await api.get(`/user/username/${username}`);
+    // Token olmadan istek at
+    const response = await axios.get(`${baseURL}/user/username/${username}`);
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
@@ -184,10 +194,11 @@ export const createProject = async (projectData, images) => {
   }
 };
 
-// Kullanıcının tüm projelerini getir
+// Kullanıcının projelerini getir - token gerektirmez
 export const getUserProjects = async (userId) => {
   try {
-    const response = await api.get(`/project/list/project/${userId}`);
+    // Token olmadan istek at
+    const response = await axios.get(`${baseURL}/project/list/project/${userId}`);
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
@@ -265,6 +276,18 @@ export const reorderProjects = (projectIds) => {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
   });
+};
+
+// Deneyimleri getir - token gerektirmez
+export const getUserExperiences = async (username) => {
+  try {
+    // Token olmadan istek at
+    const response = await axios.get(`${baseURL}/experience/${username}`);
+    return response.data;
+  } catch (error) {
+    console.error('Deneyimler getirilemedi:', error);
+    return { data: [] };
+  }
 };
 
 export {

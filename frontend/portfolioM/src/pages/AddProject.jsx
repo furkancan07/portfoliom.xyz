@@ -23,7 +23,9 @@ function AddProject() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
+      localStorage.clear();
       navigate('/login');
+      return;
     }
   }, [navigate]);
 
@@ -83,9 +85,12 @@ function AddProject() {
       setTimeout(() => {
         navigate(`/${localStorage.getItem('username')}`);
       }, 2000);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Bir hata oluştu');
-      console.log(err);
+    } catch (error) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        localStorage.clear();
+        navigate('/login');
+      }
+      setError(error.response?.data?.message || "Bir hata oluştu");
     } finally {
       setLoading(false);
     }

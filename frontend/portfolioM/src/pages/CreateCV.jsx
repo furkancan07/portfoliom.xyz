@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserData, getUserProjects } from '../server/api';
+import { fetchUserData, getUserProjects, getUserExperiences } from '../server/api';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.vfs;
@@ -20,11 +20,27 @@ pdfMake.fonts = {
 const CreateCV = () => {
   const [userData, setUserData] = useState(null);
   const [projects, setProjects] = useState([]);
+  const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState('tr');
   const navigate = useNavigate();
 
+  // Pozisyon çevirilerini ekleyelim
+  const POSITION_TRANSLATIONS = {
+    'INTERN': 'Stajyer',
+    'JUNIOR': 'Junior Geliştirici',
+    'MID_LEVEL': 'Orta Seviye Geliştirici',
+    'SENIOR': 'Kıdemli Geliştirici'
+  };
+
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      localStorage.clear(); // Tüm storage'ı temizle
+      navigate('/login');
+      return;
+    }
+
     const fetchData = async () => {
       try {
         const username = localStorage.getItem('username');
@@ -35,7 +51,15 @@ const CreateCV = () => {
         // Projeleri getir
         const projectsResponse = await getUserProjects(userData.id);
         setProjects(projectsResponse.data);
+
+        // Deneyimleri getir
+        const experiencesResponse = await getUserExperiences(username);
+        setExperiences(experiencesResponse.data || []);
       } catch (error) {
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          localStorage.clear();
+          navigate('/login');
+        }
         console.error('Veri yükleme hatası:', error);
       } finally {
         setLoading(false);
@@ -43,7 +67,7 @@ const CreateCV = () => {
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
   const translations = {
     tr: {
@@ -57,7 +81,9 @@ const CreateCV = () => {
       generateCV: 'PDF Olarak İndir',
       back: 'Geri Dön',
       createCV: 'CV Oluştur',
-      preview: 'Profilinizden profesyonel bir CV oluşturabilirsiniz.'
+      preview: 'Profilinizden profesyonel bir CV oluşturabilirsiniz.',
+      experience: 'Deneyim',
+      current: 'Devam Ediyor',
     },
     en: {
       about: 'About',
@@ -70,7 +96,9 @@ const CreateCV = () => {
       generateCV: 'Download as PDF',
       back: 'Go Back',
       createCV: 'Create CV',
-      preview: 'Create a professional CV from your profile.'
+      preview: 'Create a professional CV from your profile.',
+      experience: 'Experience',
+      current: 'Present',
     }
   };
 
@@ -231,7 +259,33 @@ const CreateCV = () => {
                       margin: [0, 0, 0, 15]
                     }
                   ]
-                }))
+                })),
+                {
+                  text: t.experience,
+                  style: 'sectionHeader',
+                  margin: [0, 15, 0, 10]
+                },
+                {
+                  ul: experiences?.map(exp => [
+                    {
+                      text: [
+                        { text: `${exp.companyName}\n`, style: 'strong' },
+                        { text: `${POSITION_TRANSLATIONS[exp.position]}\n`, style: 'position' },
+                        { 
+                          text: `${new Date(exp.startTime).toLocaleDateString('tr-TR', {
+                            year: 'numeric',
+                            month: 'long'
+                          })} - ${exp.endDate ? new Date(exp.endDate).toLocaleDateString('tr-TR', {
+                            year: 'numeric',
+                            month: 'long'
+                          }) : t.current}`,
+                          style: 'date'
+                        }
+                      ],
+                      margin: [0, 0, 0, 10]
+                    }
+                  ]) || []
+                }
               ]
             }
           ]
@@ -273,6 +327,15 @@ const CreateCV = () => {
           fontSize: 12,
           color: '#444444',
           margin: [0, 2]
+        },
+        position: {
+          fontSize: 11,
+          color: '#666666',
+          italics: true
+        },
+        date: {
+          fontSize: 10,
+          color: '#888888'
         }
       },
       defaultStyle: {
@@ -366,6 +429,32 @@ const CreateCV = () => {
                 <a href={project.projectLink} target="_blank" rel="noopener noreferrer">
                   {t.viewProject}
                 </a>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="cv-section">
+          <h3>{t.experience}</h3>
+          <div className="cv-experiences">
+            {experiences?.map((exp, index) => (
+              <div key={index} className="cv-experience-item">
+                <h4>{exp.companyName}</h4>
+                <p className="experience-position">
+                  {POSITION_TRANSLATIONS[exp.position]}
+                </p>
+                <p className="experience-date">
+                  {new Date(exp.startTime).toLocaleDateString('tr-TR', {
+                    year: 'numeric',
+                    month: 'long'
+                  })} - {' '}
+                  {exp.endDate ? 
+                    new Date(exp.endDate).toLocaleDateString('tr-TR', {
+                      year: 'numeric',
+                      month: 'long'
+                    }) : 
+                    t.current
+                  }
+                </p>
               </div>
             ))}
           </div>
