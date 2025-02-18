@@ -3,12 +3,13 @@
 <div align="center">
   <img src="frontend/portfolioM/src/assets/logo.jpg" alt="PortfolioM Logo" width="200"/>
   <br/>
-  <p><em>Profesyonel Dijital Kimliğinizi Yönetmenin En İyi Yolu</em></p>
+  <p><em>"Yeteneklerinizi Gösterin, Projelerinizi Paylaşın, CV’nizi Oluşturun!</em></p>
 </div>
 
 ## 🌟 Genel Bakış
 
-PortfolioM, geliştiriciler, tasarımcılar ve yaratıcı profesyoneller için tasarlanmış kapsamlı bir portfolyo yönetim platformudur. Çalışmalarınızı sergilemeniz, projelerinizi yönetmeniz ve alanınızdaki diğer profesyonellerle bağlantı kurmanız için kusursuz bir deneyim sunar.
+PortfolioM, yazılımcıların projelerini kolayca kategorilere ayırarak sergileyebileceği, deneyimlerini paylaşabileceği ve profesyonel bağlantılar kurabileceği kapsamlı bir platformdur.Projelerinizi sürükle-bırak yöntemiyle hızlıca güncelleyebilmenizdir. Ayrıca, projelerinizi etiketleyip, teknoloji yığınlarıyla birlikte tanıtarak daha geniş kitlelere ulaştırabilirsiniz. Platform, yazılımcıların portföylerini oluşturmak, yeteneklerini sergilemek ve CV'lerini dinamik olarak oluşturmak için mükemmel bir araçtır. Ayrıca, profesyonel ağınızı genişletmek için projeleriniz hakkında geri bildirim alabilir ve diğer yazılımcılarla işbirlikleri yapabilirsiniz.
+
 
 ## ✨ Temel Özellikler
 
@@ -21,10 +22,6 @@ PortfolioM, geliştiriciler, tasarımcılar ve yaratıcı profesyoneller için t
 - Profesyonel iletişim yönetimi
 
 ### 📂 Proje Vitrini
-
-<div align="center">
-  <img src="path/to/project-showcase.png" alt="Proje Vitrini" width="600"/>
-</div>
 
 - Çoklu görsel proje sunumu
 - Teknoloji yığını etiketleme
@@ -76,15 +73,62 @@ PortfolioM, geliştiriciler, tasarımcılar ve yaratıcı profesyoneller için t
 
 ## 🌐 Canlı Demo
 
-[Canlı Demo](https://portfolio-m-steel.vercel.app) üzerinden PortfolioM'i keşfedin.
-
-## 📱 Mobil Deneyim
-
-<div align="center">
-  <img src="path/to/mobile-view.png" alt="Mobil Görünüm" width="300"/>
-</div>
+[Canlı Demo](https://www.portfoliom.xyz) üzerinden PortfolioM'i keşfedin.
 
 Tüm cihazlarda mükemmel uyumluluk ile portfolyonuz her yerde harika görünür.
+
+## 📸 Ekran Görüntüleri
+
+### 1. Anasayfa Profil
+<div align="center">
+  <img src="https://github.com/furkancan07/portfoliom.xyz/blob/main/images/homedark.png?raw=true" alt="Anasayfa Profil" width="600"/>
+</div>
+<div align="center">
+  <img src="https://github.com/furkancan07/portfoliom.xyz/blob/main/images/homelight.png?raw=true" alt="Anasayfa Profil" width="600"/>
+</div>
+
+### 2. Projeler - Proje Ekle
+### 🔄 Sürükle-Bırak İle Projelerini Göster
+
+Proje listenizi dilediğiniz gibi özelleştirin! 🖱️ Projelerinizi sürükle-bırak yöntemiyle kolayca güncelleyebilir ve düzenleyebilirsiniz. 🚀 Projelerinizi kategorilere ayırarak diğer kullanıcılarla paylaşabilir, yeteneklerinizi en iyi şekilde sergileyebilirsiniz. 💼 Hangi projeyi daha önce göstermek isterseniz, o projeyi en üst sıraya taşıyın! ✨
+<div align="center">
+  <img src="https://github.com/furkancan07/portfoliom.xyz/blob/main/images/Projects.png?raw=true" alt="Projeler - Proje Ekle" width="600"/>
+</div>
+
+### 3. CV Oluştur
+<div align="center">
+  <img src="images/generate-cv.png" alt="CV Oluştur" width="600"/>
+</div>
+
+<div align="center">
+  <img src="https://github.com/furkancan07/portfoliom.xyz/blob/main/images/genarate-cv2.png" alt="CV Oluştur" width="600"/>
+</div>
+
+### 4. Profil Sayfası
+<div align="center">
+  <img src="images/profil.png" alt="CV Oluştur" width="600"/>
+</div>
+
+
+
+### 5. Profil Düzenle
+<div align="center">
+  <img src="images/profile-edit.png" alt="Profil Düzenle" width="600"/>
+</div>
+
+<div align="center">
+  <img src="https://github.com/furkancan07/portfoliom.xyz/blob/main/images/profil-edit2.png?raw=true" alt="Profil Düzenle" width="600"/>
+</div>
+
+### 6. Giriş Ekranı
+<div align="center">
+  <img src="images/login.png" alt="Giriş Ekranı" width="600"/>
+</div>
+
+### 7. Proje Ekle
+<div align="center">
+  <img src="images/add-project.png" alt="Giriş Ekranı" width="600"/>
+</div>
 
 ## 🔒 Güvenlik Özellikleri
 
@@ -93,35 +137,69 @@ Tüm cihazlarda mükemmel uyumluluk ile portfolyonuz her yerde harika görünür
 - Güvenli dosya yüklemeleri
 - Korumalı API uç noktaları
 - Cross-Origin Resource Sharing
+- OAuth2 entegrasyonu
 
 ## 💼 Kimler İçin İdeal?
 
 - Yazılım Geliştiriciler
-- UI/UX Tasarımcıları
-- Yaratıcı Profesyoneller
-- Dijital Sanatçılar
-- Teknoloji Girişimcileri
-- Proje Yöneticileri
 
-## 🌟 Başarı Hikayeleri
+## 📚 API Dokümantasyonu
 
-> "PortfolioM, çalışmalarımı sergileme şeklimi tamamen değiştirdi. Profesyonel arayüzü ve kolay yönetimi ile vazgeçilmez portfolyo platformum oldu." - _Ahmet Yılmaz, Kıdemli Geliştirici_
+PortfolioM, kapsamlı bir RESTful API sunmaktadır. API dokümantasyonuna [Swagger UI](https://portfoliom-is7q.onrender.com/swagger-ui/index.html#/) üzerinden erişebilirsiniz.
 
-## 📫 İletişim
+### 🔗 API Endpoint Grupları
 
-Sorularınız veya destek için:
+#### 🔐 Kimlik Doğrulama (Auth)
+- `POST /api/v1/auth/login` - Kullanıcı girişi
+- `POST /api/v1/auth/register` - Yeni kullanıcı kaydı
 
-- E-posta: destek@portfoliom.com
-- Twitter: [@PortfolioM](https://twitter.com/portfoliom)
-- LinkedIn: [PortfolioM](https://linkedin.com/company/portfoliom)
+#### 👤 Kullanıcı İşlemleri (User)
+- `GET /api/v1/users/{username}` - Kullanıcı bilgilerini getirme
+- `PUT /api/v1/users/update` - Kullanıcı bilgilerini güncelleme
+- `PATCH /api/v1/users/upload-photo` - Profil fotoğrafı yükleme
+- `PATCH /api/v1/users/upload-cv` - CV yükleme
+- `PATCH /api/v1/users/add-skill` - Yetenek ekleme
+- `PATCH /api/v1/users/add-contact` - İletişim bilgisi ekleme
 
-## 📄 Lisans
+#### 📂 Proje Yönetimi (Project)
+- `GET /api/v1/projects/user/{userId}` - Kullanıcının projelerini getirme
+- `POST /api/v1/projects/create` - Yeni proje oluşturma
+- `PUT /api/v1/projects/{id}` - Proje güncelleme
+- `DELETE /api/v1/projects/{id}` - Proje silme
+- `PUT /api/v1/projects/reorder` - Proje sıralamasını güncelleme
 
-PortfolioM, [MIT Lisansı](LICENSE) altında lisanslanmıştır.
+#### 💬 Yorum Yönetimi (Comment)
+- `POST /api/v1/comments/{projectId}` - Projeye yorum ekleme
+- `PUT /api/v1/comments/{id}` - Yorum güncelleme
+- `DELETE /api/v1/comments/{id}` - Yorum silme
+- `GET /api/v1/comments/project/{id}` - Projenin yorumlarını getirme
 
----
+#### 📈 Deneyim Yönetimi (Experience)
+- `GET /api/v1/experiences/{username}` - Kullanıcının deneyimlerini getirme
+- `PUT /api/v1/experiences/{id}` - Deneyim güncelleme
+- `DELETE /api/v1/experiences/{id}` - Deneyim silme
 
-<div align="center">
-  <p>PortfolioM Ekibi tarafından ❤️ ile geliştirildi</p>
-  <p>Telif Hakkı © 2024 PortfolioM. Tüm hakları saklıdır.</p>
-</div>
+### 🔒 API Güvenliği
+
+- JWT tabanlı kimlik doğrulama
+- Role-based yetkilendirme (USER, ADMIN)
+- Güvenli dosya yükleme işlemleri
+- CORS yapılandırması
+- Rate limiting
+
+### 📡 API Özellikleri
+
+- RESTful mimari
+- JSON veri formatı
+- HTTP durum kodları
+- İstek/yanıt doğrulama
+- Hata yönetimi
+- Sayfalama ve sıralama desteği
+
+Detaylı API dokümantasyonu için [Swagger UI](https://portfoliom-is7q.onrender.com/swagger-ui/index.html#/) sayfamızı ziyaret edin.
+
+## 🌥️ Kullanılan Teknolojiler ve Dağıtım
+
+PortfolioM, modern teknolojilerle inşa edilmiştir. Proje, **Cloudinary** ile dosya yönetimi ve **Render** üzerinden Dockerize edilerek deploy edilmiştir. Backend, **Supabase** üzerinde PostgreSQL veritabanıyla barındırılmakta, frontend ise **Vercel** üzerinde dağıtılmaktadır. Tüm deploy işlemleri tamamen ücretsiz ve verimli bir şekilde yapılmaktadır.
+
+
