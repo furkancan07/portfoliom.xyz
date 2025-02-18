@@ -21,16 +21,16 @@ public class ExperienceController {
 
     // kullanıcya ait deneyimleri getirme
     @GetMapping("/{username}")
-    public ResponseEntity<ApiResponse<List<ExperienceDto>>> getExperiences(@PathVariable String username){
-        return ResponseEntity.ok(experienceService.list(username));
+    public ApiResponse<List<ExperienceDto>> getExperiences(@PathVariable String username){
+        return experienceService.list(username);
     }
     @DeleteMapping(ApiPaths.DELETE)
-    public ResponseEntity<ApiResponse<Void>> deleteExperience(@PathVariable String id){
-        return ResponseEntity.ok(experienceService.delete(id));
+    public ApiResponse<Void> deleteExperience(@PathVariable String id){
+        return experienceService.delete(id);
     }
     @PutMapping(ApiPaths.UPDATE)
-    public ResponseEntity<ApiResponse<ExperienceDto>> updateExperience(@PathVariable String id, @RequestBody UpdateExperienceRequest request)
+    public ApiResponse<ExperienceDto> updateExperience(@PathVariable String id, @RequestBody UpdateExperienceRequest request)
     {
-        return ResponseEntity.ok(experienceService.updateExperience(request,id));
+        return experienceService.updateExperience(request,id);
     }
 }

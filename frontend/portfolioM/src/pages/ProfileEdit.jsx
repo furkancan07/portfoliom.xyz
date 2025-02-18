@@ -294,8 +294,14 @@ function ProfileEdit() {
   };
 
   const handleExperienceEdit = (experience) => {
+    // Tarihleri YYYY-MM-DD formatına çevir
+    const startDate = new Date(experience.startTime).toISOString().split('T')[0];
+    const endDate = experience.endDate ? new Date(experience.endDate).toISOString().split('T')[0] : '';
+
     setCurrentExperience({
       ...experience,
+      startTime: startDate,
+      endDate: endDate,
       index: formData.experiences.findIndex(exp => exp.id === experience.id)
     });
     setIsEditingExperience(true);

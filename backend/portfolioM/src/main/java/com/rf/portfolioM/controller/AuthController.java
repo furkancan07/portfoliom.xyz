@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(ApiPaths.AUTH)
-@CrossOrigin
+
 public class AuthController {
     private final AuthService service;
     private final JwtService jwtService;
@@ -24,8 +24,8 @@ public class AuthController {
 
     // login
     @PostMapping(ApiPaths.LOGIN)
-    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(service.login(request));
+    public ApiResponse<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        return service.login(request);
     }
 
 

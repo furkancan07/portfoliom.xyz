@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(ApiPaths.COMMENT)
-@CrossOrigin
+
 public class CommentController {
     private final CommentService service;
 
@@ -29,26 +29,26 @@ public class CommentController {
     */
     @PostMapping(ApiPaths.ADD_COMMENT)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    ResponseEntity<ApiResponse<Void>> addComment(@PathVariable String projectId, @RequestBody @Valid AddCommentRequest request){
-        return ResponseEntity.ok(service.addComment(projectId,request));
+    ApiResponse<Void> addComment(@PathVariable String projectId, @RequestBody @Valid AddCommentRequest request){
+        return service.addComment(projectId,request);
     }
     // yorum sil
     @DeleteMapping(ApiPaths.DELETE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    ResponseEntity<ApiResponse<Void>> deleteComment(@PathVariable String id){
-        return ResponseEntity.ok(service.delete(id));
+    ApiResponse<Void> deleteComment(@PathVariable String id){
+        return service.delete(id);
     }
     // yorum güncelle
     @PutMapping(ApiPaths.UPDATE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<ApiResponse<CommentDto>> updateComment(@PathVariable String id,@RequestBody @Valid AddCommentRequest request){
-        return ResponseEntity.ok(service.updateComment(id,request));
+    public ApiResponse<CommentDto> updateComment(@PathVariable String id,@RequestBody @Valid AddCommentRequest request){
+        return service.updateComment(id,request);
     }
 
     // projeye ait yorumları getir
     @GetMapping(ApiPaths.GET_COMMENTS_BY_PROJECT)
-    ResponseEntity<ApiResponse<List<CommentDto>>> getCommentsByProject(@PathVariable String id){
-        return ResponseEntity.ok(service.getCommentsByProject(id));
+    ApiResponse<List<CommentDto>> getCommentsByProject(@PathVariable String id){
+        return service.getCommentsByProject(id);
     }
 
 

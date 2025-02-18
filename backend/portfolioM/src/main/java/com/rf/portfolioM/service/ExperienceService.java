@@ -41,8 +41,8 @@ public class ExperienceService {
 
 
     }
-   @Transactional
-    private void deleteAllByUser(){
+    @Transactional
+    public void deleteAllByUser(){
         User user=manager.getAuthenticatedUser();
         repository.deleteAllByUser(user);
     }
