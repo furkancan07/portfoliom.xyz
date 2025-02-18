@@ -23,6 +23,7 @@ const CreateCV = () => {
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState('tr');
+  const [showProfileWarning, setShowProfileWarning] = useState(false);
   const navigate = useNavigate();
 
   // Pozisyon çevirilerini ekleyelim
@@ -48,11 +49,23 @@ const CreateCV = () => {
         const userData = response.data;
         setUserData(userData);
 
-        // Projeleri getir
+        // Profil bilgilerinin eksik olup olmadığını kontrol et
+        const isProfileIncomplete = !(
+          userData.name &&
+          userData.surname &&
+          userData.university &&
+          userData.job &&
+          userData.area &&
+          userData.aboutMe &&
+          Object.keys(userData.skills || {}).length > 0
+        );
+
+        setShowProfileWarning(isProfileIncomplete);
+
+        // Projeleri ve deneyimleri getir
         const projectsResponse = await getUserProjects(userData.id);
         setProjects(projectsResponse.data);
 
-        // Deneyimleri getir
         const experiencesResponse = await getUserExperiences(username);
         setExperiences(experiencesResponse.data || []);
       } catch (error) {
@@ -365,6 +378,29 @@ const CreateCV = () => {
 
   return (
     <div className="create-cv-container">
+      {showProfileWarning && (
+        <div className="profile-warning">
+          <div className="warning-content">
+            <p>
+              <strong>Bilgilendirme:</strong> Daha profesyonel bir CV oluşturmak için 
+              profil bilgilerinizi tamamlamanızı öneririz. 
+              Eğitim, iş deneyimi ve yetenekleriniz gibi önemli bilgileri ekleyebilirsiniz.
+            </p>
+            <button 
+              className="warning-button"
+              onClick={() => navigate('/profile-update')}
+            >
+              Profili Düzenle
+            </button>
+            <button 
+              className="dismiss-button"
+              onClick={() => setShowProfileWarning(false)}
+            >
+              Şimdilik Geç
+            </button>
+          </div>
+        </div>
+      )}
       <div className="cv-header-actions">
         <h1>{t.createCV}</h1>
         <div className="language-selector">
