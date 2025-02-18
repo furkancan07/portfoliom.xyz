@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchBar from '../components/SearchBar';
 import './Home.css';
 import { motion } from 'framer-motion'; 
@@ -6,10 +6,43 @@ import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
 import WorkIcon from '@mui/icons-material/Work';
 import { useNavigate } from 'react-router-dom';
+import { fetchUserData } from '../server/api';
 
 const Home = () => {
+  const [showWelcomeAlert, setShowWelcomeAlert] = useState(false);
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
   
+  useEffect(() => {
+    const checkUserProfile = async () => {
+      try {
+        const username = localStorage.getItem('username');
+        if (username) {
+          const response = await fetchUserData(username);
+          const userData = response.data;
+
+          // Profil ve proje bilgilerinin eksik olup olmadığını kontrol et
+          const isNewProfile = !(
+            userData.name &&
+            userData.surname &&
+            userData.university &&
+            userData.job &&
+            userData.area &&
+            userData.aboutMe &&
+            Object.keys(userData.skills || {}).length > 0
+          );
+
+          setShowWelcomeAlert(isNewProfile);
+          setUserData(userData);
+        }
+      } catch (error) {
+        console.error('Kullanıcı bilgileri alınamadı:', error);
+      }
+    };
+
+    checkUserProfile();
+  }, []);
+
   const handlePortfolioClick = () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -21,6 +54,40 @@ const Home = () => {
 
   return (
     <div className="home-container">
+      {showWelcomeAlert && (
+        <div className="welcome-alert-overlay">
+          <div className="welcome-alert">
+            <div className="alert-content">
+              <h3>🎉 Portfoliom.xyz'ye Hoş Geldiniz!</h3>
+              <p>
+                Profesyonel profilinizi oluşturmak ve projelerinizi sergilemek için 
+                hemen başlayın.
+              </p>
+              <div className="alert-buttons">
+                <button 
+                  className="edit-profile-btn"
+                  onClick={() => navigate('/profile-update')}
+                >
+                  Profili Düzenle
+                </button>
+                <button 
+                  className="add-project-btn"
+                  onClick={() => navigate('/add-project')}
+                >
+                  Proje Ekle
+                </button>
+                <button 
+                  className="dismiss-btn"
+                  onClick={() => setShowWelcomeAlert(false)}
+                >
+                  Daha Sonra
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <motion.div 
         className="hero-section"
         initial={{ opacity: 0, y: 20 }}
