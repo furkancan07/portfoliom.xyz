@@ -12,8 +12,7 @@ public class PortfolioMApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PortfolioMApplication.class, args);
 	}
-
-
+	
 
 
 }
