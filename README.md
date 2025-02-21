@@ -40,10 +40,10 @@ PortfolioM, yazılımcıların projelerini kolayca kategorilere ayırarak sergil
 ### 🤝 Topluluk Özellikleri
 
 - Kullanıcı arama işlevi
-- Proje yorumları
-- Profesyonel ağ oluşturma
-- Yetenek onayları
-- Proje işbirliği
+- Proje yorumları (gelecek)
+- Profesyonel ağ oluşturma (gelecek)
+- Yetenek onayları (gelecek)
+- Proje işbirliği (gelecek)
 
 ## 🛠 Teknik Mükemmellik
 
@@ -53,7 +53,7 @@ PortfolioM, yazılımcıların projelerini kolayca kategorilere ayırarak sergil
 - Material-UI Bileşenleri
 - Duyarlı Tasarım
 - Modern animasyonlar
-- Progressive Web App desteği
+
 
 ### Arka Uç (Backend)
 
@@ -68,14 +68,13 @@ PortfolioM, yazılımcıların projelerini kolayca kategorilere ayırarak sergil
 - **Profesyonel Görünüm**: Öne çıkan etkileyici bir dijital portfolyo oluşturun
 - **Kolay Yönetim**: Profesyonel içeriğinizi yönetmek için sezgisel arayüz
 - **Modern Teknoloji**: En son web teknolojileriyle inşa edilmiş
-- **Güvenli Platform**: Profesyonel verileriniz için kurumsal düzeyde güvenlik
-- **Topluluk Odaklı**: Alanınızdaki diğer profesyonellerle bağlantı kurun
+
 
 ## 🌐 Canlı Demo
 
 [Canlı Demo](https://www.portfoliom.xyz) üzerinden PortfolioM'i keşfedin.
 
-Tüm cihazlarda mükemmel uyumluluk ile portfolyonuz her yerde harika görünür.
+
 
 ## 📸 Ekran Görüntüleri
 
@@ -128,6 +127,11 @@ Proje listenizi dilediğiniz gibi özelleştirin! 🖱️ Projelerinizi sürükl
 ### 7. Proje Ekle
 <div align="center">
   <img src="images/add-project.png" alt="Giriş Ekranı" width="600"/>
+</div>
+
+### 8. Cloud Mimarisi
+<div align="center">
+  <img src="https://res.cloudinary.com/dtmebvljq/image/upload/v1739822388/dxh2bxyugz22xubdnitb.png" alt="Giriş Ekranı" width="600"/>
 </div>
 
 ## 🔒 Güvenlik Özellikleri
