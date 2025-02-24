@@ -7,34 +7,41 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import WorkIcon from '@mui/icons-material/Work';
 import { useNavigate } from 'react-router-dom';
 import { fetchUserData } from '../server/api';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 const Home = () => {
   const [showWelcomeAlert, setShowWelcomeAlert] = useState(false);
+  const [showLoginAlert, setShowLoginAlert] = useState(false);
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
   
   useEffect(() => {
     const checkUserProfile = async () => {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+
+      if (!token || !username) {
+        setShowLoginAlert(true);
+        return;
+      }
+
       try {
-        const username = localStorage.getItem('username');
-        if (username) {
-          const response = await fetchUserData(username);
-          const userData = response.data;
+        const response = await fetchUserData(username);
+        const userData = response.data;
 
-          // Profil ve proje bilgilerinin eksik olup olmadığını kontrol et
-          const isNewProfile = !(
-            userData.name &&
-            userData.surname &&
-            userData.university &&
-            userData.job &&
-            userData.area &&
-            userData.aboutMe &&
-            Object.keys(userData.skills || {}).length > 0
-          );
+        const isNewProfile = !(
+          userData.name &&
+          userData.surname &&
+          userData.university &&
+          userData.job &&
+          userData.area &&
+          userData.aboutMe &&
+          Object.keys(userData.skills || {}).length > 0
+        );
 
-          setShowWelcomeAlert(isNewProfile);
-          setUserData(userData);
-        }
+        setShowWelcomeAlert(isNewProfile);
+        setUserData(userData);
       } catch (error) {
         console.error('Kullanıcı bilgileri alınamadı:', error);
       }
@@ -54,6 +61,40 @@ const Home = () => {
 
   return (
     <div className="home-container">
+      {showLoginAlert && (
+        <div className="welcome-alert-overlay">
+          <div className="welcome-alert">
+            <div className="alert-content">
+              <h3>👋 Portfoliom.xyz'ye Hoş Geldiniz!</h3>
+              <p>
+                Projelerinizi sergilemek ve profesyonel CV'nizi oluşturmak için
+                hemen giriş yapın.
+              </p>
+              <div className="alert-buttons">
+                <button 
+                  className="edit-profile-btn"
+                  onClick={() => navigate('/login')}
+                >
+                  Giriş Yap
+                </button>
+                <button 
+                  className="add-project-btn"
+                  onClick={() => navigate('/register')}
+                >
+                  Kayıt Ol
+                </button>
+                <button 
+                  className="dismiss-btn"
+                  onClick={() => setShowLoginAlert(false)}
+                >
+                  Daha Sonra
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {showWelcomeAlert && (
         <div className="welcome-alert-overlay">
           <div className="welcome-alert">
@@ -160,6 +201,32 @@ const Home = () => {
         <div className="action-card" onClick={handlePortfolioClick}>
           <h3>Portfolyonu Keşfet</h3>
           <p>Profilini görüntüle ve etkini artır</p>
+        </div>
+      </div>
+
+      <div className="home-footer">
+        <div className="footer-content">
+          <div className="footer-left">
+            © {new Date().getFullYear()} PortfolioM. Developed by Furkan Can
+          </div>
+          <div className="footer-right">
+            <a 
+              href="https://github.com/furkancan07" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="social-link"
+            >
+              <GitHubIcon /> GitHub
+            </a>
+            <a 
+              href="https://www.linkedin.com/in/furkan-can-45182b236/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="social-link"
+            >
+              <LinkedInIcon /> LinkedIn
+            </a>
+          </div>
         </div>
       </div>
     </div>
