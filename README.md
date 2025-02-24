@@ -11,6 +11,11 @@
 PortfolioM, yazılımcıların projelerini kolayca kategorilere ayırarak sergileyebileceği, deneyimlerini paylaşabileceği ve profesyonel bağlantılar kurabileceği kapsamlı bir platformdur.Projelerinizi sürükle-bırak yöntemiyle hızlıca güncelleyebilmenizdir. Ayrıca, projelerinizi etiketleyip, teknoloji yığınlarıyla birlikte tanıtarak daha geniş kitlelere ulaştırabilirsiniz. Platform, yazılımcıların portföylerini oluşturmak, yeteneklerini sergilemek ve CV'lerini dinamik olarak oluşturmak için mükemmel bir araçtır. Ayrıca, profesyonel ağınızı genişletmek için projeleriniz hakkında geri bildirim alabilir ve diğer yazılımcılarla işbirlikleri yapabilirsiniz.
 
 
+## 🌐 Canlı Demo
+
+[Canlı Demo](https://www.portfoliom.xyz) üzerinden PortfolioM'u keşfedin.
+
+
 ## ✨ Temel Özellikler
 
 ### 🎯 Profesyonel Profil Yönetimi
@@ -45,7 +50,7 @@ PortfolioM, yazılımcıların projelerini kolayca kategorilere ayırarak sergil
 - Yetenek onayları (gelecek)
 - Proje işbirliği (gelecek)
 
-## 🛠 Teknik Mükemmellik
+
 
 ### Ön Uç (Frontend)
 
@@ -70,9 +75,6 @@ PortfolioM, yazılımcıların projelerini kolayca kategorilere ayırarak sergil
 - **Modern Teknoloji**: En son web teknolojileriyle inşa edilmiş
 
 
-## 🌐 Canlı Demo
-
-[Canlı Demo](https://www.portfoliom.xyz) üzerinden PortfolioM'i keşfedin.
 
 
 
