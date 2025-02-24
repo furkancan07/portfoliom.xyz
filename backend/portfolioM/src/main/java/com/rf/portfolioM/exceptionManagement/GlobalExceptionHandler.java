@@ -52,4 +52,12 @@ public class GlobalExceptionHandler {
                 build();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
+    // 429 hataları
+    @ExceptionHandler({RateLimitException.class})
+    public ResponseEntity<ApiResponse<Void>> RateLimitException(RuntimeException ex,HttpServletRequest http){
+        ApiResponse<Void> response=ApiResponse.<Void>builder().
+                message(ex.getMessage()).status(429).path(http.getRequestURI()).localDateTime(LocalDateTime.now()).
+                build();
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(response);
+    }
 }

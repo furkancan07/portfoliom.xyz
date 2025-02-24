@@ -35,15 +35,14 @@ public class WebSecurity {
     private final OAuth2AuthenticationSuccessHandler successHandler;
 
 
-
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/v1/user/{id}", "/api/v1/user/username/*", "/api/v1/user/list",
                                 "/api/v1/user/create",
-                                "/api/v1/comment/project/**", "/api/v1/project/{id}", "/api/v1/user/5","api/v1/user/search/**",
-                                "/api/v1/project/list/**", "/api/v1/auth/**","/api/v1/experience/{userId}").permitAll()
+                                "/api/v1/comment/project/**", "/api/v1/project/{id}", "/api/v1/user/5", "api/v1/user/search/**",
+                                "/api/v1/project/list/**", "/api/v1/auth/**", "/api/v1/experience/{userId}").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**")
                         .permitAll()
                         .anyRequest().authenticated()
@@ -51,7 +50,7 @@ public class WebSecurity {
                 .oauth2Login(a -> a.userInfoEndpoint(y -> y.userService(customOAuth2UserService))
                         .successHandler(successHandler)
 
-                ).exceptionHandling(ex->ex.authenticationEntryPoint(((request, response, authException) -> {
+                ).exceptionHandling(ex -> ex.authenticationEntryPoint(((request, response, authException) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");
                     response.getWriter().write("{\"error\": \"Unauthorized\"}");
