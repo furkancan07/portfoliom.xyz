@@ -8,6 +8,13 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.vfs;
 import userLogo from '../assets/user.png'
 import { TypeAnimation } from 'react-type-animation';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import LanguageIcon from '@mui/icons-material/Language';
+import EmailIcon from '@mui/icons-material/Email';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import CodeIcon from '@mui/icons-material/Code';
 
 
 function Profile() {
@@ -159,6 +166,27 @@ function Profile() {
 
   if (!userData) return <div className="loading">Yükleniyor...</div>;
 
+  const getPlatformIcon = (platform) => {
+    switch (platform.toLowerCase()) {
+      case 'github':
+        return <GitHubIcon />;
+      case 'linkedin':
+        return <LinkedInIcon />;
+      case 'twitter':
+        return <TwitterIcon />;
+      case 'instagram':
+        return <InstagramIcon />;
+      case 'email':
+        return <EmailIcon />;
+      case 'leetcode':
+        return <CodeIcon />;
+      case 'website':
+        return <LanguageIcon />;
+      default:
+        return <LanguageIcon />;
+    }
+  };
+
   return (
     <div className="profile-container">
       <button 
@@ -301,7 +329,9 @@ function Profile() {
                   rel="noopener noreferrer"
                   className="contact-link"
                 >
-                  <span className="platform-icon">🔗</span>
+                  <span className="platform-icon">
+                    {getPlatformIcon(platform)}
+                  </span>
                   <span>{platform}</span>
                 </a>
               )

@@ -894,34 +894,105 @@ body.dark-mode .profile-left {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   text-align: center;
+  background: linear-gradient(135deg, #ff4d4d 0%, #ff0000 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .contact-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .contact-link {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  gap: 12px;
+  padding: 12px 20px;
   border-radius: 12px;
-  margin-bottom: 0.75rem;
+  background: rgba(255, 77, 77, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  color: var(--text-color);
+  border: 1px solid rgba(255, 77, 77, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 77, 77, 0.1) 0%,
+    rgba(255, 77, 77, 0.05) 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.contact-link:hover {
+  transform: translateY(-3px);
+  border-color: var(--button-primary);
+  box-shadow: 0 5px 15px rgba(255, 77, 77, 0.15);
+}
+
+.contact-link:hover::before {
+  transform: translateX(0);
 }
 
 .platform-icon {
-  width: 40px;
-  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 35px;
+  height: 35px;
   background: rgba(255, 77, 77, 0.1);
   border-radius: 10px;
-  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.platform-icon svg {
+  font-size: 20px;
+  color: var(--button-primary);
+  transition: all 0.3s ease;
+}
+
+.contact-link:hover .platform-icon {
+  background: var(--button-primary);
+}
+
+.contact-link:hover .platform-icon svg {
+  color: white;
+  transform: scale(1.1);
+}
+
+.contact-link span:not(.platform-icon) {
+  font-weight: 500;
+  z-index: 1;
+}
+
+/* Responsive düzenlemeler */
+@media (max-width: 768px) {
+  .contact-link {
+    padding: 10px 16px;
+  }
+
+  .platform-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .platform-icon svg {
+    font-size: 18px;
+  }
 }
 
 .loading-projects {
