@@ -164,7 +164,7 @@ const CreateCV = () => {
         {
           margin: [40, 0, 0, 0],
           columns: [
-            // Sol kolon - Profil ve İletişim
+            // Sol kolon - Profil, İletişim, Eğitim ve Yetenekler
             {
               width: '30%',
               stack: [
@@ -190,7 +190,31 @@ const CreateCV = () => {
                     link: url,
                     style: 'link',
                     margin: [0, 5]
-                  }))
+                  })),
+                // Eğitim Bilgileri
+                {
+                  text: t.education,
+                  style: 'sectionHeader',
+                  margin: [0, 20, 0, 10]
+                },
+                {
+                  text: userData.university || '',
+                  style: 'normalText',
+                  margin: [0, 0, 0, 20]
+                },
+                // Yetenekler
+                {
+                  text: t.skills,
+                  style: 'sectionHeader',
+                  margin: [0, 20, 0, 10]
+                },
+                {
+                  ul: Object.keys(userData.skills || {}).map(skill => ({
+                    text: skill,
+                    style: 'skillItem'
+                  })),
+                  margin: [0, 0, 0, 20]
+                }
               ]
             },
             // Sağ kolon - Ana Bilgiler
@@ -212,75 +236,28 @@ const CreateCV = () => {
                   style: 'jobTitle',
                   margin: [0, 0, 0, 20]
                 },
-                {
-                  text: t.about,
-                  style: 'sectionHeader',
-                  margin: [0, 0, 0, 10]
-                },
-                {
-                  text: userData.aboutMe || '',
-                  style: 'normalText',
-                  margin: [0, 0, 0, 20]
-                },
-                {
-                  text: t.education,
-                  style: 'sectionHeader',
-                  margin: [0, 0, 0, 10]
-                },
-                {
-                  text: userData.university || '',
-                  style: 'normalText',
-                  margin: [0, 0, 0, 20]
-                },
-                {
-                  text: t.skills,
-                  style: 'sectionHeader',
-                  margin: [0, 0, 0, 10]
-                },
-                {
-                  columns: [
-                    {
-                      ul: Object.entries(userData.skills || {}).map(([skill, level]) => ({
-                        text: `${skill} (${level})`,
-                        style: 'skillItem'
-                      }))
-                    }
-                  ],
-                  margin: [0, 0, 0, 20]
-                },
-                {
-                  text: t.projects,
-                  style: 'sectionHeader',
-                  margin: [0, 0, 0, 10]
-                },
-                ...projects.map(project => ({
-                  stack: [
-                    {
-                      text: project.name,
-                      style: 'projectTitle',
-                      margin: [0, 5, 0, 5]
-                    },
-                    {
-                      text: `${t.technologies}: ${project.skills?.join(', ')}`,
-                      style: 'normalText',
-                      margin: [0, 0, 0, 5]
-                    },
-                    {
-                      text: t.viewProject,
-                      link: project.projectLink,
-                      style: 'link',
-                      margin: [0, 0, 0, 15]
-                    }
-                  ]
-                })),
-                {
-                  text: t.experience,
-                  style: 'sectionHeader',
-                  margin: [0, 15, 0, 10]
-                },
-                {
-                  ul: experiences?.map(exp => [
-                    {
+                // Hakkımda kısmı varsa ekle
+                userData.aboutMe ? [
+                  {
+                    text: t.about,
+                    style: 'sectionHeader',
+                    margin: [0, 0, 0, 10]
+                  },
+                  {
+                    text: userData.aboutMe,
+                    style: 'normalText',
+                    margin: [0, 0, 0, 20]
+                  }
+                ] : [],
+                // Deneyim varsa ekle
+                ...(experiences?.length > 0 ? [
+                  {
+                    text: t.experience,
+                    style: 'sectionHeader',
+                    margin: [0, 0, 0, 10]
+                  },
+                  {
+                    ul: experiences.map(exp => ({
                       text: [
                         { text: `${exp.companyName}\n`, style: 'strong' },
                         { text: `${POSITION_TRANSLATIONS[exp.position]}\n`, style: 'position' },
@@ -296,9 +273,38 @@ const CreateCV = () => {
                         }
                       ],
                       margin: [0, 0, 0, 10]
-                    }
-                  ]) || []
-                }
+                    })),
+                    margin: [0, 0, 0, 20]
+                  }
+                ] : []),
+                // Projeler varsa ekle
+                ...(projects?.length > 0 ? [
+                  {
+                    text: t.projects,
+                    style: 'sectionHeader',
+                    margin: [0, 0, 0, 10]
+                  },
+                  ...projects.map(project => ({
+                    stack: [
+                      {
+                        text: project.name,
+                        style: 'projectTitle',
+                        margin: [0, 5, 0, 5]
+                      },
+                      {
+                        text: `${t.technologies}: ${project.skills?.join(', ')}`,
+                        style: 'normalText',
+                        margin: [0, 0, 0, 5]
+                      },
+                      {
+                        text: t.viewProject,
+                        link: project.projectLink,
+                        style: 'link',
+                        margin: [0, 0, 0, 15]
+                      }
+                    ]
+                  }))
+                ] : [])
               ]
             }
           ]
