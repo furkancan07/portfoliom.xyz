@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import logo from '../assets/logo.jpg'
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 function Login({ onLogin }) {
   const [formData, setFormData] = useState({
@@ -86,12 +87,12 @@ function Login({ onLogin }) {
         </div>
         <button type="submit" className="login-button">Giriş Yap</button>
         <button type="button" className="github-button" onClick={handleGitHubLogin}>
-          GitHub ile Giriş Yap
+          <GitHubIcon className="github-icon" /> GitHub ile Giriş Yap
         </button>
+        <p className="register-text">
+          Hesabınız yok mu? <span className="register-link" onClick={() => navigate('/register')}>Kayıt Ol</span>
+        </p>
       </form>
-      <button type="button" className="register-button" onClick={() => navigate('/register')}>
-        Kayıt Ol
-      </button>
     </div>
   );
 }

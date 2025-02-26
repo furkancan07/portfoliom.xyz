@@ -209,3 +209,45 @@ nav button {
 nav button:hover {
   background-color: #e63946; /* Hover rengi */
 }
+
+.github-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: #24292e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.github-button:hover {
+  background: #2f363d;
+  transform: translateY(-2px);
+}
+
+.github-icon {
+  font-size: 20px;
+}
+
+.register-text {
+  margin-top: 15px;
+  text-align: center;
+  color: #666;
+}
+
+.register-link {
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.register-link:hover {
+  color: #0056b3;
+}

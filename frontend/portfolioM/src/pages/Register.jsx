@@ -131,9 +131,9 @@ function Register({ onLogin }) {
         </div>
         <button type="submit" className="login-button">Kayıt Ol</button>
       </form>
-      <button type="button" className="register-button" onClick={() => navigate('/login')}>
-        Giriş Yap
-      </button>
+      <p className="register-text">
+        Zaten hesabınız var mı? <span className="register-link" onClick={() => navigate('/login')}>Giriş Yap</span>
+      </p>
     </div>
   );
 }
