@@ -212,7 +212,6 @@ Detaylı API dokümantasyonu için [Swagger UI](https://portfoliom-is7q.onrender
 - Spring Security  
 - JPA/Hibernate  
 - JWT  
-- Spring Cloud
 - Cloudinary
 - bucket4j
 - Swagger  
@@ -222,7 +221,6 @@ Detaylı API dokümantasyonu için [Swagger UI](https://portfoliom-is7q.onrender
 
 **Frontend:**  
 - React 19  
-- Redux  
 - Material-UI  
 - Axios  
 
