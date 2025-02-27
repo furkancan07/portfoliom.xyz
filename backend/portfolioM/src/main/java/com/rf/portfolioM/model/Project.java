@@ -3,6 +3,7 @@ import com.rf.portfolioM.model.enums.ProjectArea;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 
 import java.util.List;
 

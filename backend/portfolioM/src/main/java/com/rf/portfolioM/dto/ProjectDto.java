@@ -2,6 +2,7 @@ package com.rf.portfolioM.dto;
 import com.rf.portfolioM.model.enums.ProjectArea;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -12,9 +13,11 @@ public class ProjectDto {
     private String id;
     private String name;
     private String description;
-    private List<String> imagesUrl;
+    @Builder.Default
+    private List<String> imagesUrl = new ArrayList<>();
     private ProjectArea projectArea;
-    private List<String> skills;
+    @Builder.Default
+    private List<String> skills = new ArrayList<>();
     private UserInformation user;
     private String projectLink;
 

@@ -14,9 +14,11 @@ import com.rf.portfolioM.model.enums.ProjectArea;
 import com.rf.portfolioM.repository.ProjectRepository;
 import com.rf.portfolioM.security.UserIdentityManager;
 import com.rf.portfolioM.utils.ApiResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import jakarta.transaction.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,13 +31,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProjectService {
     private final ProjectRepository repository;
-    private final UserService userService;
+
     private final CloudinaryService cloudinaryService;
     private final DtoConverter converter;
-private final UserIdentityManager manager;
+    private final UserIdentityManager manager;
+
     public ApiResponse<ProjectDto> createProject(AddProjectRequest request, List<MultipartFile> files) {
         User user = manager.getAuthenticatedUser();
-        int countMax=repository.countByUserId(user.getId());
+        int countMax = repository.countByUserId(user.getId());
         Project project = Project.builder().user(user).projectLink(request.getProjectLink()).projectArea(request.getProjectArea())
                 .description(request.getDescription())
                 .skills(request.getSkills())
@@ -59,32 +62,38 @@ private final UserIdentityManager manager;
         return url;
     }
 
+    @CacheEvict(value = {"projects", "projectsByTag"}, allEntries = true)
     public ApiResponse<Void> delete(String id) {
-        Project project=getProjectById(id);
+        Project project = getProjectById(id);
         repository.delete(project);
         return ApiResponse.ok("Proje Silindi");
     }
+
     public ApiResponse<ProjectDto> getProject(String id) {
-        return ApiResponse.ok("Proje Bilgisi",converter.convertProject(getProjectById(id)));
-    }
-    protected Project getProjectById(String id){
-      return   repository.findById(id).orElseThrow(()-> new NotFoundException("Proje "));
+        return ApiResponse.ok("Proje Bilgisi", converter.convertProject(getProjectById(id)));
     }
 
+    protected Project getProjectById(String id) {
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("Proje "));
+    }
+
+    @Cacheable(value = "projects", key = "#userId")
     public ApiResponse<List<ProjectDto>> getProjectsByUser(String userId) {
-        List<Project> projects=repository.findByUserIdOrderByOrderIndexAsc(userId);
-        return ApiResponse.ok("Projeler",projects.stream().map(converter::convertProject).collect(Collectors.toList()));
+        List<Project> projects = repository.findByUserIdOrderByOrderIndexAsc(userId);
+        return ApiResponse.ok("Projeler", projects.stream().map(converter::convertProject).collect(Collectors.toList()));
     }
 
+    @Cacheable(value = "projectsByTag", key = "#userId + '_' + #tag")
     public ApiResponse<List<ProjectDto>> getProjectsByUserAndTag(String userId, ProjectArea tag) {
-        List<Project> projects=repository.findByUserIdAndProjectAreaOrderByOrderIndex(userId,tag);
-        return ApiResponse.ok(tag+" Projeleri",projects.stream().map(converter::convertProject).collect(Collectors.toList()));
+        List<Project> projects = repository.findByUserIdAndProjectAreaOrderByOrderIndex(userId, tag);
+        return ApiResponse.ok(tag + " Projeleri", projects.stream().map(converter::convertProject).collect(Collectors.toList()));
     }
 
     protected Project findById(String projectId) {
-       return repository.findById(projectId).orElseThrow(()->new NotFoundException("Proje"));
+        return repository.findById(projectId).orElseThrow(() -> new NotFoundException("Proje"));
     }
 
+    @CacheEvict(value = {"projects", "projectsByTag"}, allEntries = true)
     public ApiResponse<ProjectDto> updateProject(String id, UpdateProjectRequest request) {
         Project project = getProjectById(id);
 
@@ -118,6 +127,7 @@ private final UserIdentityManager manager;
         return ApiResponse.ok("Proje güncellendi", converter.convertProject(project));
     }
 
+    @CacheEvict(value = {"projects", "projectsByTag"}, allEntries = true)
     @Transactional
     public ApiResponse<List<ProjectDto>> updateProjectOrder(ProjectReOrderRequest request) {
         User user = manager.getAuthenticatedUser();

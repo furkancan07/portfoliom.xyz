@@ -9,6 +9,7 @@ import com.rf.portfolioM.repository.ExperienceRepository;
 import com.rf.portfolioM.security.UserIdentityManager;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -43,13 +44,21 @@ public class DtoConverter {
 
                .build();
     }
-    public ProjectDto convertProject(Project project) {
-    return  ProjectDto.builder().id(project.getId()).name(project.getName()).description(project.getDescription())
-                .imagesUrl(project.getImagesUrl()).projectArea(project.getProjectArea())
-                .skills(project.getSkills())
-                .user(convertUserInformation(project.getUser())).projectLink(project.getProjectLink())
+    public ProjectDto convertProject(Project from) {
+        if(from == null) {
+            return null;
+        }
+        
+        return ProjectDto.builder()
+                .id(from.getId())
+                .name(from.getName())
+                .description(from.getDescription())
+                .imagesUrl(from.getImagesUrl() != null ? new ArrayList<>(from.getImagesUrl()) : new ArrayList<>())
+                .projectArea(from.getProjectArea())
+                .skills(from.getSkills() != null ? new ArrayList<>(from.getSkills()) : new ArrayList<>())
+                .user(convertUserInformation(from.getUser()))
+                .projectLink(from.getProjectLink())
                 .build();
-
     }
     public CommentDto convertComment(Comment comment){
         return CommentDto.builder().id(comment.getId()).comment(comment.getComment())
