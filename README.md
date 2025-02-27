@@ -206,6 +206,31 @@ Detaylı API dokümantasyonu için [Swagger UI](https://portfoliom-is7q.onrender
 
 ## 🌥️ Kullanılan Teknolojiler ve Dağıtım
 
-PortfolioM, modern teknolojilerle inşa edilmiştir. Proje, **Cloudinary** ile dosya yönetimi ve **Render** üzerinden Dockerize edilerek deploy edilmiştir. Backend, **Supabase** üzerinde PostgreSQL veritabanıyla barındırılmakta, frontend ise **Vercel** üzerinde dağıtılmaktadır. Tüm deploy işlemleri tamamen ücretsiz ve verimli bir şekilde yapılmaktadır.
+**Backend:**  
+- Java 17  
+- Spring Boot 3.3.5  
+- Spring Security  
+- JPA/Hibernate  
+- JWT  
+- Spring Cloud
+- Cloudinary
+- bucket4j
+- Swagger  
+- PostreSQL  
+- Redis
+
+
+**Frontend:**  
+- React 19  
+- Redux  
+- Material-UI  
+- Axios  
+
+**Veritabanı:**  
+- PostreSQL
+- Redis
+
+**Dağıtım ve Barındırma:**  
+PortfolioM, modern teknolojilerle inşa edilmiştir. Proje, **Cloudinary** ile dosya yönetimi ve **Render** üzerinden Dockerize edilerek deploy edilmiştir. Backend, **Supabase** üzerinde PostgreSQL veritabanıyla barındırılmakta,Redis upstash üzerinde bulunmakta , frontend ise **Vercel** üzerinde dağıtılmaktadır. Tüm deploy işlemleri tamamen ücretsiz ve verimli bir şekilde yapılmaktadır.
 
 
