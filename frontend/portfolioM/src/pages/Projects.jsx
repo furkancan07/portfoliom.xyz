@@ -114,7 +114,7 @@ const Projects = () => {
       <div className="projects-info">
         <p>
           <i className="info-icon">ℹ️</i>
-          Projeleri sürükleyip bırakarak sıralayabilirsiniz. Sıralamayı kaydetmek için aşağıdaki butonu kullanın.
+          Projeleri sürükleyip bırakarak sıralayabilirsiniz. Sıralamayı kaydetmek için aşağıdaki butonu kullanın. Daha iyi bir deneyim için bilgisayarda deneyin.
         </p>
       </div>
 

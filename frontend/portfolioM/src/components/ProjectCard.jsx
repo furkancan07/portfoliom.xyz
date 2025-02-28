@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import ProjectModal from './ProjectModal';
 import './ProjectCard.css';
 import { useNavigate } from 'react-router-dom';
-import { deleteProject } from '../server/api';
+
 
 const ProjectCard = ({ project, onDelete }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
 
   const nextImage = () => {

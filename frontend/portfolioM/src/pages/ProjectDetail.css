@@ -1,32 +1,13 @@
 .project-detail-page {
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
   background: var(--background-color);
   position: relative;
-  padding: 2rem;
+  padding: 0;
+  margin-top: 40px;
 }
 
 .close-button {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.5);
-  border: none;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  z-index: 100;
-}
-
-.close-button:hover {
-  transform: rotate(90deg);
-  background: rgba(0, 0, 0, 0.8);
+  display: none;
 }
 
 .project-detail-container {
@@ -36,22 +17,23 @@
 }
 
 .project-detail-container h1 {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  text-align: center;
-  background: linear-gradient(135deg, var(--button-primary) 0%, #ff0000 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: 1.4rem;
+  margin: 0 0 0.5rem 0;
+  text-align: left;
+  color: var(--text-color);
+  font-weight: 600;
+  padding-left: 0.5rem;
+  border-left: 3px solid var(--button-primary);
 }
 
 .project-content {
   background: var(--card-background);
   border-radius: 20px;
-  padding: 1rem;
+  padding: 0.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 0.5rem;
   position: relative;
 }
 
@@ -62,18 +44,21 @@
 
 .main-image-container {
   width: 100%;
-  height: 500px;
+  height: 350px;
   border-radius: 15px;
   overflow: hidden;
   position: relative;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  background: #000;
 }
 
 .main-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.3s ease;
+  display: block;
+  margin: auto;
 }
 
 .main-image:hover {
@@ -112,18 +97,18 @@
 
 .image-thumbnails {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   overflow-x: auto;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   scrollbar-width: thin;
   scrollbar-color: var(--button-primary) transparent;
 }
 
 .thumbnail {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 60px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   opacity: 0.6;
@@ -141,14 +126,24 @@
 }
 
 .description-section, .technologies-section {
-  padding: 1rem 0;
-  border-top: 1px solid rgba(255, 77, 77, 0.1);
+  padding: 0.25rem 0;
+  border-top: 1px solid rgba(255, 77, 77, 0.05);
 }
 
 h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: var(--button-primary);
+  font-size: 0.9rem;
+  margin: 0 0 0.25rem 0;
+  color: var(--text-color);
+  font-weight: 500;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--button-primary);
+}
+
+.project-detail-container h1,
+h2 {
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
 }
 
 .description-section p {
@@ -160,7 +155,7 @@ h2 {
 .tech-stack {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  gap: 0.4rem;
 }
 
 .tech-tag {
@@ -177,7 +172,14 @@ h2 {
   box-shadow: 0 4px 10px rgba(255, 77, 77, 0.2);
 }
 
-.project-link {
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.project-link, .back-button {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -185,19 +187,34 @@ h2 {
   background: var(--button-primary);
   color: white;
   text-decoration: none;
-  padding: 1rem;
-  border-radius: 14px;
+  padding: 0.5rem;
+  border-radius: 10px;
   font-weight: 500;
   transition: all 0.3s ease;
-  margin-top: 1rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  height: 35px;
+  min-height: 35px;
 }
 
-.project-link:hover {
+.back-button {
+  background: var(--card-background);
+  border: 2px solid var(--button-primary);
+  color: var(--text-color);
+}
+
+.project-link:hover, .back-button:hover {
   transform: translateY(-2px);
 }
 
+.back-button:hover {
+  background: var(--button-primary);
+  color: white;
+}
+
 .arrow {
-  font-size: 1.2rem;
+  font-size: 1rem;
   transition: transform 0.3s ease;
 }
 
@@ -207,20 +224,39 @@ h2 {
 
 @media (max-width: 768px) {
   .project-detail-page {
-    padding: 1rem;
+    margin-top: 30px;
   }
 
-  .close-button {
-    width: 35px;
-    height: 35px;
-    font-size: 1.5rem;
+  .project-detail-container h1 {
+    font-size: 1.2rem;
+  }
+
+  h2 {
+    font-size: 0.8rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .project-link, .back-button {
+    width: 100%;
+    height: 32px;
+    min-height: 32px;
+    padding: 0.4rem;
+    font-size: 0.85rem;
   }
 
   .main-image-container {
-    height: 300px;
+    height: 250px;
   }
 
   .project-content {
-    padding: 1rem;
+    padding: 0.5rem;
+  }
+
+  .thumbnail {
+    width: 60px;
+    height: 45px;
   }
 } 

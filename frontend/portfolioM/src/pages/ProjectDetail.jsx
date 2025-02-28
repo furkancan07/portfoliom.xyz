@@ -45,12 +45,10 @@ const ProjectDetail = () => {
 
   return (
     <div className="project-detail-page">
-      <button className="close-button" onClick={() => navigate(-1)}>×</button>
-      
       <div className="project-detail-container">
-        <h1>{project.name}</h1>
-
         <div className="project-content">
+          <h1>{project.name}</h1>
+          
           <div className="image-section">
             {project.imagesUrl && project.imagesUrl.length > 0 ? (
               <>
@@ -87,25 +85,31 @@ const ProjectDetail = () => {
             )}
           </div>
 
-          <div className="content-section">
-            <div className="description-section">
-              <h3>{project.description}</h3>
-            </div>
+          <div className="description-section">
+            <h4>Açıklama</h4>
+            <p>{project.description}</p>
+          </div>
 
-            <div className="technologies-section">
-              <div className="tech-stack">
-                {project.skills.map((skill, index) => (
-                  <span key={index} className="tech-tag">
-                    {skill}
-                  </span>
-                ))}
-              </div>
+          <div className="technologies-section">
+            <h4>Teknolojiler</h4>
+            <div className="tech-stack">
+              {project.skills.map((skill, index) => (
+                <span key={index} className="tech-tag">
+                  {skill}
+                </span>
+              ))}
             </div>
+          </div>
 
+          <div className="button-group">
             <Link to={project.projectLink} target="_blank" className="project-link">
               <span>Projeyi Görüntüle</span>
               <span className="arrow">→</span>
             </Link>
+            <button onClick={() => navigate(-1)} className="back-button">
+              <span>Geri Git</span>
+              <span className="arrow">←</span>
+            </button>
           </div>
         </div>
       </div>
