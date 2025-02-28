@@ -50,24 +50,6 @@ PortfolioM, yazılımcıların projelerini kolayca kategorilere ayırarak sergil
 - Yetenek onayları (gelecek)
 - Proje işbirliği (gelecek)
 
-
-
-### Ön Uç (Frontend)
-
-- React 19.0
-- Material-UI Bileşenleri
-- Duyarlı Tasarım
-- Modern animasyonlar
-
-
-### Arka Uç (Backend)
-
-- Spring Boot 3.3.5
-- JWT Kimlik Doğrulama
-- Bulut Depolama Entegrasyonu
-- RESTful API Mimarisi
-- Gelişmiş Güvenlik Özellikleri
-
 ## 🎉 Neden PortfolioM?
 
 - **Profesyonel Görünüm**: Öne çıkan etkileyici bir dijital portfolyo oluşturun
@@ -206,6 +188,39 @@ Detaylı API dokümantasyonu için [Swagger UI](https://portfoliom-is7q.onrender
 
 ## 🌥️ Kullanılan Teknolojiler ve Dağıtım
 
-PortfolioM, modern teknolojilerle inşa edilmiştir. Proje, **Cloudinary** ile dosya yönetimi ve **Render** üzerinden Dockerize edilerek deploy edilmiştir. Backend, **Supabase** üzerinde PostgreSQL veritabanıyla barındırılmakta, frontend ise **Vercel** üzerinde dağıtılmaktadır. Tüm deploy işlemleri tamamen ücretsiz ve verimli bir şekilde yapılmaktadır.
+
+
+### Backend Core
+* Java 17
+* Spring Boot 3.3.5
+* Maven
+
+### Veritabanı & Cache
+* PostgreSQL
+* Redis (Upstash)
+* JPA/Hibernate
+
+### Güvenlik
+* Spring Security
+* JWT (JSON Web Token)
+* OAuth2 Client
+
+### Cloud Servisler
+* Cloudinary (Dosya Depolama)
+
+### API & Dokümantasyon
+* RESTful API
+* OpenAPI/Swagger
+
+### Performans & Ölçeklendirme
+* Bucket4j (Rate Limiting)
+* Redis Cache
+
+
+**Dağıtım ve Barındırma:**  
+PortfolioM, modern teknolojilerle inşa edilmiştir. Proje, **Cloudinary** ile dosya yönetimi ve **Render** üzerinden Dockerize edilerek deploy edilmiştir. Backend, **Supabase** üzerinde PostgreSQL veritabanıyla barındırılmakta,Redis upstash üzerinde bulunmakta , frontend ise **Vercel** üzerinde dağıtılmaktadır. Tüm deploy işlemleri tamamen ücretsiz ve verimli bir şekilde yapılmaktadır.
+
+
+
 
 
