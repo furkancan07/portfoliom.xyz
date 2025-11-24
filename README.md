@@ -12,7 +12,7 @@ PortfolioM, yazılımcıların projelerini kolayca kategorilere ayırarak sergil
 
 ## Canlı Demo
 
-[Canlı Demo](https://www.portfoliom.xyz) üzerinden PortfolioM'u keşfedin.
+[Canlı Demo](https://www.portfoliom.dev) üzerinden PortfolioM'u keşfedin.
 
 ## Temel Özellikler
 
