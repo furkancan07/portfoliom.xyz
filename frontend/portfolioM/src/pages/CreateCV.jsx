@@ -163,7 +163,6 @@ const CreateCV = () => {
                   )}
                 </div>
                 <p className="project-tech">{project.skills?.join(', ')}</p>
-                <p className="project-desc">{project.description}</p>
               </div>
             ))}
           </div>
