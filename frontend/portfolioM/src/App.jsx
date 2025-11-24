@@ -40,13 +40,13 @@ function App() {
         try {
           const response = await fetchUserData(username);
           const userData = response.data;
-          
+
           // Profil bilgilerinin boş olup olmadığını kontrol et
-          const isProfileEmpty = !userData.university && 
-                               !userData.job && 
-                               !userData.area && 
-                               !userData.aboutMe && 
-                               (!userData.skills || Object.keys(userData.skills).length === 0);
+          const isProfileEmpty = !userData.university &&
+            !userData.job &&
+            !userData.area &&
+            !userData.aboutMe &&
+            (!userData.skills || Object.keys(userData.skills).length === 0);
 
           if (isProfileEmpty) {
             navigate('/profile-update');
