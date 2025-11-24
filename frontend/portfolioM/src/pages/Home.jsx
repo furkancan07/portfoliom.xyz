@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SearchBar from '../components/SearchBar';
 import './Home.css';
-import { motion } from 'framer-motion'; 
+import { motion } from 'framer-motion';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
 import WorkIcon from '@mui/icons-material/Work';
@@ -15,7 +15,7 @@ const Home = () => {
   const [showLoginAlert, setShowLoginAlert] = useState(false);
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const checkUserProfile = async () => {
       const token = localStorage.getItem('token');
@@ -56,7 +56,7 @@ const Home = () => {
       navigate('/login');
       return;
     }
-    navigate('/'+localStorage.getItem('username'));
+    navigate('/' + localStorage.getItem('username'));
   };
 
   return (
@@ -65,25 +65,25 @@ const Home = () => {
         <div className="welcome-alert-overlay">
           <div className="welcome-alert">
             <div className="alert-content">
-              <h3>👋 Portfoliom.xyz'ye Hoş Geldiniz!</h3>
+              <h3>👋 Portfoliom.dev'e Hoş Geldiniz!</h3>
               <p>
                 Projelerinizi sergilemek ve profesyonel CV'nizi oluşturmak için
                 hemen giriş yapın.
               </p>
               <div className="alert-buttons">
-                <button 
+                <button
                   className="edit-profile-btn"
                   onClick={() => navigate('/login')}
                 >
                   Giriş Yap
                 </button>
-                <button 
+                <button
                   className="add-project-btn"
                   onClick={() => navigate('/register')}
                 >
                   Kayıt Ol
                 </button>
-                <button 
+                <button
                   className="dismiss-btn"
                   onClick={() => setShowLoginAlert(false)}
                 >
@@ -94,30 +94,30 @@ const Home = () => {
           </div>
         </div>
       )}
-      
+
       {showWelcomeAlert && (
         <div className="welcome-alert-overlay">
           <div className="welcome-alert">
             <div className="alert-content">
-              <h3>🎉 Portfoliom.xyz'ye Hoş Geldiniz!</h3>
+              <h3>🎉 Portfoliom.dev'ye Hoş Geldiniz!</h3>
               <p>
-                Profesyonel profilinizi oluşturmak ve projelerinizi sergilemek için 
+                Profesyonel profilinizi oluşturmak ve projelerinizi sergilemek için
                 hemen başlayın.
               </p>
               <div className="alert-buttons">
-                <button 
+                <button
                   className="edit-profile-btn"
                   onClick={() => navigate('/profile-update')}
                 >
                   Profili Düzenle
                 </button>
-                <button 
+                <button
                   className="add-project-btn"
                   onClick={() => navigate('/add-project')}
                 >
                   Proje Ekle
                 </button>
-                <button 
+                <button
                   className="dismiss-btn"
                   onClick={() => setShowWelcomeAlert(false)}
                 >
@@ -128,8 +128,8 @@ const Home = () => {
           </div>
         </div>
       )}
-      
-      <motion.div 
+
+      <motion.div
         className="hero-section"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -141,11 +141,11 @@ const Home = () => {
             <span>PortfolioM</span>
           </div>
         </div>
-        
+
         <h1 className="main-title">
           Yazılımcılar İçin <span className="highlight">Profesyonel Portföy Platformu</span>
         </h1>
-        
+
         <p className="subtitle">
           Projelerinizi sergileyin, profesyonel CV'nizi oluşturun ve yazılım dünyasında fark yaratın
         </p>
@@ -155,7 +155,7 @@ const Home = () => {
         </div>
 
         <div className="features">
-          <motion.div 
+          <motion.div
             className="feature-card"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
@@ -165,7 +165,7 @@ const Home = () => {
             <p>Binlerce geliştirici ve projeyi keşfedin</p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="feature-card"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
@@ -175,7 +175,7 @@ const Home = () => {
             <p>Yeteneklerinizi öne çıkaran profesyonel CV'nizi hazırlayın</p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="feature-card"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
@@ -192,12 +192,12 @@ const Home = () => {
           <h3>Tarzını Göster</h3>
           <p>Profilini özelleştir ve kendini ifade et</p>
         </div>
-        
+
         <div className="action-card" onClick={() => navigate('/projects')}>
           <h3>Henüz Proje Eklemedin mi?</h3>
           <p>Hemen projeni ekle ve yeteneklerini sergile</p>
         </div>
-        
+
         <div className="action-card" onClick={handlePortfolioClick}>
           <h3>Portfolyonu Keşfet</h3>
           <p>Profilini görüntüle ve etkini artır</p>
@@ -210,17 +210,17 @@ const Home = () => {
             © {new Date().getFullYear()} PortfolioM. Developed by Furkan Can
           </div>
           <div className="footer-right">
-            <a 
-              href="https://github.com/furkancan07" 
-              target="_blank" 
+            <a
+              href="https://github.com/furkancan07"
+              target="_blank"
               rel="noopener noreferrer"
               className="social-link"
             >
               <GitHubIcon /> GitHub
             </a>
-            <a 
-              href="https://www.linkedin.com/in/furkan-can-45182b236/" 
-              target="_blank" 
+            <a
+              href="https://www.linkedin.com/in/furkan-can-45182b236/"
+              target="_blank"
               rel="noopener noreferrer"
               className="social-link"
             >
