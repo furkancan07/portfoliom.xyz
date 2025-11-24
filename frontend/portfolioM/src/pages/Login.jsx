@@ -5,7 +5,7 @@ import '../Login.css';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import logo from '../assets/logo.jpg'
+import logo from '../assets/logo.png'
 import GitHubIcon from '@mui/icons-material/GitHub';
 
 function Login({ onLogin }) {

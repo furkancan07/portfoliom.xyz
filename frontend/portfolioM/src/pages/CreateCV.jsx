@@ -1,21 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchUserData, getUserProjects, getUserExperiences } from '../server/api';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-pdfMake.vfs = pdfFonts.vfs;
+import { ReactSortable } from "react-sortablejs";
+import { useReactToPrint } from 'react-to-print';
 import './CreateCV.css';
 import userLogo from '../assets/user.png';
-
-// Helvetica yerine Roboto fontunu kullanalım çünkü pdfmake varsayılan olarak bunu destekliyor
-pdfMake.fonts = {
-  Roboto: {
-    normal: 'Roboto-Regular.ttf',
-    bold: 'Roboto-Medium.ttf',
-    italics: 'Roboto-Italic.ttf',
-    bolditalics: 'Roboto-MediumItalic.ttf'
-  }
-};
 
 const CreateCV = () => {
   const [userData, setUserData] = useState(null);
@@ -23,10 +12,27 @@ const CreateCV = () => {
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState('tr');
-  const [showProfileWarning, setShowProfileWarning] = useState(false);
-  const navigate = useNavigate();
 
-  // Pozisyon çevirilerini ekleyelim
+  // State for CV Customization
+  const [selectedTheme, setSelectedTheme] = useState('modern');
+  const [selectedProjectIds, setSelectedProjectIds] = useState([]);
+  const [sections, setSections] = useState([
+    { id: 'about', name: 'Hakkımda', enabled: true },
+    { id: 'education', name: 'Eğitim', enabled: true },
+    { id: 'skills', name: 'Yetenekler', enabled: true },
+    { id: 'experience', name: 'Deneyim', enabled: true },
+    { id: 'projects', name: 'Projeler', enabled: true },
+    { id: 'contact', name: 'İletişim', enabled: true }
+  ]);
+
+  const navigate = useNavigate();
+  const componentRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: userData ? `${userData.name}_${userData.surname}_CV` : 'CV',
+  });
+
   const POSITION_TRANSLATIONS = {
     'INTERN': 'Stajyer',
     'JUNIOR': 'Junior Geliştirici',
@@ -37,7 +43,7 @@ const CreateCV = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      localStorage.clear(); // Tüm storage'ı temizle
+      localStorage.clear();
       navigate('/login');
       return;
     }
@@ -46,34 +52,17 @@ const CreateCV = () => {
       try {
         const username = localStorage.getItem('username');
         const response = await fetchUserData(username);
-        const userData = response.data;
-        setUserData(userData);
+        setUserData(response.data);
 
-        // Profil bilgilerinin eksik olup olmadığını kontrol et
-        const isProfileIncomplete = !(
-          userData.name &&
-          userData.surname &&
-          userData.university &&
-          userData.job &&
-          userData.area &&
-          userData.aboutMe &&
-          Object.keys(userData.skills || {}).length > 0
-        );
-
-        setShowProfileWarning(isProfileIncomplete);
-
-        // Projeleri ve deneyimleri getir
-        const projectsResponse = await getUserProjects(userData.id);
+        const projectsResponse = await getUserProjects(response.data.id);
         setProjects(projectsResponse.data);
+        setSelectedProjectIds(projectsResponse.data.slice(0, 3).map(p => p.id));
 
         const experiencesResponse = await getUserExperiences(username);
         setExperiences(experiencesResponse.data || []);
       } catch (error) {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-          localStorage.clear();
-          navigate('/login');
-        }
         console.error('Veri yükleme hatası:', error);
+        if (error.response?.status === 401) navigate('/login');
       } finally {
         setLoading(false);
       }
@@ -81,6 +70,14 @@ const CreateCV = () => {
 
     fetchData();
   }, [navigate]);
+
+  const toggleProject = (projectId) => {
+    setSelectedProjectIds(prev =>
+      prev.includes(projectId)
+        ? prev.filter(id => id !== projectId)
+        : [...prev, projectId]
+    );
+  };
 
   const translations = {
     tr: {
@@ -91,12 +88,17 @@ const CreateCV = () => {
       contact: 'İletişim',
       viewProject: 'Projeyi Görüntüle',
       technologies: 'Teknolojiler',
-      generateCV: 'PDF Olarak İndir',
-      back: 'Geri Dön',
-      createCV: 'CV Oluştur',
-      preview: 'Profilinizden profesyonel bir CV oluşturabilirsiniz.',
+      generateCV: 'PDF İndir',
+      back: 'Geri',
+      createCV: 'CV Oluşturucu',
       experience: 'Deneyim',
       current: 'Devam Ediyor',
+      settings: 'CV Ayarları',
+      selectTheme: 'Tema Seçimi',
+      selectProjects: 'Projeleri Seç',
+      orderSections: 'Bölüm Sıralaması',
+      modern: 'Modern',
+      classic: 'Klasik'
     },
     en: {
       about: 'About',
@@ -106,421 +108,273 @@ const CreateCV = () => {
       contact: 'Contact',
       viewProject: 'View Project',
       technologies: 'Technologies',
-      generateCV: 'Download as PDF',
-      back: 'Go Back',
-      createCV: 'Create CV',
-      preview: 'Create a professional CV from your profile.',
+      generateCV: 'Download PDF',
+      back: 'Back',
+      createCV: 'CV Builder',
       experience: 'Experience',
       current: 'Present',
+      settings: 'CV Settings',
+      selectTheme: 'Select Theme',
+      selectProjects: 'Select Projects',
+      orderSections: 'Order Sections',
+      modern: 'Modern',
+      classic: 'Classic'
     }
   };
+
+  const [activeMobileTab, setActiveMobileTab] = useState('settings');
 
   const t = translations[language];
 
-  const generatePDF = async () => {
-    let profileImageBase64 = null;
-    try {
-      const response = await fetch(userData.profilePhotoUrl || userLogo);
-      const blob = await response.blob();
-      profileImageBase64 = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
-      });
-    } catch (error) {
-      console.error('Profil fotoğrafı yüklenemedi:', error);
-      try {
-        const blob = await fetch(userLogo).then(r => r.blob());
-        profileImageBase64 = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(blob);
-        });
-      } catch (err) {
-        console.error('Varsayılan fotoğraf yüklenemedi:', err);
-      }
-    }
 
-    const docDefinition = {
-      pageSize: 'A4',
-      pageMargins: [40, 40, 40, 40],
-      content: [
-        // Dekoratif sol kenar çizgisi
-        {
-          canvas: [
-            {
-              type: 'rect',
-              x: 0,
-              y: 0,
-              w: 8,
-              h: 750,
-              color: '#2c3e50',
-              linearGradient: ['#2c3e50', '#3498db']
-            }
-          ],
-          absolutePosition: { x: 40, y: 40 }
-        },
-        // Ana içerik
-        {
-          margin: [40, 0, 0, 0],
-          columns: [
-            // Sol kolon - Profil, İletişim, Eğitim ve Yetenekler
-            {
-              width: '30%',
-              stack: [
-                // Profil Fotoğrafı
-                profileImageBase64 ? {
-                  image: profileImageBase64,
-                  width: 120,
-                  height: 120,
-                  alignment: 'center',
-                  borderRadius: 60,
-                  margin: [0, 0, 0, 20]
-                } : {},
-                // İletişim Bilgileri
-                {
-                  text: t.contact,
-                  style: 'sectionHeader',
-                  margin: [0, 20, 0, 10]
-                },
-                ...Object.entries(userData.contactAddresses || {})
-                  .filter(([_, url]) => url)
-                  .map(([platform, url]) => ({
-                    text: platform,
-                    link: url,
-                    style: 'link',
-                    margin: [0, 5]
-                  })),
-                // Eğitim Bilgileri
-                {
-                  text: t.education,
-                  style: 'sectionHeader',
-                  margin: [0, 20, 0, 10]
-                },
-                {
-                  text: userData.university || '',
-                  style: 'normalText',
-                  margin: [0, 0, 0, 20]
-                },
-                // Yetenekler
-                {
-                  text: t.skills,
-                  style: 'sectionHeader',
-                  margin: [0, 20, 0, 10]
-                },
-                {
-                  ul: Object.keys(userData.skills || {}).map(skill => ({
-                    text: skill,
-                    style: 'skillItem'
-                  })),
-                  margin: [0, 0, 0, 20]
-                }
-              ]
-            },
-            // Sağ kolon - Ana Bilgiler
-            {
-              width: '70%',
-              stack: [
-                {
-                  text: `${userData.name} ${userData.surname}`,
-                  style: 'header',
-                  margin: [0, 0, 0, 5]
-                },
-                {
-                  text: userData.job || '',
-                  style: 'jobTitle',
-                  margin: [0, 0, 0, 5]
-                },
-                {
-                  text: userData.area || '',
-                  style: 'jobTitle',
-                  margin: [0, 0, 0, 20]
-                },
-                // Hakkımda kısmı varsa ekle
-                userData.aboutMe ? [
-                  {
-                    text: t.about,
-                    style: 'sectionHeader',
-                    margin: [0, 0, 0, 10]
-                  },
-                  {
-                    text: userData.aboutMe,
-                    style: 'normalText',
-                    margin: [0, 0, 0, 20]
-                  }
-                ] : [],
-                // Deneyim varsa ekle
-                ...(experiences?.length > 0 ? [
-                  {
-                    text: t.experience,
-                    style: 'sectionHeader',
-                    margin: [0, 0, 0, 10]
-                  },
-                  {
-                    ul: experiences.map(exp => ({
-                      text: [
-                        { text: `${exp.companyName}\n`, style: 'strong' },
-                        { text: `${POSITION_TRANSLATIONS[exp.position]}\n`, style: 'position' },
-                        { 
-                          text: `${new Date(exp.startTime).toLocaleDateString('tr-TR', {
-                            year: 'numeric',
-                            month: 'long'
-                          })} - ${exp.endDate ? new Date(exp.endDate).toLocaleDateString('tr-TR', {
-                            year: 'numeric',
-                            month: 'long'
-                          }) : t.current}`,
-                          style: 'date'
-                        }
-                      ],
-                      margin: [0, 0, 0, 10]
-                    })),
-                    margin: [0, 0, 0, 20]
-                  }
-                ] : []),
-                // Projeler varsa ekle
-                ...(projects?.length > 0 ? [
-                  {
-                    text: t.projects,
-                    style: 'sectionHeader',
-                    margin: [0, 0, 0, 10]
-                  },
-                  ...projects.map(project => ({
-                    stack: [
-                      {
-                        text: project.name,
-                        style: 'projectTitle',
-                        margin: [0, 5, 0, 5]
-                      },
-                      {
-                        text: `${t.technologies}: ${project.skills?.join(', ')}`,
-                        style: 'normalText',
-                        margin: [0, 0, 0, 5]
-                      },
-                      {
-                        text: t.viewProject,
-                        link: project.projectLink,
-                        style: 'link',
-                        margin: [0, 0, 0, 15]
-                      }
-                    ]
-                  }))
-                ] : [])
-              ]
-            }
-          ]
-        }
-      ],
-      styles: {
-        header: {
-          fontSize: 28,
-          bold: true,
-          color: '#1a1a1a'
-        },
-        jobTitle: {
-          fontSize: 14,
-          color: '#666666',
-          italics: true
-        },
-        sectionHeader: {
-          fontSize: 16,
-          bold: true,
-          color: '#2c3e50',
-          margin: [0, 10, 0, 5]
-        },
-        normalText: {
-          fontSize: 12,
-          color: '#444444',
-          lineHeight: 1.4
-        },
-        projectTitle: {
-          fontSize: 14,
-          bold: true,
-          color: '#1a1a1a'
-        },
-        link: {
-          fontSize: 12,
-          color: '#0066cc',
-          decoration: 'underline'
-        },
-        skillItem: {
-          fontSize: 12,
-          color: '#444444',
-          margin: [0, 2]
-        },
-        position: {
-          fontSize: 11,
-          color: '#666666',
-          italics: true
-        },
-        date: {
-          fontSize: 10,
-          color: '#888888'
-        }
-      },
-      defaultStyle: {
-        font: 'Roboto'
-      }
-    };
 
-    try {
-      const pdfDoc = pdfMake.createPdf(docDefinition);
-      const fileName = language === 'tr' 
-        ? `${userData.name}_${userData.surname}_CV_TR.pdf`
-        : `${userData.name}_${userData.surname}_CV_EN.pdf`;
-      pdfDoc.download(fileName);
-    } catch (error) {
-      console.error('PDF oluşturma hatası:', error);
-      alert('CV oluşturulurken bir hata oluştu');
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="create-cv-container">
-        <div className="loading">Yükleniyor...</div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="create-cv-container">
-      {showProfileWarning && (
-        <div className="profile-warning">
-          <div className="warning-content">
-            <p>
-              <strong>Bilgilendirme:</strong> Daha profesyonel bir CV oluşturmak için 
-              profil bilgilerinizi tamamlamanızı öneririz. 
-              Eğitim, iş deneyimi ve yetenekleriniz gibi önemli bilgileri ekleyebilirsiniz.
-            </p>
-            <button 
-              className="warning-button"
-              onClick={() => navigate('/profile-update')}
-            >
-              Profili Düzenle
-            </button>
-            <button 
-              className="dismiss-button"
-              onClick={() => setShowProfileWarning(false)}
-            >
-              Şimdilik Geç
-            </button>
+  const renderSectionContent = (sectionId) => {
+    switch (sectionId) {
+      case 'about':
+        return userData.aboutMe && (
+          <div className="cv-section-content">
+            <p>{userData.aboutMe}</p>
           </div>
-        </div>
-      )}
-      <div className="cv-header-actions">
-        <h1>{t.createCV}</h1>
-        <div className="language-selector">
-          <button 
-            className={`lang-btn ${language === 'tr' ? 'active' : ''}`}
-            onClick={() => setLanguage('tr')}
-          >
-            🇹🇷 Türkçe
-          </button>
-          <button 
-            className={`lang-btn ${language === 'en' ? 'active' : ''}`}
-            onClick={() => setLanguage('en')}
-          >
-            🇬🇧 English
-          </button>
-        </div>
-      </div>
-      <p>{t.preview}</p>
-      <div className="cv-preview">
-        <div className="cv-header">
-          <div className="cv-photo">
-            <img 
-              src={userData.profilePhotoUrl || userLogo} 
-              alt="Profile" 
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = userLogo;
-              }}
-            />
+        );
+      case 'education':
+        return userData.university && (
+          <div className="cv-section-content">
+            <p className="education-school">{userData.university}</p>
           </div>
-          <div className="cv-title">
-            <h2>{userData.name} {userData.surname}</h2>
-            <p>{userData.job}</p>
-            <p>{userData.area}</p>
-          </div>
-        </div>
-        <div className="cv-section">
-          <h3>{t.about}</h3>
-          <p>{userData.aboutMe}</p>
-        </div>
-        <div className="cv-section">
-          <h3>{t.education}</h3>
-          <p>{userData.university}</p>
-        </div>
-        <div className="cv-section">
-          <h3>{t.skills}</h3>
-          <div className="cv-skills">
+        );
+      case 'skills':
+        return Object.keys(userData.skills || {}).length > 0 && (
+          <div className="cv-skills-grid">
             {Object.entries(userData.skills || {}).map(([skill, level]) => (
-              <div key={skill} className="cv-skill-item">
-                {skill} ({level})
+              <span key={skill} className="cv-skill-tag">{skill}</span>
+            ))}
+          </div>
+        );
+      case 'projects':
+        const selectedProjects = projects.filter(p => selectedProjectIds.includes(p.id));
+        return selectedProjects.length > 0 && (
+          <div className="cv-projects-list">
+            {selectedProjects.map(project => (
+              <div key={project.id} className="cv-project-entry">
+                <div className="project-header">
+                  <h4>{project.name}</h4>
+                  {project.projectLink && (
+                    <a href={project.projectLink} target="_blank" rel="noreferrer">Link ↗</a>
+                  )}
+                </div>
+                <p className="project-tech">{project.skills?.join(', ')}</p>
+                <p className="project-desc">{project.description}</p>
               </div>
             ))}
           </div>
-        </div>
-        <div className="cv-section">
-          <h3>{t.projects}</h3>
-          <div className="cv-projects">
-            {projects.map(project => (
-              <div key={project.id} className="cv-project-item">
-                <h4>{project.name}</h4>
-                <p>{t.technologies}: {project.skills?.join(', ')}</p>
-                <a href={project.projectLink} target="_blank" rel="noopener noreferrer">
-                  {t.viewProject}
-                </a>
+        );
+      case 'experience':
+        return experiences.length > 0 && (
+          <div className="cv-experience-list">
+            {experiences.map((exp, index) => (
+              <div key={index} className="cv-experience-entry">
+                <div className="exp-header">
+                  <h4>{exp.companyName}</h4>
+                  <span className="exp-date">
+                    {new Date(exp.startTime).toLocaleDateString(language === 'tr' ? 'tr-TR' : 'en-US', { month: 'short', year: 'numeric' })} -
+                    {exp.endDate ? new Date(exp.endDate).toLocaleDateString(language === 'tr' ? 'tr-TR' : 'en-US', { month: 'short', year: 'numeric' }) : t.current}
+                  </span>
+                </div>
+                <p className="exp-role">{POSITION_TRANSLATIONS[exp.position]}</p>
               </div>
             ))}
           </div>
-        </div>
-        <div className="cv-section">
-          <h3>{t.experience}</h3>
-          <div className="cv-experiences">
-            {experiences?.map((exp, index) => (
-              <div key={index} className="cv-experience-item">
-                <h4>{exp.companyName}</h4>
-                <p className="experience-position">
-                  {POSITION_TRANSLATIONS[exp.position]}
-                </p>
-                <p className="experience-date">
-                  {new Date(exp.startTime).toLocaleDateString('tr-TR', {
-                    year: 'numeric',
-                    month: 'long'
-                  })} - {' '}
-                  {exp.endDate ? 
-                    new Date(exp.endDate).toLocaleDateString('tr-TR', {
-                      year: 'numeric',
-                      month: 'long'
-                    }) : 
-                    t.current
-                  }
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="cv-section">
-          <h3>{t.contact}</h3>
-          <div className="cv-contacts">
+        );
+      case 'contact':
+        return (
+          <div className="cv-contact-list">
             {Object.entries(userData.contactAddresses || {})
               .filter(([_, url]) => url)
               .map(([platform, url]) => (
-                <div key={platform} className="cv-contact-item">
-                  {platform}: {url}
+                <div key={platform} className="contact-item">
+                  <a href={url} target="_blank" rel="noreferrer" className="contact-link">
+                    {platform.charAt(0).toUpperCase() + platform.slice(1)} ↗
+                  </a>
                 </div>
               ))}
           </div>
-        </div>
+        );
+      default: return null;
+    }
+  };
+
+  if (loading) return <div className="loading">Yükleniyor...</div>;
+
+  return (
+    <div className="cv-builder-layout">
+      {/* MOBILE TABS */}
+      <div className="mobile-tabs no-print">
+        {activeMobileTab === 'preview' ? (
+          <>
+            <button
+              className="mobile-tab-btn"
+              onClick={() => setActiveMobileTab('settings')}
+            >
+              {t.settings}
+            </button>
+            <button
+              className="mobile-tab-btn primary-action"
+              onClick={handlePrint}
+            >
+              {t.generateCV}
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className={`mobile-tab-btn ${activeMobileTab === 'settings' ? 'active' : ''}`}
+              onClick={() => setActiveMobileTab('settings')}
+            >
+              {t.settings}
+            </button>
+            <button
+              className={`mobile-tab-btn ${activeMobileTab === 'preview' ? 'active' : ''}`}
+              onClick={() => setActiveMobileTab('preview')}
+            >
+              PDF / İndir
+            </button>
+          </>
+        )}
       </div>
-      <div className="cv-actions">
-        <button onClick={generatePDF} className="generate-cv-btn">
+
+      <div className={`cv-sidebar no-print ${activeMobileTab === 'settings' ? 'mobile-visible' : 'mobile-hidden'}`}>
+        <div className="sidebar-header">
+          <h2>{t.settings}</h2>
+          <button onClick={() => navigate(-1)} className="btn-back">{t.back}</button>
+        </div>
+
+        <div className="control-group">
+          <h3>{t.selectTheme}</h3>
+          <div className="theme-selector">
+            <button
+              className={`theme-btn ${selectedTheme === 'modern' ? 'active' : ''}`}
+              onClick={() => setSelectedTheme('modern')}
+            >
+              {t.modern}
+            </button>
+            <button
+              className={`theme-btn ${selectedTheme === 'classic' ? 'active' : ''}`}
+              onClick={() => setSelectedTheme('classic')}
+            >
+              {t.classic}
+            </button>
+          </div>
+        </div>
+
+        <div className="control-group">
+          <h3>{t.selectProjects}</h3>
+          <div className="project-selector">
+            {projects.map(project => (
+              <label key={project.id} className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={selectedProjectIds.includes(project.id)}
+                  onChange={() => toggleProject(project.id)}
+                />
+                {project.name}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="control-group">
+          <h3>{t.orderSections}</h3>
+          <ReactSortable list={sections} setList={setSections} handle=".handle" className="section-sorter">
+            {sections.map(item => (
+              <div key={item.id} className="sortable-item">
+                <span className="handle">☰</span>
+                <span>{t[item.id] || item.name}</span>
+              </div>
+            ))}
+          </ReactSortable>
+        </div>
+
+        <button onClick={handlePrint} className="btn-download-pdf">
           {t.generateCV}
         </button>
-        <button onClick={() => navigate(-1)} className="back-btn">
-          {t.back}
-        </button>
+      </div>
+
+      <div className={`cv-preview-container ${activeMobileTab === 'preview' ? 'mobile-visible' : 'mobile-hidden'}`}>
+
+        <div className="mobile-preview-message">
+          <div className="message-content">
+            <div className="icon">📱</div>
+            <h3>Önizleme Kullanılamıyor</h3>
+            <p>En iyi deneyim için lütfen CV'nizi bilgisayarda veya geniş ekranda düzenleyin.</p>
+            <p className="sub-text">Yine de PDF olarak indirip kontrol edebilirsiniz.</p>
+            <button onClick={handlePrint} className="btn-download-mobile-center">
+              PDF İndir
+            </button>
+          </div>
+        </div>
+
+        <div className={`cv-document theme-${selectedTheme}`} ref={componentRef}>
+
+          {selectedTheme === 'modern' && (
+            <div className="modern-layout">
+              <div className="modern-sidebar">
+                <div className="profile-photo">
+                  <img src={userData.profilePhotoUrl || userLogo} alt="Profile" />
+                </div>
+                <h1 className="name">{userData.name} {userData.surname}</h1>
+                <p className="job-title">{userData.job}</p>
+
+                <div className="sidebar-section">
+                  <h3>{t.contact}</h3>
+                  {renderSectionContent('contact')}
+                </div>
+                <div className="sidebar-section">
+                  <h3>{t.skills}</h3>
+                  {renderSectionContent('skills')}
+                </div>
+              </div>
+
+              <div className="modern-content">
+                {sections
+                  .filter(s => s.id !== 'contact' && s.id !== 'skills')
+                  .map(section => (
+                    <div key={section.id} className="modern-section">
+                      <h3 className="section-title">{t[section.id]}</h3>
+                      {renderSectionContent(section.id)}
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+
+          {selectedTheme === 'classic' && (
+            <div className="classic-layout">
+              <div className="classic-header">
+                <div className="header-left">
+                  <h1 className="name">{userData.name} {userData.surname}</h1>
+                  <p className="job-title">{userData.job} | {userData.area}</p>
+                </div>
+                <div className="header-right">
+                  <div className="mini-contact">
+                    {userData.contactAddresses?.email && <div>{userData.contactAddresses.email}</div>}
+                    {userData.contactAddresses?.linkedin && <div>{userData.contactAddresses.linkedin}</div>}
+                  </div>
+                </div>
+              </div>
+
+              <div className="classic-body">
+                {sections.map(section => (
+                  <div key={section.id} className="classic-section">
+                    <h3 className="section-title">{t[section.id]}</h3>
+                    <div className="section-line"></div>
+                    {renderSectionContent(section.id)}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+        </div>
       </div>
     </div>
   );

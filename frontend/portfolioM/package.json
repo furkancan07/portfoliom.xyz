@@ -21,6 +21,7 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",
     "react-sortablejs": "^6.1.4",
+    "react-to-print": "^3.2.0",
     "react-toastify": "^11.0.3",
     "react-type-animation": "^3.2.0",
     "sortablejs": "^1.15.6"
