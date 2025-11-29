@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import AddProject from './pages/AddProject';
 import ProjectEdit from './pages/ProjectEdit';
 import ProjectDetail from './pages/ProjectDetail';
+import { fetchUserData, logoutUser } from './server/api';
 
 import './App.css';
 import Projects from './pages/Projects';
