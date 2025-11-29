@@ -52,9 +52,9 @@ function ProfileEdit() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      localStorage.clear();
+    // Artık username kontrolü yapıyoruz, token cookie'de
+    const username = localStorage.getItem('username');
+    if (!username) {
       navigate('/login');
       return;
     }

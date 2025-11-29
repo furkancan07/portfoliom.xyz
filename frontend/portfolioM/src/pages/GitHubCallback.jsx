@@ -9,26 +9,26 @@ function GitHubCallback({ onLogin }) {
     const handleCallback = async () => {
       try {
         // URL'den parametreleri al
-        const token = searchParams.get('token');
         const username = searchParams.get('username');
         const userId = searchParams.get('userId');
 
-        if (token && username) {
-          // Token ve kullanıcı bilgilerini localStorage'a kaydet
-          localStorage.setItem('token', token);
+        // Token artık cookie'de, sadece username kaydediyoruz
+        if (username) {
           localStorage.setItem('username', username);
           
           // Kullanıcı nesnesini oluştur ve kaydet
-          const user = {
-            id: userId,
-            username: username
-          };
-          localStorage.setItem('user', JSON.stringify(user));
+          if (userId) {
+            const user = {
+              id: userId,
+              username: username
+            };
+            localStorage.setItem('user', JSON.stringify(user));
+          }
 
           onLogin(); // isLoggedIn state'ini güncelle
           navigate('/');
         } else {
-          console.error('Token veya username bulunamadı');
+          console.error('Username bulunamadı');
           navigate('/login');
         }
       } catch (error) {

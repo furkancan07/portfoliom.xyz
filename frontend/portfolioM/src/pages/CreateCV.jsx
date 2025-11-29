@@ -41,16 +41,15 @@ const CreateCV = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      localStorage.clear();
+    // Artık username kontrolü yapıyoruz, token cookie'de
+    const username = localStorage.getItem('username');
+    if (!username) {
       navigate('/login');
       return;
     }
 
     const fetchData = async () => {
       try {
-        const username = localStorage.getItem('username');
         const response = await fetchUserData(username);
         setUserData(response.data);
 
@@ -62,7 +61,10 @@ const CreateCV = () => {
         setExperiences(experiencesResponse.data || []);
       } catch (error) {
         console.error('Veri yükleme hatası:', error);
-        if (error.response?.status === 401) navigate('/login');
+        if (error.response?.status === 401) {
+          // API interceptor zaten logout yapacak
+          navigate('/login');
+        }
       } finally {
         setLoading(false);
       }

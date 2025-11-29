@@ -18,10 +18,10 @@ const Home = () => {
 
   useEffect(() => {
     const checkUserProfile = async () => {
-      const token = localStorage.getItem('token');
+      // Artık username kontrolü yapıyoruz, token cookie'de
       const username = localStorage.getItem('username');
 
-      if (!token || !username) {
+      if (!username) {
         setShowLoginAlert(true);
         return;
       }
@@ -51,12 +51,12 @@ const Home = () => {
   }, []);
 
   const handlePortfolioClick = () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    const username = localStorage.getItem('username');
+    if (!username) {
       navigate('/login');
       return;
     }
-    navigate('/' + localStorage.getItem('username'));
+    navigate('/' + username);
   };
 
   return (

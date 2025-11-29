@@ -21,9 +21,9 @@ function AddProject() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      localStorage.clear();
+    // Artık username kontrolü yapıyoruz, token cookie'de
+    const username = localStorage.getItem('username');
+    if (!username) {
       navigate('/login');
       return;
     }
@@ -87,7 +87,7 @@ function AddProject() {
       }, 2000);
     } catch (error) {
       if (error.response?.status === 401 || error.response?.status === 403) {
-        localStorage.clear();
+        // API interceptor zaten logout yapacak
         navigate('/login');
       }
       setError(error.response?.data?.message || "Bir hata oluştu");

@@ -31,10 +31,16 @@ function Login({ onLogin }) {
     setError(null);
     try {
       const response = await loginUser(formData);
-      localStorage.setItem('token', response.data.token);
+      // Token artık cookie'de, sadece username kaydediyoruz
       localStorage.setItem('username', formData.username);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      if (response.data?.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
       onLogin(); // isLoggedIn state'ini güncelle
+      
+      // Cookie'lerin browser'a yüklenmesi için kısa bir gecikme
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       navigate('/');
     } catch (error) {
       setError(error);

@@ -15,9 +15,9 @@ const Projects = () => {
   const userId = JSON.parse(localStorage.getItem('user'))?.id;
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      localStorage.clear();
+    // Artık username kontrolü yapıyoruz, token cookie'de
+    const username = localStorage.getItem('username');
+    if (!username) {
       navigate('/login');
       return;
     }
@@ -34,7 +34,7 @@ const Projects = () => {
       setProjects(response.data);
     } catch (error) {
       if (error.response?.status === 401 || error.response?.status === 403) {
-        localStorage.clear();
+        // API interceptor zaten logout yapacak
         navigate('/login');
       }
       setError('Projeler yüklenirken bir hata oluştu');

@@ -7,28 +7,50 @@ const baseURL = isDevelopment
   : '/api/v1'; // Production'da da proxy kullan
 
 // Axios instance oluştur
+// Cookie'ler otomatik gönderilmesi için withCredentials: true
 const api = axios.create({
   baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  withCredentials: true // Cookie'leri otomatik gönder
 });
 
-// Otomatik çıkış fonksiyonu
-const handleLogout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  localStorage.removeItem('username');
-  window.location.href = '/login'; // Sayfayı login'e yönlendir
+// Otomatik çıkış fonksiyonu - SADECE manuel logout için kullanılmalı
+const handleLogout = async () => {
+  try {
+    // Logout endpoint'ine istek gönder (cookie'leri temizlemek için)
+    await api.delete('/auth/logout');
+  } catch (error) {
+    console.error('Logout hatası:', error);
+  } finally {
+    // LocalStorage'ı temizle
+    localStorage.removeItem('username');
+    localStorage.removeItem('user');
+    // Login sayfasına yönlendir
+    window.location.href = '/login';
+  }
 };
 
-// Request interceptor
+// Refresh token fonksiyonu
+const refreshAccessToken = async () => {
+  try {
+    // Refresh endpoint'ine istek gönder (cookie'ler otomatik gidecek)
+    const response = await api.post('/auth/refresh', {}, {
+      withCredentials: true
+    });
+    return response.data; // Başarılı, yeni token cookie'ye set edildi
+  } catch (error) {
+    // Refresh başarısız - sadece hata döndür
+    console.warn('Token refresh başarısız:', error.response?.status, error.response?.data);
+    throw error;
+  }
+};
+
+// Request interceptor - Artık token header eklenmiyor, cookie otomatik gidiyor
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    // Cookie'ler withCredentials: true ile otomatik gönderiliyor
     return config;
   },
   (error) => {
@@ -36,19 +58,94 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+// Response interceptor - 401 durumunda refresh token mekanizması
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  
+  failedQueue = [];
+};
+
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      // Token geçersiz, çıkış yap
-      localStorage.removeItem('token');
-      localStorage.removeItem('username');
-      localStorage.removeItem('user');
-      
-      // Login sayfasına yönlendir
-      window.location.href = '/login';
+  async (error) => {
+    const originalRequest = error.config;
+    const requestUrl = originalRequest?.url || '';
+
+    // Login ve refresh endpoint'leri için interceptor devreye girmesin
+    // Bu endpoint'lerde 401 hatası normal olabilir
+    if (requestUrl.includes('/auth/login') || requestUrl.includes('/auth/refresh')) {
+      return Promise.reject(error);
     }
+
+    // 401 hatası ve daha önce retry edilmemişse
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      // Public endpoint'ler için refresh token mekanizması devreye girmesin
+      const isPublicEndpoint = requestUrl.includes('/user/username/') || 
+                               requestUrl.includes('/project/list/project/') ||
+                               requestUrl.includes('/experience/') ||
+                               requestUrl.includes('/project/') && requestUrl.match(/\/project\/[^\/]+$/); // GET /project/{id}
+      
+      if (isPublicEndpoint) {
+        // Public endpoint'ler için 401 normal olabilir (kaynak bulunamadı)
+        return Promise.reject(error);
+      }
+
+      if (isRefreshing) {
+        // Zaten refresh işlemi devam ediyorsa, kuyruğa ekle
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => {
+            // Cookie'ler otomatik gidiyor, header eklemeye gerek yok
+            return api(originalRequest);
+          })
+          .catch(err => {
+            return Promise.reject(err);
+          });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        // Refresh token isteği gönder
+        await refreshAccessToken();
+        processQueue(null, null);
+        
+        // Orijinal isteği tekrar dene (cookie'ler otomatik gidecek)
+        return api(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        
+        // Refresh başarısız - refresh token yoksa veya geçersizse logout yap
+        if (refreshError.response?.status === 401) {
+          console.warn('Refresh token yok veya geçersiz. Kullanıcı logout ediliyor.');
+          // Refresh token geçersiz, kullanıcıyı logout yap
+          await handleLogout();
+        } else {
+          console.error('Token refresh hatası:', refreshError);
+        }
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    // 403 hatası için de logout yap (yetkisiz erişim)
+    if (error.response?.status === 403) {
+      console.warn('403 Forbidden - Kullanıcı logout ediliyor.');
+      await handleLogout();
+    }
+
     return Promise.reject(error);
   }
 );
@@ -96,9 +193,8 @@ export const loginUser = async (body) => {
 // Kullanıcı verilerini güncellemek için API isteği
 export const updateUser = async (userData) => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axios.put(
-      `${baseURL}/user/update`,
+    const response = await api.put(
+      '/user/update',
       {
         name: userData.name,
         surname: userData.surname,
@@ -112,7 +208,6 @@ export const updateUser = async (userData) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       }
@@ -126,18 +221,19 @@ export const updateUser = async (userData) => {
 // Kullanıcı verilerini almak için API isteği - token gerektirmez
 export const fetchUserData = async (username) => {
   try {
-    // Token olmadan istek at
-    const response = await axios.get(`${baseURL}/user/username/${username}`);
+    // Public endpoint, token gerektirmez
+    const response = await axios.get(`${baseURL}/user/username/${username}`, {
+      withCredentials: false // Public endpoint, cookie gönderme
+    });
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
   }
 };
 
-// Çıkış işlemi (token temizleme)
-export const logoutUser = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
+// Çıkış işlemi
+export const logoutUser = async () => {
+  await handleLogout();
 };
 
 // Profil fotoğrafı güncelleme
@@ -197,8 +293,10 @@ export const createProject = async (projectData, images) => {
 // Kullanıcının projelerini getir - token gerektirmez
 export const getUserProjects = async (userId) => {
   try {
-    // Token olmadan istek at
-    const response = await axios.get(`${baseURL}/project/list/project/${userId}`);
+    // Public endpoint, token gerektirmez
+    const response = await axios.get(`${baseURL}/project/list/project/${userId}`, {
+      withCredentials: false // Public endpoint, cookie gönderme
+    });
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
@@ -257,11 +355,7 @@ export const searchUsers = async (username) => {
 // Proje silme fonksiyonu
 export const deleteProject = async (projectId) => {
   try {
-    const response = await api.delete(`/project/delete/${projectId}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    });
+    const response = await api.delete(`/project/delete/${projectId}`);
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
@@ -269,20 +363,18 @@ export const deleteProject = async (projectId) => {
 };
 
 export const reorderProjects = (projectIds) => {
-  return axios.put(`${baseURL}/project/reorder`, {
+  return api.put('/project/reorder', {
     projectIds: projectIds
-  }, {
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
   });
 };
 
 // Deneyimleri getir - token gerektirmez
 export const getUserExperiences = async (username) => {
   try {
-    // Token olmadan istek at
-    const response = await axios.get(`${baseURL}/experience/${username}`);
+    // Public endpoint, token gerektirmez
+    const response = await axios.get(`${baseURL}/experience/${username}`, {
+      withCredentials: false // Public endpoint, cookie gönderme
+    });
     return response.data;
   } catch (error) {
     console.error('Deneyimler getirilemedi:', error);
@@ -300,7 +392,6 @@ export const deleteExperience = async (experienceId) => {
   }
 };
 
-export {
-  api as default,
-  // ... diğer export'lar
-};
+// Tüm fonksiyonlar zaten export const ile export edilmiş
+// Sadece api'yi default export olarak export ediyoruz
+export default api;
