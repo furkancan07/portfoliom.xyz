@@ -3,7 +3,7 @@
 <div align="center">
   <img src="frontend/portfolioM/src/assets/logo.jpg" alt="PortfolioM Logo" width="200"/>
   <br/>
-  <p><em>"Yeteneklerinizi Gösterin, Projelerinizi Paylaşın, CV’nizi Oluşturun!"</em></p>
+  <p><em>"Yeteneklerinizi Gösterin, Projelerinizi Paylaşın, CV’nizi Oluşturun !"</em></p>
 </div>
 
 ## Genel Bakış
