@@ -36,6 +36,7 @@ public class ProjectService {
     private final DtoConverter converter;
     private final UserIdentityManager manager;
 
+    @CacheEvict(value = {"projects", "projectsByTag"}, allEntries = true)
     public ApiResponse<ProjectDto> createProject(AddProjectRequest request, List<MultipartFile> files) {
         User user = manager.getAuthenticatedUser();
         int countMax = repository.countByUserId(user.getId());

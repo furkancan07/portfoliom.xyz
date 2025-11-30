@@ -24,7 +24,9 @@ public class ApiPaths {
 
     public static final String GET_COMMENTS_BY_PROJECT = "project/{id}";
     public static final String LOGIN = "login";
+    public static final String LOGOUT = "logout";
     public static final String SEARCH_USER = "search/{username}";
     public static final String REORDER = "reorder";
     public static final String EXPERIENCE = VERSION+"experience";
+    public static final String REFRESH = "refresh";
 }

@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(ApiPaths.PROJECT)
-public class ProjectController {
+public class ProjectController implements com.rf.portfolioM.controller.doc.ProjectControllerDoc {
     private final ProjectService service;
 
     public ProjectController(ProjectService service) {
@@ -27,26 +27,26 @@ public class ProjectController {
     // Kullanıcıya ait tüm projeleri getir
     @GetMapping(ApiPaths.PROJECT_BY_USER)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    ApiResponse<List<ProjectDto>> getProjectsByUser(@PathVariable String userId) {
+    public ApiResponse<List<ProjectDto>> getProjectsByUser(@PathVariable String userId) {
         return service.getProjectsByUser(userId);
     }
 
     // Kullanıcının taga göre projelerini getir
     @GetMapping(ApiPaths.GET_PROJECT_BY_USER_AND_TAG)
-    ApiResponse<List<ProjectDto>> getProjectsByUserAndTag(@PathVariable String userId, @PathVariable ProjectArea tag) {
+    public ApiResponse<List<ProjectDto>> getProjectsByUserAndTag(@PathVariable String userId, @PathVariable ProjectArea tag) {
         return service.getProjectsByUserAndTag(userId, tag);
     }
 
     // ID'ye göre proje getir
     @GetMapping(ApiPaths.ID)
-    ApiResponse<ProjectDto> getProject(@PathVariable String id) {
+    public ApiResponse<ProjectDto> getProject(@PathVariable String id) {
         return service.getProject(id);
     }
 
     // Proje ekle
     @PostMapping(ApiPaths.CREATE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    ApiResponse<ProjectDto> createProject(
+    public ApiResponse<ProjectDto> createProject(
             @RequestPart("request") @Valid AddProjectRequest request,
             @RequestPart(value = "file", required = false) List<MultipartFile> file) {
         return service.createProject(request, file);
@@ -55,20 +55,20 @@ public class ProjectController {
     // Proje sil
     @DeleteMapping(ApiPaths.DELETE)
 
-    ApiResponse<Void> deleteProject(@PathVariable String id) {
+    public ApiResponse<Void> deleteProject(@PathVariable String id) {
         return service.delete(id);
     }
 
     // Proje güncelle
     @PutMapping(ApiPaths.UPDATE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    ApiResponse<ProjectDto> updateProject(@PathVariable String id, @RequestBody UpdateProjectRequest request) {
+    public ApiResponse<ProjectDto> updateProject(@PathVariable String id, @RequestBody UpdateProjectRequest request) {
         return service.updateProject(id, request);
     }
 
     // Sürükle bırak ile proje sırasını değiştir
     @PutMapping(ApiPaths.REORDER)
-    ApiResponse<List<ProjectDto>> updateProjectOrder(@RequestBody ProjectReOrderRequest request) {
+    public ApiResponse<List<ProjectDto>> updateProjectOrder(@RequestBody ProjectReOrderRequest request) {
         return service.updateProjectOrder(request);
     }
 }

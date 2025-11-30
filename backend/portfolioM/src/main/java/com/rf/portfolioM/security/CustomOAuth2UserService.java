@@ -23,6 +23,7 @@ import java.util.Map;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -47,8 +48,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .orElseGet(() -> createNewUser(username, finalEmail, name, profilePhotoUrl, aboutMe, contactAddresses));
 
         String token = jwtService.createToken(user.getUsername());
+        String refreshToken=refreshTokenService.createRefreshToken(user.getUsername());
 
-        return new CustomOAuth2User(oAuth2User, token, user);
+        return new CustomOAuth2User(oAuth2User, token, user,refreshToken);
     }
 
     private String fetchUserEmail(String accessToken) {

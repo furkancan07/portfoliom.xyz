@@ -47,7 +47,7 @@ public class JwtService {
 
     // getUser
     public User getUser(String token) {
-        String username = extractUsername(token); // Token'dan kullanıcı adı al
+        String username = extractUsername(token);
         return userService.findByUserName(username);
     }
 

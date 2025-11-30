@@ -1,9 +1,7 @@
 package com.rf.portfolioM.config;
-
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 @Service
 public class PreventSleepService {
 
@@ -14,7 +12,7 @@ public class PreventSleepService {
     public void keepAlive() {
         try {
             String response = restTemplate.getForObject(API_URL, String.class);
-            System.out.println("PreventSleepService Çalıştı");
+            System.out.println("PreventSleepService Çalıştı"+response);
         } catch (Exception e) {
             System.err.println("PreventSleepService Hata: " + e.getMessage());
         }

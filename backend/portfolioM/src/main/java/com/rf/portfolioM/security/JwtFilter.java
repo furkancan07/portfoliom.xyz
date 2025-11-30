@@ -43,17 +43,13 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String getToken(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-
-
-            String[] parts = header.split(" ");
-            if (parts.length == 2) {
-                return parts[1];
+        if (request.getCookies() != null) {
+            for (var cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
             }
-
         }
-
         return null;
     }
 }

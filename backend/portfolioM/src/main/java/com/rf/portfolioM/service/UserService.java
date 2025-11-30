@@ -120,9 +120,6 @@ public class UserService implements UserDetailsService {
         return repository.findById(id).orElseThrow(()->new NotFoundException("Kullanıcı"));
     }
 
-    protected User findByEmail(String email){
-        return repository.findByEmail(email).orElseThrow(()->new NotFoundException("Kullanıcı"));
-    }
     protected User findByUserName(String username){
         return repository.findByUsername(username).orElseThrow(()->new NotFoundException("Kullanıcı"));
     }
@@ -165,5 +162,10 @@ public class UserService implements UserDetailsService {
     public ApiResponse<List<UserInformation>> searchUser(String username) {
       List<User> users=repository.findUsersByUsername(username);
       return ApiResponse.ok("Kullanıcılar",users.stream().map(converter::convertUserInformation).collect(Collectors.toList()));
+    }
+
+    public ApiResponse<UserDto> getCurrentUser() {
+        User user = manager.getAuthenticatedUser();
+        return ApiResponse.ok("Mevcut Kullanıcı", converter.convertUser(user));
     }
 }

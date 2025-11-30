@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping(ApiPaths.USER)
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements com.rf.portfolioM.controller.doc.UserControllerDoc {
     private final UserService service;
     private final CloudinaryService cloudinaryService;
 
@@ -117,5 +117,11 @@ public class UserController {
     @GetMapping(ApiPaths.SEARCH_USER)
     public ApiResponse<List<UserInformation>> searchUser(@PathVariable String username) {
         return service.searchUser(username);
+    }
+
+    // Mevcut kullanıcıyı getir
+    @GetMapping("/me")
+    public ApiResponse<UserDto> getCurrentUser() {
+        return service.getCurrentUser();
     }
 }

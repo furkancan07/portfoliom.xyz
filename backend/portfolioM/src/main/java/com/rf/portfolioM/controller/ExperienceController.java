@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(ApiPaths.EXPERIENCE)
-public class ExperienceController {
+public class ExperienceController implements com.rf.portfolioM.controller.doc.ExperienceControllerDoc {
     private final ExperienceService experienceService;
 
     public ExperienceController(ExperienceService experienceService) {

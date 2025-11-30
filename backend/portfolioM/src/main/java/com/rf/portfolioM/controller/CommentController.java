@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping(ApiPaths.COMMENT)
 
-public class CommentController {
+public class CommentController implements com.rf.portfolioM.controller.doc.CommentControllerDoc {
     private final CommentService service;
 
     public CommentController(CommentService service) {
@@ -29,13 +29,13 @@ public class CommentController {
     */
     @PostMapping(ApiPaths.ADD_COMMENT)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    ApiResponse<Void> addComment(@PathVariable String projectId, @RequestBody @Valid AddCommentRequest request){
+    public ApiResponse<Void> addComment(@PathVariable String projectId, @RequestBody @Valid AddCommentRequest request){
         return service.addComment(projectId,request);
     }
     // yorum sil
     @DeleteMapping(ApiPaths.DELETE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    ApiResponse<Void> deleteComment(@PathVariable String id){
+    public ApiResponse<Void> deleteComment(@PathVariable String id){
         return service.delete(id);
     }
     // yorum güncelle
@@ -47,7 +47,7 @@ public class CommentController {
 
     // projeye ait yorumları getir
     @GetMapping(ApiPaths.GET_COMMENTS_BY_PROJECT)
-    ApiResponse<List<CommentDto>> getCommentsByProject(@PathVariable String id){
+    public ApiResponse<List<CommentDto>> getCommentsByProject(@PathVariable String id){
         return service.getCommentsByProject(id);
     }
 

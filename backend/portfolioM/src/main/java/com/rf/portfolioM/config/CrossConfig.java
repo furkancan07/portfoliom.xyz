@@ -13,11 +13,18 @@ public class CrossConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://portfoliom.xyz","http://localhost:5173","https://portfolio-m-steel.vercel.app")
-                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS") // PATCH eklendi
+                        .allowedOrigins(
+                                "https://portfoliom-is7q.onrender.com",
+                                "https://portfoliom.dev",
+                                "https://www.portfoliom.dev",  
+                                "https://portfoliom.xyz",
+                                "http://localhost:5173",
+                                "https://portfolio-m-steel.vercel.app"
+                        )
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true)
-                        .maxAge(3600); // 1 saat boyunca cache’lenebilir
+                        .maxAge(3600);
             }
         };
     }
