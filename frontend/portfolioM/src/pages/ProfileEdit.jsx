@@ -2,6 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchUserData, updateUser, updateProfilePhoto, uploadCV, getUserExperiences, deleteExperience } from '../server/api'; // API fonksiyonlarını içe aktar
 import '../Login.css'; // Mevcut stil dosyasını kullan
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import CheckIcon from '@mui/icons-material/Check';
+import DescriptionIcon from '@mui/icons-material/Description';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 
 function ProfileEdit() {
   const [formData, setFormData] = useState({
@@ -70,7 +76,7 @@ function ProfileEdit() {
         const userData = response.data;
         // Deneyimleri ayrıca getir
         const experiencesResponse = await getUserExperiences(username);
-        
+
         setFormData({
           name: userData.name || user?.name || '',
           surname: userData.surname || user?.surname || '',
@@ -152,7 +158,7 @@ function ProfileEdit() {
     e.preventDefault();
     setError(null);
     setSuccessMessage(null); // Her denemede mesajları sıfırla
-    
+
     try {
       // Profil bilgilerini güncelle
       await updateUser(formData);
@@ -173,7 +179,7 @@ function ProfileEdit() {
       setSuccessMessage('Profil başarıyla güncellendi!'); // Başarı mesajını ayarla
       setTimeout(() => {
         setSuccessMessage(null); // 3 saniye sonra mesajı kaldır
-        navigate('/'+localStorage.getItem('username')); // Ana sayfaya yönlendir
+        navigate('/' + localStorage.getItem('username')); // Ana sayfaya yönlendir
       }, 3000);
     } catch (error) {
       setError(error);
@@ -200,9 +206,9 @@ function ProfileEdit() {
   };
 
   const handleContactEdit = (platform) => {
-    setCurrentContact({ 
-      platform: platform, 
-      url: formData.contactAddresses[platform] 
+    setCurrentContact({
+      platform: platform,
+      url: formData.contactAddresses[platform]
     });
     setIsEditingContact(true);
   };
@@ -310,7 +316,7 @@ function ProfileEdit() {
   const handleExperienceDelete = async (index) => {
     try {
       const experienceToDelete = formData.experiences[index];
-      
+
       if (formData.experiences.length === 1) {
         // Son deneyimi siliyoruz
         const response = await deleteExperience(experienceToDelete.id);
@@ -382,7 +388,7 @@ function ProfileEdit() {
       <h2>Profil Düzenle</h2>
       {error && <div className="error-message">{error.message}</div>}
       {successMessage && <div className="success-message">{successMessage}</div>}
-      
+
       {/* Profil Fotoğrafı ve CV Yükleme Butonları */}
       <div className="profile-actions">
         <div className="upload-button-container">
@@ -394,19 +400,19 @@ function ProfileEdit() {
             style={{ display: 'none' }}
           />
           <label htmlFor="profilePhoto" className="upload-button">
-            📷 Profil Fotoğrafı Seç
+            <CameraAltIcon /> Profil Fotoğrafı Seç
           </label>
           {selectedImage && (
             <div className="selected-image-container">
               <div className="selected-image">
                 <img src={selectedImage} alt="Seçilen profil fotoğrafı" />
               </div>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="confirm-button"
                 onClick={handleProfilePhotoUpdate}
               >
-                ✓ Onayla
+                <CheckIcon /> Onayla
               </button>
             </div>
           )}
@@ -421,7 +427,7 @@ function ProfileEdit() {
             style={{ display: 'none' }}
           />
           <label htmlFor="cvUpload" className="upload-button">
-            📄 CV Yükle
+            <DescriptionIcon /> CV Yükle
           </label>
         </div>
       </div>
@@ -505,7 +511,7 @@ function ProfileEdit() {
           <div className="section-header">
             <h3>Yetenekler</h3>
             <button type="button" className="add-button" onClick={handleAddSkill}>
-              ➕ Yetenek Ekle
+              <AddIcon /> Yetenek Ekle
             </button>
           </div>
           <ul className="skills-list">
@@ -513,8 +519,8 @@ function ProfileEdit() {
               <li key={key}>
                 <span>{key}: {value}</span>
                 <div>
-                  <button type="button" onClick={() => handleSkillEdit(key)}>✏️</button>
-                  <button type="button" onClick={() => handleSkillDelete(key)}>🗑️</button>
+                  <button type="button" onClick={() => handleSkillEdit(key)}><EditIcon /></button>
+                  <button type="button" onClick={() => handleSkillDelete(key)}><DeleteIcon /></button>
                 </div>
               </li>
             ))}
@@ -526,7 +532,7 @@ function ProfileEdit() {
           <div className="section-header">
             <h3>İletişim Adresleri</h3>
             <button type="button" className="add-button" onClick={handleAddContact}>
-              ➕ İletişim Adresi Ekle
+              <AddIcon /> İletişim Adresi Ekle
             </button>
           </div>
           <ul className="skills-list">
@@ -535,8 +541,8 @@ function ProfileEdit() {
                 <li key={platform}>
                   <span>{platform}: {url}</span>
                   <div>
-                    <button type="button" onClick={() => handleContactEdit(platform)}>✏️</button>
-                    <button type="button" onClick={() => handleContactDelete(platform)}>🗑️</button>
+                    <button type="button" onClick={() => handleContactEdit(platform)}><EditIcon /></button>
+                    <button type="button" onClick={() => handleContactDelete(platform)}><DeleteIcon /></button>
                   </div>
                 </li>
               )
@@ -549,7 +555,7 @@ function ProfileEdit() {
           <div className="section-header">
             <h3>Deneyimler</h3>
             <button type="button" className="add-button" onClick={handleAddExperience}>
-              ➕ Deneyim Ekle
+              <AddIcon /> Deneyim Ekle
             </button>
           </div>
           <ul className="skills-list">
@@ -557,12 +563,12 @@ function ProfileEdit() {
               <li key={index}>
                 <span>
                   {experience.companyName} - {getPositionTranslation(experience.position)}<br />
-                  {new Date(experience.startTime).toLocaleDateString()} - 
+                  {new Date(experience.startTime).toLocaleDateString()} -
                   {experience.endDate ? new Date(experience.endDate).toLocaleDateString() : 'Devam Ediyor'}
                 </span>
                 <div>
-                  <button type="button" onClick={() => handleExperienceEdit(experience)}>✏️</button>
-                  <button type="button" onClick={() => handleExperienceDelete(index)}>🗑️</button>
+                  <button type="button" onClick={() => handleExperienceEdit(experience)}><EditIcon /></button>
+                  <button type="button" onClick={() => handleExperienceDelete(index)}><DeleteIcon /></button>
                 </div>
               </li>
             ))}

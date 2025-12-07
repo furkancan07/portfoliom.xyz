@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { fetchUserData } from '../server/api';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import WavingHandIcon from '@mui/icons-material/WavingHand';
+import CelebrationIcon from '@mui/icons-material/Celebration';
 
 const Home = () => {
   const [showWelcomeAlert, setShowWelcomeAlert] = useState(false);
@@ -65,7 +67,7 @@ const Home = () => {
         <div className="welcome-alert-overlay">
           <div className="welcome-alert">
             <div className="alert-content">
-              <h3>👋 Portfoliom.dev'e Hoş Geldiniz!</h3>
+              <h3><WavingHandIcon /> Portfoliom.dev'e Hoş Geldiniz!</h3>
               <p>
                 Projelerinizi sergilemek ve profesyonel CV'nizi oluşturmak için
                 hemen giriş yapın.
@@ -99,7 +101,7 @@ const Home = () => {
         <div className="welcome-alert-overlay">
           <div className="welcome-alert">
             <div className="alert-content">
-              <h3>🎉 Portfoliom.dev'ye Hoş Geldiniz!</h3>
+              <h3><CelebrationIcon /> Portfoliom.dev'ye Hoş Geldiniz!</h3>
               <p>
                 Profesyonel profilinizi oluşturmak ve projelerinizi sergilemek için
                 hemen başlayın.

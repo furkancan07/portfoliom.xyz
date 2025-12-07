@@ -15,6 +15,20 @@ import EmailIcon from '@mui/icons-material/Email';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import CodeIcon from '@mui/icons-material/Code';
+import SchoolIcon from '@mui/icons-material/School';
+import WorkIcon from '@mui/icons-material/Work';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import DescriptionIcon from '@mui/icons-material/Description';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import ForumIcon from '@mui/icons-material/Forum';
+import ArticleIcon from '@mui/icons-material/Article';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import PublicIcon from '@mui/icons-material/Public';
 
 
 function Profile() {
@@ -57,7 +71,7 @@ function Profile() {
         setError(error);
       }
     };
-    
+
     if (username) {
       getUserData();
     }
@@ -103,7 +117,7 @@ function Profile() {
     setSelectedTag(tag);
     setIsProjectsLoading(true);
     try {
-      const response = tag === 'ALL' 
+      const response = tag === 'ALL'
         ? await getUserProjects(userData.id)
         : await getUserProjectsByTag(userData.id, tag);
       setProjects(response.data);
@@ -114,7 +128,7 @@ function Profile() {
     }
   };
 
-  
+
 
   const generateCV = async () => {
     try {
@@ -148,7 +162,7 @@ function Profile() {
 
   const handleProjectDelete = (deletedProjectId) => {
     // Projeler listesinden silinen projeyi çıkar
-    setProjects(prevProjects => 
+    setProjects(prevProjects =>
       prevProjects.filter(project => project.id !== deletedProjectId)
     );
   };
@@ -177,11 +191,30 @@ function Profile() {
       case 'instagram':
         return <InstagramIcon />;
       case 'email':
+      case 'gmail':
         return <EmailIcon />;
-      case 'leetcode':
+      case 'facebook':
+        return <FacebookIcon />;
+      case 'slack':
+        return <ForumIcon />;
+      case 'discord':
+        return <ForumIcon />;
+      case 'devto':
+      case 'dev.to':
         return <CodeIcon />;
+      case 'stackoverflow':
+      case 'stack overflow':
+        return <QuestionAnswerIcon />;
+      case 'medium':
+        return <ArticleIcon />;
+      case 'leetcode':
+        return <PsychologyIcon />;
+      case 'hackerrank':
+        return <EmojiEventsIcon />;
       case 'website':
         return <LanguageIcon />;
+      case 'other':
+        return <PublicIcon />;
       default:
         return <LanguageIcon />;
     }
@@ -189,26 +222,26 @@ function Profile() {
 
   return (
     <div className="profile-container">
-      <button 
+      <button
         className="mobile-menu-btn"
         onClick={() => setIsDrawerOpen(true)}
       >
-        <span>☰</span>
+        <MenuIcon />
       </button>
 
       <div className={`profile-left ${isDrawerOpen ? 'open' : ''}`}>
         <div className="drawer-header">
-          <button 
+          <button
             className="close-drawer"
             onClick={() => setIsDrawerOpen(false)}
           >
-            ✕
+            <CloseIcon />
           </button>
         </div>
         <div className="profile-card">
           <div className="profile-image-wrapper">
-            <img 
-              src={userData.profilePhotoUrl || userLogo} 
+            <img
+              src={userData.profilePhotoUrl || userLogo}
               alt={`${userData.name}'s profile`}
               className="profile-image"
               onError={(e) => {
@@ -219,7 +252,7 @@ function Profile() {
           </div>
           <span className="username">@{userData.username}</span>
           <h1>{userData.name} {userData.surname}</h1>
-          
+
           <span className="job-title">{userData.job || 'Yazılım Geliştirici'}</span>
           <div className="role-badge">{userData.area || 'Alanınızı yazın'}</div>
         </div>
@@ -227,21 +260,21 @@ function Profile() {
         <div className="personal-info">
           <h2>Kişisel Bilgiler</h2>
           <div className="info-item">
-            <span className="info-icon">🎓</span>
+            <span className="info-icon"><SchoolIcon /></span>
             <div className="info-content">
               <span className="info-label">Üniversite</span>
               <span className="info-value">{userData.university}</span>
             </div>
           </div>
           <div className="info-item">
-            <span className="info-icon">💼</span>
+            <span className="info-icon"><WorkIcon /></span>
             <div className="info-content">
               <span className="info-label">Bölüm</span>
               <span className="info-value">{userData.job}</span>
             </div>
           </div>
           <div className="info-item">
-            <span className="info-icon">🎯</span>
+            <span className="info-icon"><TrackChangesIcon /></span>
             <div className="info-content">
               <span className="info-label">İlgi Alanı</span>
               <span className="info-value">{userData.area}</span>
@@ -254,7 +287,7 @@ function Profile() {
           <div className="experience-list">
             {experiences?.map((experience) => (
               <div key={experience.id} className="experience-item">
-                <div className="experience-icon">💼</div>
+                <div className="experience-icon"><WorkIcon /></div>
                 <div className="experience-content">
                   <div className="company-name">{experience.companyName}</div>
                   <div className="position-badge">
@@ -304,7 +337,7 @@ function Profile() {
                       <>
                         Spring
                         <br />
-                        <small style={{opacity: 0.7}}>{skill.split(' ')[1]}</small>
+                        <small style={{ opacity: 0.7 }}>{skill.split(' ')[1]}</small>
                       </>
                     ) : (
                       skill
@@ -322,10 +355,10 @@ function Profile() {
           <div className="contact-list">
             {Object.entries(userData.contactAddresses || {}).map(([platform, url]) => (
               url && (
-                <a 
-                  key={platform} 
-                  href={url} 
-                  target="_blank" 
+                <a
+                  key={platform}
+                  href={url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="contact-link"
                 >
@@ -370,48 +403,49 @@ function Profile() {
           <h2>PROJELER</h2>
           <div className="project-filters">
             <div className="filter-buttons">
-              <button 
+              <button
                 className={`filter-btn ${selectedTag === 'ALL' ? 'active' : ''}`}
                 onClick={() => handleTagChange('ALL')}
               >
                 Hepsi
               </button>
-              <button 
+              <button
                 className={`filter-btn ${selectedTag === 'WEB' ? 'active' : ''}`}
                 onClick={() => handleTagChange('WEB')}
               >
                 Web
               </button>
-              <button 
+              <button
                 className={`filter-btn ${selectedTag === 'MOBILE' ? 'active' : ''}`}
                 onClick={() => handleTagChange('MOBILE')}
               >
                 Mobil
               </button>
-              <button 
+              <button
                 className={`filter-btn ${selectedTag === 'GAME' ? 'active' : ''}`}
                 onClick={() => handleTagChange('GAME')}
               >
                 Oyun
               </button>
-              <button 
+              <button
                 className={`filter-btn ${selectedTag === 'AI' ? 'active' : ''}`}
                 onClick={() => handleTagChange('AI')}
               >
                 AI
               </button>
-              <button 
+              <button
                 className={`filter-btn ${selectedTag === 'OTHER' ? 'active' : ''}`}
                 onClick={() => handleTagChange('OTHER')}
               >
                 Diğer
               </button>
               {userData.cvUrl && (
-                <button 
+                <button
                   className="filter-btn cv-download"
                   onClick={generateCV}
                 >
-                  📄 CV İndir
+                  <DescriptionIcon style={{ fontSize: '18px', marginRight: '6px' }} />
+                  <span>CV İndir</span>
                 </button>
               )}
             </div>
@@ -421,8 +455,8 @@ function Profile() {
               <div className="loading-projects">Projeler yükleniyor...</div>
             ) : projects.length > 0 ? (
               projects.map(project => (
-                <ProjectCard 
-                  key={project.id} 
+                <ProjectCard
+                  key={project.id}
                   project={project}
                   onDelete={handleProjectDelete}
                 />

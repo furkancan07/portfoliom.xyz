@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-// Development ve production URL'lerini ayır
+// dev mi prod mu ona göre url ayarla burda
 const isDevelopment = import.meta.env.DEV;
-const baseURL = isDevelopment 
-  ? '/api/v1'  // Development'da proxy kullan
-  : '/api/v1'; // Production'da da proxy kullan
+const baseURL = isDevelopment
+  ? '/api/v1'  // geliştirme ortamında proxy var
+  : '/api/v1'; // canlıda da aynı şekilde
 
-// Axios instance oluştur
+// axios objesi yaptık burda api istekleri için
 const api = axios.create({
   baseURL: baseURL,
   headers: {
@@ -14,15 +14,15 @@ const api = axios.create({
   }
 });
 
-// Otomatik çıkış fonksiyonu
+// kullanıcıyı çıkış yaptırmak için fonksiyon
 const handleLogout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   localStorage.removeItem('username');
-  window.location.href = '/login'; // Sayfayı login'e yönlendir
+  window.location.href = '/login'; // login sayfasına gönder
 };
 
-// Request interceptor
+// istek gitmeden önce token ekle
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -36,24 +36,24 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+// gelen cevaları kontrol et
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 || error.response?.status === 403) {
-      // Token geçersiz, çıkış yap
+      // token bozuksa kullanıcıyı atsın dışarı
       localStorage.removeItem('token');
       localStorage.removeItem('username');
       localStorage.removeItem('user');
-      
-      // Login sayfasına yönlendir
+
+      // tekrar giriş yapsın
       window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
 
-// Kullanıcı kaydı için API isteği
+// kullanıcı kayıt fonksiyonu
 export const registerUser = async (userData) => {
   try {
     const formData = new FormData();
@@ -82,7 +82,7 @@ export const registerUser = async (userData) => {
   }
 };
 
-// Kullanıcı girişi için API isteği
+// giriş yapma fonksiyonu
 export const loginUser = async (body) => {
   try {
     const response = await api.post('/auth/login', body);
@@ -93,7 +93,7 @@ export const loginUser = async (body) => {
   }
 };
 
-// Kullanıcı verilerini güncellemek için API isteği
+// profil güncellemek için
 export const updateUser = async (userData) => {
   try {
     const token = localStorage.getItem('token');
@@ -108,7 +108,7 @@ export const updateUser = async (userData) => {
         aboutMe: userData.aboutMe,
         skills: userData.skills,
         contactAddresses: userData.contactAddresses,
-        experiences: userData.experiences // Yeni eklenen deneyimler alanı
+        experiences: userData.experiences // deneyimler buraya ekleniyo
       },
       {
         headers: {
@@ -123,10 +123,10 @@ export const updateUser = async (userData) => {
   }
 };
 
-// Kullanıcı verilerini almak için API isteği - token gerektirmez
+// kullanıcı bilgilerini çek, token olmadan da olur
 export const fetchUserData = async (username) => {
   try {
-    // Token olmadan istek at
+    // direkt git token şart değil
     const response = await axios.get(`${baseURL}/user/username/${username}`);
     return response.data;
   } catch (error) {
@@ -134,13 +134,13 @@ export const fetchUserData = async (username) => {
   }
 };
 
-// Çıkış işlemi (token temizleme)
+// çıkış yap ve localdeki herşeyi temizle
 export const logoutUser = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
 };
 
-// Profil fotoğrafı güncelleme
+// pp değiştirme
 export const updateProfilePhoto = async (file) => {
   try {
     const formData = new FormData();
@@ -155,7 +155,7 @@ export const updateProfilePhoto = async (file) => {
   }
 };
 
-// CV yükleme
+// cv yi yükle
 export const uploadCV = async (file) => {
   try {
     const formData = new FormData();
@@ -172,7 +172,7 @@ export const uploadCV = async (file) => {
 
 export const createProject = async (projectData, images) => {
   const formData = new FormData();
-  
+
   formData.append('request', new Blob([JSON.stringify(projectData)], {
     type: 'application/json'
   }));
@@ -194,10 +194,10 @@ export const createProject = async (projectData, images) => {
   }
 };
 
-// Kullanıcının projelerini getir - token gerektirmez
+// kullanıcının projelerini getir token gerek yok
 export const getUserProjects = async (userId) => {
   try {
-    // Token olmadan istek at
+    // tokensz da çalışıyo
     const response = await axios.get(`${baseURL}/project/list/project/${userId}`);
     return response.data;
   } catch (error) {
@@ -205,7 +205,7 @@ export const getUserProjects = async (userId) => {
   }
 };
 
-// Belirli bir tag'e göre projeleri getir
+// tage göre filtrele projeleri
 export const getUserProjectsByTag = async (userId, tag) => {
   try {
     const response = await api.get(`/project/list/project/${userId}/${tag}`);
@@ -215,7 +215,7 @@ export const getUserProjectsByTag = async (userId, tag) => {
   }
 };
 
-// Proje güncelleme fonksiyonu
+// projeyi güncelle
 export const updateProject = async (projectId, projectData) => {
   try {
     const requestData = {
@@ -233,7 +233,7 @@ export const updateProject = async (projectId, projectData) => {
   }
 };
 
-// Tek bir projenin detaylarını getir
+// bi projenin detayını çek
 export const getProjectById = async (projectId) => {
   try {
     const response = await api.get(`/project/${projectId}`);
@@ -246,7 +246,7 @@ export const getProjectById = async (projectId) => {
 export const searchUsers = async (username) => {
   try {
     const response = await api.get(`/user/search/${username}`);
-    console.log('Search API Response:', response); 
+    console.log('Search API Response:', response);
     return response;
   } catch (error) {
     console.error('Search API Error:', error);
@@ -254,7 +254,7 @@ export const searchUsers = async (username) => {
   }
 };
 
-// Proje silme fonksiyonu
+// projeyi sil
 export const deleteProject = async (projectId) => {
   try {
     const response = await api.delete(`/project/delete/${projectId}`, {
@@ -278,10 +278,10 @@ export const reorderProjects = (projectIds) => {
   });
 };
 
-// Deneyimleri getir - token gerektirmez
+// deneyimleri çek token olmasa da olur
 export const getUserExperiences = async (username) => {
   try {
-    // Token olmadan istek at
+    // token şartt değil
     const response = await axios.get(`${baseURL}/experience/${username}`);
     return response.data;
   } catch (error) {
@@ -290,7 +290,7 @@ export const getUserExperiences = async (username) => {
   }
 };
 
-// Deneyim silme fonksiyonu
+// deneyimi sil
 export const deleteExperience = async (experienceId) => {
   try {
     const response = await api.delete(`/experience/delete/${experienceId}`);
@@ -302,5 +302,5 @@ export const deleteExperience = async (experienceId) => {
 
 export {
   api as default,
-  // ... diğer export'lar
+  // diğer exportlar
 };
