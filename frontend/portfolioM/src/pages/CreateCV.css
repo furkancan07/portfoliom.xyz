@@ -358,10 +358,23 @@
   font-weight: 500;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 8px;
+  gap: 8px;
+  padding: 6px 10px;
   border-radius: 4px;
   transition: background 0.2s;
+  font-size: 0.9rem;
+}
+
+.contact-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-username {
+  font-family: monospace;
+  font-size: 0.85rem;
 }
 
 .theme-modern .contact-link {

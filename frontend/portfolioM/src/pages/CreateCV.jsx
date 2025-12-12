@@ -5,6 +5,21 @@ import { ReactSortable } from "react-sortablejs";
 import { useReactToPrint } from 'react-to-print';
 import './CreateCV.css';
 import userLogo from '../assets/user.png';
+// Platform ikonları için import'lar
+import GitHubIcon from '@mui/icons-material/GitHub';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import EmailIcon from '@mui/icons-material/Email';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import LanguageIcon from '@mui/icons-material/Language';
+import CodeIcon from '@mui/icons-material/Code';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import ArticleIcon from '@mui/icons-material/Article';
+import ForumIcon from '@mui/icons-material/Forum';
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import PublicIcon from '@mui/icons-material/Public';
 
 const CreateCV = () => {
   const [userData, setUserData] = useState(null);
@@ -126,6 +141,75 @@ const CreateCV = () => {
 
   const t = translations[language];
 
+  // Platform ikonlarını döndüren fonksiyon
+  const getPlatformIcon = (platform) => {
+    switch (platform.toLowerCase()) {
+      case 'github':
+        return <GitHubIcon style={{ fontSize: '16px' }} />;
+      case 'linkedin':
+        return <LinkedInIcon style={{ fontSize: '16px' }} />;
+      case 'twitter':
+        return <TwitterIcon style={{ fontSize: '16px' }} />;
+      case 'instagram':
+        return <InstagramIcon style={{ fontSize: '16px' }} />;
+      case 'email':
+      case 'gmail':
+        return <EmailIcon style={{ fontSize: '16px' }} />;
+      case 'facebook':
+        return <FacebookIcon style={{ fontSize: '16px' }} />;
+      case 'slack':
+      case 'discord':
+        return <ForumIcon style={{ fontSize: '16px' }} />;
+      case 'devto':
+      case 'dev.to':
+        return <CodeIcon style={{ fontSize: '16px' }} />;
+      case 'stackoverflow':
+      case 'stack overflow':
+        return <QuestionAnswerIcon style={{ fontSize: '16px' }} />;
+      case 'medium':
+        return <ArticleIcon style={{ fontSize: '16px' }} />;
+      case 'leetcode':
+        return <PsychologyIcon style={{ fontSize: '16px' }} />;
+      case 'hackerrank':
+        return <EmojiEventsIcon style={{ fontSize: '16px' }} />;
+      case 'website':
+        return <LanguageIcon style={{ fontSize: '16px' }} />;
+      case 'other':
+        return <PublicIcon style={{ fontSize: '16px' }} />;
+      default:
+        return <LanguageIcon style={{ fontSize: '16px' }} />;
+    }
+  };
+
+  // URL'den kullanıcı adını çıkaran fonksiyon
+  const extractUsername = (url, platform) => {
+    if (!url) return '';
+
+    try {
+      // Email ise direkt döndür
+      if (platform.toLowerCase() === 'email' || platform.toLowerCase() === 'gmail') {
+        return url.replace('mailto:', '');
+      }
+
+      // URL'den kullanıcı adını çıkar
+      const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
+      const pathname = urlObj.pathname;
+
+      // Son slash'ten sonrasını al (çoğu platformda kullanıcı adı burada)
+      const parts = pathname.split('/').filter(p => p);
+
+      if (parts.length > 0) {
+        // Son part'ı kullanıcı adı olarak döndür
+        return '/' + parts[parts.length - 1];
+      }
+
+      // Eğer path yoksa hostname'i döndür
+      return urlObj.hostname;
+    } catch (error) {
+      // URL parse edilemezse orijinali döndür
+      return url;
+    }
+  };
 
 
   const renderSectionContent = (sectionId) => {
@@ -192,7 +276,12 @@ const CreateCV = () => {
               .map(([platform, url]) => (
                 <div key={platform} className="contact-item">
                   <a href={url} target="_blank" rel="noreferrer" className="contact-link">
-                    {platform.charAt(0).toUpperCase() + platform.slice(1)} ↗
+                    <span className="contact-icon">
+                      {getPlatformIcon(platform)}
+                    </span>
+                    <span className="contact-username">
+                      {extractUsername(url, platform)}
+                    </span>
                   </a>
                 </div>
               ))}
